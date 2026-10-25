@@ -202,6 +202,31 @@ openrouter（tie-break）  ┘
 | `api/newapi/pricing.official.json` | 厂商官方定价页抄录，`price_kind: vendor_official`，逐条带 `source_url` 与 `quote` | 人工（官方页核对后导入） |
 | `api/newapi/pricing.json` | 每个已发布模型的**牌价**（官方优先、聚合源次之）+ 由牌价生成的 `billing_expr` | `tools/model_sync` 生成 |
 
+### 官方价的机器核对
+
+OpenAI / Anthropic 的文档站提供定价页的 **Markdown 版本**，表格可直接解析，用来复核 `pricing.official.json`：
+
+| 厂商 | Markdown 页面 |
+|:---|:---|
+| OpenAI | `https://developers.openai.com/api/docs/pricing.md` |
+| Anthropic | `https://platform.claude.com/docs/en/about-claude/pricing.md` |
+
+```bash
+# 直接用本地下载的页面
+python -m tools.ops.verify_official_prices \
+    --claude /tmp/claude_pricing.md --openai /tmp/openai_pricing.md
+
+# 或者现场抓取（走 HTTPS_PROXY / --proxy http://127.0.0.1:7897）
+python -m tools.ops.verify_official_prices --fetch
+```
+
+这个工具**只读**：输出「目录 vs 页面」的逐字段差异、页面多出 / 目录多出的模型，不改任何文件。
+同一模型在长上下文、batch、priority 等表里会重复出现，解析器只取第一张主表，避免被倍率表覆盖；
+Anthropic 的括号说明（如 `Claude Haiku 5.5 (for prompts up to 100,000 tokens)`）会作为
+`context_limit_hint` 保留，可用来核对上下文上限。
+
+Google 的 `https://ai.google.dev/gemini-api/docs/pricing.md` 返回的仍是 HTML（0 个表格行），暂不支持。
+
 ### 公开仓库的边界
 
 本仓库是**公开**的，只放牌价，不放任何采购/结算信息：

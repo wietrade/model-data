@@ -69,10 +69,15 @@ python3 -m unittest discover -s tools/model_sync/tests -t . -v
 | 官方 | OpenAI `/v1/models` | 模型 ID 存在性 | `OPENAI_API_KEY` |
 | 官方 | Anthropic `/v1/models` | 模型 ID + display name | `ANTHROPIC_API_KEY` |
 | 官方 | Gemini `generativelanguage/models` | 模型 ID + 输入/输出 token 上限 | `GEMINI_API_KEY` |
+| 官方 | OpenAI / Anthropic 定价页 `.md` | **只核对价格**，不入库；见 `tools/ops/verify_official_prices.py` | 无 |
 
 优先级：`--sources` 的书写顺序（默认 `models.dev,openrouter`），官方 API 最后兜底。
 聚合源用于拿到「事实字段」，官方 API 用于发现聚合源漏掉的新模型、以及提示
-「本地有但官方列表里没有」的过期条目。厂商价格页 HTML **不在**抓取范围内（改版即断，维护成本过高）。
+「本地有但官方列表里没有」的过期条目。
+
+厂商价格页的 HTML **不**抓（改版即断），但 OpenAI / Anthropic 同时提供了 `.md` 版本，表格稳定可解析，
+由 `official_pricing.py` 解析、`tools/ops/verify_official_prices.py` 与 `pricing.official.json` 逐字段比对，
+**只出报告不改数据**。Gemini 没有 `.md`（返回 HTML），官方价仍靠人工抄录。
 
 ## 合并规则
 

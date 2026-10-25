@@ -69,6 +69,11 @@ jobs:
       - name: Validate metadata and pricing
         run: python -m tools.model_sync.validate
 
+      # 只出报告：官方价仍由人工确认后录入 pricing.official.json，这里不写盘。
+      - name: Cross-check vendor pricing pages
+        continue-on-error: true
+        run: python -m tools.ops.verify_official_prices --fetch
+
       - name: Detect changes
         id: diff
         run: |
