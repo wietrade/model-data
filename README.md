@@ -227,6 +227,22 @@ Anthropic 的括号说明（如 `Claude Haiku 5.5 (for prompts up to 100,000 tok
 
 Google 的 `https://ai.google.dev/gemini-api/docs/pricing.md` 返回的仍是 HTML（0 个表格行），暂不支持。
 
+### 元数据（上下文 / 最大输出）的官方核对
+
+三个厂商的「口供」形式不同，核对路径也不同：
+
+| 厂商 | 权威来源 | 取哪两个数 |
+|:---|:---|:---|
+| OpenAI | `https://developers.openai.com/api/docs/models/<id>.md` | `- N context window` / `- N max output tokens` |
+| Anthropic | `https://platform.claude.com/docs/en/models/<slug>/overview.md`（slug 去掉 `claude-` 前缀） | `Context window: NK tokens · Max output: NK tokens` |
+| Google | 逐模型页 `https://ai.google.dev/gemini-api/docs/models/<id>` | `Input token limit` / `Output token limit` |
+| Google（无逐模型页时） | `models.list` 的 `inputTokenLimit` / `outputTokenLimit` | 同上 |
+
+规则：**有逐模型官方页就以页为准**（页是给人看的、更新及时）；没有页面（preview / 已下线 id）才用 `models.list`。
+两者冲突时同样取页，并在 `overrides.json` 的 `note` 里写明冲突与取舍。定价页里的限定语不要当上下文上限读——
+例如 Anthropic 定价表的 `Claude Haiku 5.5 (for prompts up to 100,000 tokens)` 是**价格档**，
+其上下文是 1M（Models overview 与逐模型页一致）。
+
 ### 公开仓库的边界
 
 本仓库是**公开**的，只放牌价，不放任何采购/结算信息：
@@ -371,7 +387,8 @@ python -m tools.model_sync.validate \
 python -m tools.ops.compare_snapshot raw/cheaperinference-20261023-full.json
 ```
 
-当前差异概况：命中 52 / 未命中 17，50 处字段不一致（上下文 18、最大输出 22、reasoning 4、图像输入 6）。
+当前差异概况：命中 52 / 未命中 17，48 处字段不一致（上下文 17、最大输出 21、reasoning 4、图像输入 6）。
+剩余差异基本都是聚合站口径（如它把 long-decode 上限、或 0.9× 折算值当成 `max_output`），以官方文档为准，不必反向对齐。
 
 抓取脚本（`fetch_cheaperinference.py` / `merge_cheaperinference.py`）未随本次拆分保留；
 `raw/` 里的快照是历史抓取结果，需要更新时按下方规则人工重跑并核对。

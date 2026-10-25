@@ -654,7 +654,7 @@
         "image"
       ],
       "context_length": 65536,
-      "max_output_tokens": 58982,
+      "max_output_tokens": 65536,
       "is_free": false,
       "endpoints": null,
       "lifecycle": "",
@@ -756,7 +756,7 @@
         "text"
       ],
       "context_length": 1048576,
-      "max_output_tokens": 943718,
+      "max_output_tokens": 65536,
       "is_free": false,
       "endpoints": null,
       "lifecycle": "ga",
@@ -786,7 +786,7 @@
         "text"
       ],
       "context_length": 262144,
-      "max_output_tokens": 235929,
+      "max_output_tokens": 32768,
       "is_free": true,
       "endpoints": null,
       "lifecycle": "",
@@ -815,7 +815,7 @@
         "text"
       ],
       "context_length": 262144,
-      "max_output_tokens": 16384,
+      "max_output_tokens": 32768,
       "is_free": true,
       "endpoints": null,
       "lifecycle": "",
@@ -2034,8 +2034,8 @@
         "text",
         "image"
       ],
-      "context_length": 65536,
-      "max_output_tokens": 58982,
+      "context_length": 131072,
+      "max_output_tokens": 32768,
       "is_free": false,
       "endpoints": null,
       "lifecycle": "ga",

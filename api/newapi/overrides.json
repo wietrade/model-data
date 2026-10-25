@@ -136,10 +136,40 @@
     },
     {
       "model_name": "gemini-4-argon",
-      "note": "第二轮官方核实（https://ai.google.dev/gemini-api/docs/models，2026-10-25 复核）。",
+      "note": "官方模型页 https://ai.google.dev/gemini-api/docs/models/gemini-4-argon（2026-10-26 复核）：Context window 1,048,576（输入输出统一），Max output 65,536（默认同步；long decode 可到 1,048,576）。原先的 943,718 来自 openrouter，不是官方口径。",
       "fields": {
         "lifecycle": "ga",
-        "context_length": 1048576
+        "context_length": 1048576,
+        "max_output_tokens": 65536
+      }
+    },
+    {
+      "model_name": "gemini-nano-banana-2.1",
+      "note": "官方模型页 https://ai.google.dev/gemini-api/docs/models/gemini-nano-banana-2.1（2026-10-26 复核）：Input token limit 131,072 / Output token limit 32,768。models.list 的 inputTokenLimit 报 65,536，与逐模型页冲突，采信逐模型页；原 58,982 是 openrouter 的 0.9× 折算值。",
+      "fields": {
+        "context_length": 131072,
+        "max_output_tokens": 32768
+      }
+    },
+    {
+      "model_name": "gemini-3.1-flash-image-preview",
+      "note": "官方 models.list（2026-10-26）：inputTokenLimit 65,536 / outputTokenLimit 65,536，与 models.dev 一致；该 id 无独立模型页（404），故采信 API。原 58,982 是 openrouter 的 0.9× 折算值。",
+      "fields": {
+        "max_output_tokens": 65536
+      }
+    },
+    {
+      "model_name": "gemma-4-26b-a4b-it:free",
+      "note": "官方 models.list（2026-10-26）：inputTokenLimit 262,144 / outputTokenLimit 32,768，与 models.dev 一致；原 235,929 来自 openrouter。该 id 无独立模型页（404）。",
+      "fields": {
+        "max_output_tokens": 32768
+      }
+    },
+    {
+      "model_name": "gemma-4-31b-it:free",
+      "note": "官方 models.list（2026-10-26）：inputTokenLimit 262,144 / outputTokenLimit 32,768，与 models.dev 一致；原 16,384 来自 openrouter。该 id 无独立模型页（404）。",
+      "fields": {
+        "max_output_tokens": 32768
       }
     },
     {
