@@ -272,15 +272,15 @@
       "currency": "USD",
       "unit": "per_1m_tokens",
       "source_url": "https://platform.claude.com/docs/en/about-claude/pricing",
-      "retrieved_at": "2026-10-25T18:40:00+08:00",
+      "retrieved_at": "2026-10-26T10:00:00+08:00",
       "confidence": "high",
       "input": 2.0,
       "output": 10.0,
-      "cache_read": 0.2,
+      "cache_read": 0.1,
       "cache_write": 2.5,
       "cache_write_1h": 4.0,
       "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 2 + c * 10 + cr * 0.2 + cc * 2.5 + cc1h * 4)"
+      "billing_expr": "tier(\"standard\", p * 2 + c * 10 + cr * 0.1 + cc * 2.5 + cc1h * 4)"
     },
     {
       "model_name": "deepseek-flash",
