@@ -1,0 +1,395 @@
+{
+  "version": 1,
+  "_comment": "人工核对的权威值，优先级高于所有自动源。用于解决源冲突或补充源缺 口；请在 note 里写清依据与核对日期。excluded 里的模型不会被发布，即使聚合源仍然列出。",
+  "models": [
+    {
+      "model_name": "gemini-3-pro-image",
+      "note": "官方模型页 ai.google.dev/gemini-api/docs/models/gemini-3-pro-image（2026-09-08 更新）：输入 token 上限 65,536，输出 32,768；官方价格表 >200K 档对本模型不可达。",
+      "fields": {
+        "context_length": 65536,
+        "max_output_tokens": 32768,
+        "lifecycle": "ga"
+      }
+    },
+    {
+      "model_name": "gemini-3-pro-image-preview",
+      "note": "官方模型页 ai.google.dev/gemini-api/docs/models/gemini-3-pro-image（2026-09-08 更新）：输入 token 上限 65,536，输出 32,768；官方价格表 >200K 档对本模型不可达。",
+      "fields": {
+        "context_length": 65536,
+        "max_output_tokens": 32768
+      }
+    },
+    {
+      "model_name": "chatgpt-image-latest",
+      "note": "OpenAI 模型页（developers.openai.com/api/docs/models/chatgpt-image-latest，2026-10-25 复核）：Status=Deprecated，官方建议改用 gpt-image-2.5-sunburst；输入 text/image，输出 image/text；官方未公布该模型的 token 上下文/输出上限。",
+      "fields": {
+        "capabilities": [
+          "image_generation",
+          "vision"
+        ],
+        "output_modalities": [
+          "image",
+          "text"
+        ],
+        "tags": "已弃用",
+        "lifecycle": "deprecated"
+      }
+    },
+    {
+      "model_name": "claude-haiku-4-5",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "fields": {
+        "lifecycle": "legacy",
+        "knowledge_cutoff": "2025-02",
+        "release_date": "2025-10-15"
+      }
+    },
+    {
+      "model_name": "claude-haiku-4-5-20251001",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "fields": {
+        "lifecycle": "legacy",
+        "knowledge_cutoff": "2025-02",
+        "release_date": "2025-10-15"
+      }
+    },
+    {
+      "model_name": "claude-fable-5",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "fields": {
+        "lifecycle": "legacy"
+      }
+    },
+    {
+      "model_name": "claude-opus-5",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "fields": {
+        "lifecycle": "legacy"
+      }
+    },
+    {
+      "model_name": "claude-opus-4-8",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "fields": {
+        "lifecycle": "legacy"
+      }
+    },
+    {
+      "model_name": "claude-opus-4.5",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "fields": {
+        "lifecycle": "legacy"
+      }
+    },
+    {
+      "model_name": "claude-opus-4.6",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "fields": {
+        "lifecycle": "legacy"
+      }
+    },
+    {
+      "model_name": "claude-opus-4.7",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "fields": {
+        "lifecycle": "legacy"
+      }
+    },
+    {
+      "model_name": "claude-sonnet-5",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "fields": {
+        "lifecycle": "legacy"
+      }
+    },
+    {
+      "model_name": "claude-fable-5-1",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "fields": {
+        "lifecycle": "ga",
+        "knowledge_cutoff": "2026-06"
+      }
+    },
+    {
+      "model_name": "claude-opus-5-5",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "fields": {
+        "lifecycle": "ga",
+        "knowledge_cutoff": "2026-06"
+      }
+    },
+    {
+      "model_name": "claude-sonnet-5-5",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "fields": {
+        "lifecycle": "ga",
+        "knowledge_cutoff": "2026-06"
+      }
+    },
+    {
+      "model_name": "claude-haiku-5-5",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "fields": {
+        "lifecycle": "ga",
+        "knowledge_cutoff": "2026-06"
+      }
+    },
+    {
+      "model_name": "gemini-4-argon",
+      "note": "第二轮官方核实（https://ai.google.dev/gemini-api/docs/models，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga",
+        "context_length": 1048576
+      }
+    },
+    {
+      "model_name": "gemini-3.1-flash-image",
+      "note": "第二轮官方核实（https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-image，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga"
+      }
+    },
+    {
+      "model_name": "grok-4.7",
+      "note": "第二轮官方核实（https://docs.x.ai/developers/grok-4-7，2026-10-25 复核）。 第三轮核实：docs.x.ai/developers/models/grok-4.7 列为 frontier/Latest 现役模型。",
+      "fields": {
+        "context_length": 500000,
+        "knowledge_cutoff": "2026-05",
+        "lifecycle": "ga"
+      }
+    },
+    {
+      "model_name": "deepseek-flash",
+      "note": "第二轮官方核实（https://api-docs.deepseek.com/zh-cn/quick_start/pricing，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga",
+        "release_date": "2026-09-10",
+        "context_length": 1000000,
+        "max_output_tokens": 384000
+      }
+    },
+    {
+      "model_name": "deepseek-v4-pro",
+      "note": "第二轮官方核实（https://api-docs.deepseek.com/zh-cn/updates，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga",
+        "release_date": "2026-08-13",
+        "context_length": 1000000,
+        "max_output_tokens": 384000
+      }
+    },
+    {
+      "model_name": "deepseek-v4.1-flash-1017",
+      "note": "第二轮官方核实（https://api-docs.deepseek.com/zh-cn/updates，2026-10-25 复核）。 与 deepseek-flash 同为 DeepSeek-V4.1-Flash-1017 的规格：上下文 1M、最大输出 384K（api-docs.deepseek.com/quick_start/pricing）。",
+      "fields": {
+        "lifecycle": "ga",
+        "release_date": "2026-10-17",
+        "context_length": 1000000,
+        "max_output_tokens": 384000
+      }
+    },
+    {
+      "model_name": "kimi-k3",
+      "note": "第二轮官方核实（https://platform.kimi.com/docs/changelog/index.md，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga",
+        "context_length": 1048576
+      }
+    },
+    {
+      "model_name": "glm-5",
+      "note": "第二轮官方核实（https://docs.bigmodel.cn/cn/update/new-releases.md，2026-10-25 复核）。",
+      "fields": {
+        "release_date": "2026-02-12"
+      }
+    },
+    {
+      "model_name": "MiniMax-M3",
+      "note": "第二轮官方核实（https://platform.minimaxi.com/docs/faq/models.md，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga",
+        "release_date": "2026-06-01"
+      }
+    },
+    {
+      "model_name": "minimax-m3.1-flash",
+      "note": "第二轮官方核实（https://platform.minimaxi.com/docs/faq/models.md，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga",
+        "release_date": "2026-10-19"
+      }
+    },
+    {
+      "model_name": "qwen3.8-flash",
+      "note": "第二轮官方核实（https://help.aliyun.com/zh/model-studio/newly-released-models，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga",
+        "release_date": "2026-08-26"
+      }
+    },
+    {
+      "model_name": "gpt-oss-120b",
+      "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-oss-120b，2026-10-25 复核）。",
+      "fields": {
+        "context_length": 131072,
+        "max_output_tokens": 131072,
+        "knowledge_cutoff": "2024-06"
+      }
+    },
+    {
+      "model_name": "gpt-5.4",
+      "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-5.4.md，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga",
+        "release_date": "2026-03-05",
+        "knowledge_cutoff": "2025-08",
+        "context_length": 1050000,
+        "max_output_tokens": 128000
+      }
+    },
+    {
+      "model_name": "gpt-5.5",
+      "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-5.5.md，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga",
+        "release_date": "2026-04-23",
+        "knowledge_cutoff": "2025-12",
+        "context_length": 1050000,
+        "max_output_tokens": 128000
+      }
+    },
+    {
+      "model_name": "gpt-5.6-luna",
+      "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-5.6-luna.md，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga",
+        "knowledge_cutoff": "2026-02",
+        "context_length": 1050000,
+        "max_output_tokens": 128000
+      }
+    },
+    {
+      "model_name": "gpt-5.6-sol",
+      "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-5.6-sol.md，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga",
+        "knowledge_cutoff": "2026-02",
+        "context_length": 1050000,
+        "max_output_tokens": 128000
+      }
+    },
+    {
+      "model_name": "gpt-5.6-terra",
+      "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-5.6-terra.md，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga",
+        "knowledge_cutoff": "2026-02",
+        "context_length": 1050000,
+        "max_output_tokens": 128000
+      }
+    },
+    {
+      "model_name": "gpt-6-luna",
+      "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-6-luna.md，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga",
+        "knowledge_cutoff": "2026-05",
+        "context_length": 1050000,
+        "max_output_tokens": 128000
+      }
+    },
+    {
+      "model_name": "gpt-6-sol",
+      "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-6-sol.md，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga",
+        "knowledge_cutoff": "2026-04",
+        "context_length": 1050000,
+        "max_output_tokens": 128000
+      }
+    },
+    {
+      "model_name": "gpt-6-astra",
+      "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-6-astra.md，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga",
+        "knowledge_cutoff": "2026-04",
+        "context_length": 1050000,
+        "max_output_tokens": 128000
+      }
+    },
+    {
+      "model_name": "gpt-6.1-sol",
+      "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-6.1-sol.md，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga",
+        "knowledge_cutoff": "2026-04",
+        "context_length": 1050000,
+        "max_output_tokens": 128000
+      }
+    },
+    {
+      "model_name": "gpt-image-2.5-sunburst",
+      "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-image-2.5-sunburst.md，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga",
+        "release_date": "2026-09-08"
+      }
+    },
+    {
+      "model_name": "gpt-image-2.5-sunburst-2026-09-08",
+      "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-image-2.5-sunburst.md，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga",
+        "release_date": "2026-09-08"
+      }
+    },
+    {
+      "model_name": "lfm-2.5-2.6b:free",
+      "note": "第三轮核实：docs.liquid.ai 规格 131K 上下文；发布日期 2026-08-04。",
+      "fields": {
+        "context_length": 131072,
+        "release_date": "2026-08-04"
+      }
+    },
+    {
+      "model_name": "dots-3-note-preview:free",
+      "note": "第三轮核实：HF dots-studio/dots3-note-prev，集合更新日 2026-08-14；官方写 512K 上下文（SGLang 配置 524288），保留 524288 不做改动。",
+      "fields": {
+        "release_date": "2026-08-14"
+      }
+    },
+    {
+      "model_name": "nemotron-3.5-content-safety:free",
+      "note": "第三轮核实：NVIDIA 发布公告日期。",
+      "fields": {
+        "release_date": "2026-06-02"
+      }
+    },
+    {
+      "model_name": "inkling:free",
+      "note": "第三轮核实：Thinking Machines Lab 发布日。",
+      "fields": {
+        "release_date": "2026-07-15"
+      }
+    },
+    {
+      "model_name": "xing4.0-29b-a4b:free",
+      "note": "第三轮核实：中国电信星辰发布日。",
+      "fields": {
+        "release_date": "2026-09-17"
+      }
+    },
+    {
+      "model_name": "glm-5.3-prime",
+      "note": "第三轮核实：智谱官方模型概览无 glm-5.3-prime（官方加速变体为 GLM-5.3-FlashX）→ 判定为平台/转售命名，lifecycle 等字段永久留空，不再进入核实队列。",
+      "fields": {},
+      "platform_only": true
+    }
+  ],
+  "excluded": [
+    "Qwen3-235B-A22B-Thinking-2507",
+    "Qwen3-Coder-480B-A35B-Instruct-FP8",
+    "free"
+  ]
+}

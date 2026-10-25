@@ -1,0 +1,136 @@
+name: sync-model-metadata
+
+on:
+  push:
+    branches: [main]
+    # only the pipeline itself triggers a run; metadata commits made by the
+    # action are excluded so it cannot loop
+    paths:
+      - '.github/workflows/sync-model-metadata.yml'
+      - 'tools/model_sync/**'
+  schedule:
+    # daily at 02:17 UTC
+    - cron: '17 2 * * *'
+  workflow_dispatch:
+    inputs:
+      allow_new:
+        description: 'Also create newly released models'
+        type: boolean
+        default: false
+      min_release_date:
+        description: 'With allow_new: ignore models released before this date (YYYY-MM-DD)'
+        type: string
+        default: ''
+      direct_commit:
+        description: 'Commit straight to the default branch instead of opening a PR'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-model-metadata
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Unit tests
+        run: python -m unittest discover -s tools/model_sync/tests -t . -v
+
+      - name: Sync metadata and prices
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -euo pipefail
+          flags=""
+          if [ "${{ inputs.allow_new }}" = "true" ]; then
+            flags="--allow-new"
+            if [ -n "${{ inputs.min_release_date }}" ]; then
+              flags="$flags --min-release-date ${{ inputs.min_release_date }}"
+            fi
+          fi
+          python -m tools.model_sync.sync_models --only metadata --official $flags
+          python -m tools.model_sync.sync_models --only pricing
+
+      - name: Validate metadata and pricing
+        run: python -m tools.model_sync.validate
+
+      - name: Detect changes
+        id: diff
+        run: |
+          # git diff misses newly created files (pricing.json on first run)
+          if [ -z "$(git status --porcelain -- api)" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git --no-pager status --short -- metadata
+            git --no-pager diff --stat -- api
+          fi
+
+      - name: Commit directly
+        if: steps.diff.outputs.changed == 'true' && inputs.direct_commit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add api
+          git commit -m "chore(metadata): sync official model metadata and prices"
+          git push origin "HEAD:${{ github.event.repository.default_branch }}"
+
+      - name: Open or update pull request
+        if: steps.diff.outputs.changed == 'true' && !inputs.direct_commit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          branch="chore/model-metadata-sync"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$branch"
+          git add api
+          git commit -m "chore(metadata): sync official model metadata and prices"
+          git push --force origin "$branch"
+
+          cat > /tmp/pr-body.md <<'BODY'
+          自动同步（厂商 API / models.dev / OpenRouter，配置见 api/newapi/sync.config.json）。
+
+          请 review：
+          - api/newapi/models.json：上下文、最大输出、模态、能力的刷新；新增模型需确认后再合并。
+          - api/newapi/pricing.json：价格为参考价快照：有官方条目的模型用厂商牌价（`price_kind: vendor_official`），其余才是聚合源（`aggregator_reference`）；合并本 PR 不会自动改价。
+
+          合并后到后台「同步资料」预览并应用，才会写入模型库。
+          BODY
+
+          if [ -n "$(gh pr list --head "$branch" --state open --json number --jq '.[0].number // empty')" ]; then
+            echo "PR already open, branch updated."
+          elif gh pr create --base "${{ github.event.repository.default_branch }}" --head "$branch" \
+              --title "chore(metadata): sync official model metadata and prices" \
+              --body-file /tmp/pr-body.md; then
+            echo "PR created."
+          else
+            # "Allow GitHub Actions to create and approve pull requests" is off.
+            # Fall back to a direct commit so unattended updates keep working.
+            echo "::warning::pull request creation not permitted; committing directly to ${{ github.event.repository.default_branch }}"
+            git push origin "HEAD:${{ github.event.repository.default_branch }}"
+            {
+              echo "### metadata sync"
+              echo "PR creation is not permitted for this repository, so the update was committed directly."
+              echo "Enable Settings - Actions - General - Allow GitHub Actions to create and approve pull requests to restore review."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi

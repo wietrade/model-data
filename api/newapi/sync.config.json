@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "_comment": "本仓库即官方元数据库：多源合并 -> 人工覆盖 -> 发布到 GitHub，new-api 从这里同步。",
+  "vendors": [
+    "anthropic",
+    "openai",
+    "google",
+    "deepseek",
+    "moonshotai",
+    "z-ai"
+  ],
+  "sources": [
+    "models.dev",
+    "openrouter"
+  ],
+  "tie_break": "openrouter",
+  "official": true,
+  "allow_new": false,
+  "allow_new_models": [],
+  "overrides": "api/newapi/overrides.json"
+}
