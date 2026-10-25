@@ -465,7 +465,8 @@
       "capabilities": [
         "reasoning",
         "tools",
-        "structured_output"
+        "structured_output",
+        "cache_implicit"
       ],
       "input_modalities": [
         "text",
@@ -474,12 +475,12 @@
       "output_modalities": [
         "text"
       ],
-      "context_length": 1000000,
-      "max_output_tokens": 384000,
+      "context_length": 1048576,
+      "max_output_tokens": 943718,
       "is_free": false,
       "endpoints": null,
       "lifecycle": "ga",
-      "release_date": "2026-10-17",
+      "release_date": "2026-09-10",
       "knowledge_cutoff": ""
     },
     {
@@ -687,11 +688,11 @@
         "text"
       ],
       "context_length": 1048576,
-      "max_output_tokens": 943718,
+      "max_output_tokens": 65536,
       "is_free": false,
       "endpoints": null,
       "lifecycle": "ga",
-      "release_date": "2026-10-13",
+      "release_date": "2026-09-02",
       "knowledge_cutoff": ""
     },
     {
@@ -966,7 +967,7 @@
       "is_free": false,
       "endpoints": null,
       "lifecycle": "ga",
-      "release_date": "2026-07-16",
+      "release_date": "2026-10-23",
       "knowledge_cutoff": ""
     },
     {
@@ -1666,12 +1667,12 @@
       "output_modalities": [
         "text"
       ],
-      "context_length": 1000000,
-      "max_output_tokens": 131072,
+      "context_length": 1048576,
+      "max_output_tokens": 943718,
       "is_free": false,
       "endpoints": null,
       "lifecycle": "",
-      "release_date": "2026-09-23",
+      "release_date": "2026-08-18",
       "knowledge_cutoff": ""
     },
     {
@@ -1689,17 +1690,19 @@
         "cache_implicit"
       ],
       "input_modalities": [
-        "text"
+        "text",
+        "image",
+        "video"
       ],
       "output_modalities": [
         "text"
       ],
-      "context_length": 1000000,
-      "max_output_tokens": 131072,
+      "context_length": 1048576,
+      "max_output_tokens": 943717,
       "is_free": false,
       "endpoints": null,
       "lifecycle": "",
-      "release_date": "2026-09-23",
+      "release_date": "2026-08-26",
       "knowledge_cutoff": ""
     },
     {
@@ -1847,7 +1850,7 @@
       "is_free": false,
       "endpoints": null,
       "lifecycle": "ga",
-      "release_date": "",
+      "release_date": "2026-04-21",
       "knowledge_cutoff": ""
     },
     {
@@ -2018,22 +2021,25 @@
       "status": 1,
       "tags": "图像生成",
       "capabilities": [
-        "image_generation",
-        "vision"
+        "reasoning",
+        "tools",
+        "structured_output",
+        "web_search"
       ],
       "input_modalities": [
         "text",
         "image"
       ],
       "output_modalities": [
+        "text",
         "image"
       ],
-      "context_length": 0,
-      "max_output_tokens": 0,
+      "context_length": 65536,
+      "max_output_tokens": 58982,
       "is_free": false,
       "endpoints": null,
       "lifecycle": "ga",
-      "release_date": "",
+      "release_date": "2026-10-06",
       "knowledge_cutoff": ""
     }
   ]

@@ -457,7 +457,7 @@
     {
       "model_name": "deepseek-v4.1-flash",
       "vendor_name": "DeepSeek",
-      "description": "deepseek-v4.1-flash (provided via upstream)",
+      "description": "deepseek-v4.1-flash",
       "icon": "DeepSeek.Color",
       "name_rule": 0,
       "status": 1,
@@ -465,7 +465,8 @@
       "capabilities": [
         "reasoning",
         "tools",
-        "structured_output"
+        "structured_output",
+        "cache_implicit"
       ],
       "input_modalities": [
         "text",
@@ -474,12 +475,12 @@
       "output_modalities": [
         "text"
       ],
-      "context_length": 1000000,
-      "max_output_tokens": 384000,
+      "context_length": 1048576,
+      "max_output_tokens": 943718,
       "is_free": false,
       "endpoints": null,
       "lifecycle": "ga",
-      "release_date": "2026-10-17",
+      "release_date": "2026-09-10",
       "knowledge_cutoff": ""
     },
     {
@@ -663,7 +664,7 @@
     {
       "model_name": "gemini-3.8-flash",
       "vendor_name": "Google",
-      "description": "gemini-3.8-flash (provided via upstream)",
+      "description": "gemini-3.8-flash",
       "icon": "Gemini.Color",
       "name_rule": 0,
       "status": 1,
@@ -687,17 +688,17 @@
         "text"
       ],
       "context_length": 1048576,
-      "max_output_tokens": 943718,
+      "max_output_tokens": 65536,
       "is_free": false,
       "endpoints": null,
       "lifecycle": "ga",
-      "release_date": "2026-10-13",
+      "release_date": "2026-09-02",
       "knowledge_cutoff": ""
     },
     {
       "model_name": "gemini-3.8-flash-tiered",
       "vendor_name": "Google",
-      "description": "gemini-3.8-flash-tiered (provided via upstream)",
+      "description": "gemini-3.8-flash-tiered",
       "icon": "Gemini.Color",
       "name_rule": 0,
       "status": 1,
@@ -942,7 +943,7 @@
     {
       "model_name": "kimi-k3.1-pro",
       "vendor_name": "Moonshot AI",
-      "description": "kimi-k3.1-pro (provided via upstream)",
+      "description": "kimi-k3.1-pro",
       "icon": "Moonshot",
       "name_rule": 0,
       "status": 1,
@@ -966,7 +967,7 @@
       "is_free": false,
       "endpoints": null,
       "lifecycle": "ga",
-      "release_date": "2026-07-16",
+      "release_date": "2026-10-23",
       "knowledge_cutoff": ""
     },
     {
@@ -1649,7 +1650,7 @@
     {
       "model_name": "glm-5.3",
       "vendor_name": "Z.AI",
-      "description": "glm-5.3 (provided via upstream)",
+      "description": "glm-5.3",
       "icon": "ZAI",
       "name_rule": 0,
       "status": 1,
@@ -1666,18 +1667,18 @@
       "output_modalities": [
         "text"
       ],
-      "context_length": 1000000,
-      "max_output_tokens": 131072,
+      "context_length": 1048576,
+      "max_output_tokens": 943718,
       "is_free": false,
       "endpoints": null,
       "lifecycle": "",
-      "release_date": "2026-09-23",
+      "release_date": "2026-08-18",
       "knowledge_cutoff": ""
     },
     {
       "model_name": "glm-5.3-flash",
       "vendor_name": "Z.AI",
-      "description": "glm-5.3-flash (provided via upstream)",
+      "description": "glm-5.3-flash",
       "icon": "ZAI",
       "name_rule": 0,
       "status": 1,
@@ -1689,17 +1690,19 @@
         "cache_implicit"
       ],
       "input_modalities": [
-        "text"
+        "text",
+        "image",
+        "video"
       ],
       "output_modalities": [
         "text"
       ],
-      "context_length": 1000000,
-      "max_output_tokens": 131072,
+      "context_length": 1048576,
+      "max_output_tokens": 943717,
       "is_free": false,
       "endpoints": null,
       "lifecycle": "",
-      "release_date": "2026-09-23",
+      "release_date": "2026-08-26",
       "knowledge_cutoff": ""
     },
     {
@@ -1733,7 +1736,7 @@
     {
       "model_name": "grok-4.5",
       "vendor_name": "xAI",
-      "description": "grok-4.5 (provided via upstream)",
+      "description": "grok-4.5",
       "icon": "Grok",
       "name_rule": 0,
       "status": 1,
@@ -1764,7 +1767,7 @@
     {
       "model_name": "grok-4.6",
       "vendor_name": "xAI",
-      "description": "grok-4.6 (provided via upstream)",
+      "description": "grok-4.6",
       "icon": "Grok",
       "name_rule": 0,
       "status": 1,
@@ -1826,7 +1829,7 @@
     {
       "model_name": "gpt-image-2",
       "vendor_name": "OpenAI",
-      "description": "gpt-image-2 image generation model (served via upstream, billed per image)",
+      "description": "gpt-image-2",
       "icon": "OpenAI",
       "name_rule": 0,
       "status": 1,
@@ -1847,13 +1850,13 @@
       "is_free": false,
       "endpoints": null,
       "lifecycle": "ga",
-      "release_date": "",
+      "release_date": "2026-04-21",
       "knowledge_cutoff": ""
     },
     {
       "model_name": "gpt-image-2.5",
       "vendor_name": "OpenAI",
-      "description": "gpt-image-2.5 image generation model (served via upstream, billed per image)",
+      "description": "gpt-image-2.5",
       "icon": "OpenAI",
       "name_rule": 0,
       "status": 1,
@@ -1880,7 +1883,7 @@
     {
       "model_name": "gpt-image-2.5-flare",
       "vendor_name": "OpenAI",
-      "description": "gpt-image-2.5-flare image generation model (served via upstream, billed per image)",
+      "description": "gpt-image-2.5-flare",
       "icon": "OpenAI",
       "name_rule": 0,
       "status": 1,
@@ -1907,7 +1910,7 @@
     {
       "model_name": "gpt-image-medium",
       "vendor_name": "OpenAI",
-      "description": "gpt-image-medium image generation model (served via upstream, billed per image)",
+      "description": "gpt-image-medium",
       "icon": "OpenAI",
       "name_rule": 0,
       "status": 1,
@@ -1934,7 +1937,7 @@
     {
       "model_name": "grok-imagine-image",
       "vendor_name": "xAI",
-      "description": "grok-imagine-image image generation model (served via upstream, billed per image)",
+      "description": "grok-imagine-image",
       "icon": "Grok",
       "name_rule": 0,
       "status": 1,
@@ -1960,7 +1963,7 @@
     {
       "model_name": "grok-imagine-image-2.0",
       "vendor_name": "xAI",
-      "description": "grok-imagine-image-2.0 image generation model (served via upstream, billed per image)",
+      "description": "grok-imagine-image-2.0",
       "icon": "Grok",
       "name_rule": 0,
       "status": 1,
@@ -1986,7 +1989,7 @@
     {
       "model_name": "grok-imagine-image-quality",
       "vendor_name": "xAI",
-      "description": "grok-imagine-image-quality image generation model (served via upstream, billed per image)",
+      "description": "grok-imagine-image-quality",
       "icon": "Grok",
       "name_rule": 0,
       "status": 1,
@@ -2012,28 +2015,31 @@
     {
       "model_name": "gemini-nano-banana-2.1",
       "vendor_name": "Google",
-      "description": "Gemini Nano Banana 2.1 image generation model (served via upstream, native Gemini protocol)",
+      "description": "gemini-nano-banana-2.1",
       "icon": "Gemini.Color",
       "name_rule": 0,
       "status": 1,
       "tags": "图像生成",
       "capabilities": [
-        "image_generation",
-        "vision"
+        "reasoning",
+        "tools",
+        "structured_output",
+        "web_search"
       ],
       "input_modalities": [
         "text",
         "image"
       ],
       "output_modalities": [
+        "text",
         "image"
       ],
-      "context_length": 0,
-      "max_output_tokens": 0,
+      "context_length": 65536,
+      "max_output_tokens": 58982,
       "is_free": false,
       "endpoints": null,
       "lifecycle": "ga",
-      "release_date": "",
+      "release_date": "2026-10-06",
       "knowledge_cutoff": ""
     }
   ]
