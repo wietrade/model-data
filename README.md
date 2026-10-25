@@ -18,10 +18,14 @@ api/newapi/           models.json / vendors.json / pricing.json / pricing.offici
                       overrides.json / sync.config.json
 api/i18n/{zh,en}/     语言包（模型与供应商描述）
 raw/                  未合并的第三方抓取快照
+docs/                 official-sources.md（官方数据源速查）
 tools/model_sync/     同步、表达式生成、校验（纯 Python，无三方依赖）
 tools/ops/            价格维护辅助脚本（一次性脚本、upcoming 价格转正）
 .github/workflows/    每日自动同步
 ```
+
+> 去哪里查官方数据、取哪几个字段、有哪些坑：见 [`docs/official-sources.md`](docs/official-sources.md)。
+> 当前待办：见 [`TODO.md`](TODO.md)。
 
 ## 快速开始
 
