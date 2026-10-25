@@ -336,7 +336,17 @@ python -m tools.model_sync.validate \
 
 | 文件 | 来源 | 内容 |
 |:---|:---|:---|
-| `cheaperinference.json` | `platform.cheaperinference.com/markets` | 模型事实字段（上下文、最大输出、模态、能力标记），**已剔除全部价格字段** |
+| `cheaperinference.json` | `platform.cheaperinference.com/markets`（2026-10-23，376 条） | 模型事实字段（上下文、最大输出、模态、能力标记），**已剔除全部价格字段** |
+| `cheaperinference-20261023-full.json` | 同上（同日全量抓取，500 条） | 同上，另含 `detail_*` 原文（端点数、上下文/输出原文、支持参数），价格字段同样已剔除 |
+
+快照只作**旁证**：第三方聚合站的口径与厂商官方不同（例如它记的是对外零售价、`vision` 只表示能否喂图），
+不能直接并入目录。用下面的脚本生成差异清单，再对照官方文档决定改哪边：
+
+```bash
+python -m tools.ops.compare_snapshot raw/cheaperinference-20261023-full.json
+```
+
+当前差异概况：命中 52 / 未命中 17，53 处字段不一致（上下文 19、最大输出 22、模态与能力若干）。
 
 抓取脚本（`fetch_cheaperinference.py` / `merge_cheaperinference.py`）未随本次拆分保留；
 `raw/` 里的快照是历史抓取结果，需要更新时按下方规则人工重跑并核对。
