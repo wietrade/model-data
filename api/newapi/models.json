@@ -688,7 +688,7 @@
         "text"
       ],
       "context_length": 1048576,
-      "max_output_tokens": 943718,
+      "max_output_tokens": 65536,
       "is_free": false,
       "endpoints": null,
       "lifecycle": "ga",
