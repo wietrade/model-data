@@ -255,18 +255,48 @@ def _apply_values(record, values, model_key, changes, skip, skipped=None):
             record[field] = new
 
 
+def _official_agreement(candidates, field):
+    """官方源内部一致时返回 ``(value, source)``，否则 ``None``。
+
+    官方源（``official:<vendor>``）只在少数事实字段上有发言权，但那是
+    「运行时真正强制的值」，所以和聚合源冲突时以它为准；官方源自己互相
+    矛盾时不敢猜，交回上游按冲突处理。
+    """
+    found = {}
+    for candidate in candidates:
+        if not str(candidate.source).startswith("official:"):
+            continue
+        value = _meaningful(field, _incoming_values(candidate).get(field))
+        if value is None:
+            continue
+        found[value] = candidate.source
+    if len(found) == 1:
+        return next(iter(found.items()))
+    return None
+
+
 def resolve_values(candidates, tie_break=None, model_name=""):
     """Resolve one model's fact values from all candidate records.
 
-    Agreement wins; when sources disagree, ``tie_break`` (usually
-    ``openrouter``, whose limits are the ones actually enforced in serving)
-    provides the value and the field is reported as tie-broken. Conflicts with
-    no usable tie-break value stay unknown.
+    优先级：**各方一致 > 官方源（``official:*``，需官方内部一致）
+    > ``tie_break``（默认 openrouter）> 记为未解决**。
+
+    官方优先于聚合源，是因为 ``context_length`` / ``max_output_tokens``
+    这类上限由厂商 API 真正强制；聚合站经常把 0.9× 折算值或思考预算
+    塞进同一个字段。
     """
     if len(candidates) == 1:
         return _incoming_values(candidates[0]), set(), {}
+
     values, conflicts = agreed_values(candidates)
-    tie_broken = {}
+    resolved = {}
+
+    for field in sorted(conflicts):
+        official = _official_agreement(candidates, field)
+        if official is not None:
+            values[field], source = official
+            resolved[field] = source
+
     if tie_break:
         def rank(candidate):
             if candidate.model_name == model_name:
@@ -278,21 +308,19 @@ def resolve_values(candidates, tie_break=None, model_name=""):
                 return 1
             return 2
 
-        prepared = [
-            (c, _incoming_values(c))
-            for c in sorted(candidates, key=rank)
-        ]
-        for field in sorted(conflicts):
+        prepared = [(c, _incoming_values(c)) for c in sorted(candidates, key=rank)]
+        for field in sorted(conflicts - set(resolved)):
             for candidate, candidate_values in prepared:
                 if candidate.source != tie_break:
                     continue
                 value = _meaningful(field, candidate_values[field])
                 if value is not None:
                     values[field] = value
-                    tie_broken[field] = tie_break
+                    resolved[field] = tie_break
                     break
-        conflicts -= set(tie_broken)
-    return values, conflicts, tie_broken
+
+    conflicts -= set(resolved)
+    return values, conflicts, resolved
 
 
 def merge_metadata(existing, index, allow_new=False, min_release_date="",

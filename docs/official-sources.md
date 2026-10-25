@@ -108,3 +108,47 @@ python -m tools.ops.harvest_official --fetch --apply
 4. `python -m tools.model_sync.sync_models --only metadata`（或 `--only pricing`）；
 5. `python -m tools.model_sync.validate`，然后 `python -m unittest discover -s tools/model_sync/tests -t .`；
 6. 涉及结算价的改动**只走私有 `billing_basis.json`**，导出后必须与线上 `billing_setting.billing_expr` 逐条比对，确认无意外变化再落库。
+
+### 每天自动做的事（workflow）
+
+`sync-model-metadata.yml` 的顺序是：
+
+1. **Align metadata with vendor pages** — `harvest_official --fetch --apply`：把逐模型页的
+   `context_length` / `max_output_tokens` 写进 `overrides.json`；页面与 `models.list` 冲突时**钉住页面值**；
+2. **Sync** — `sync_models --only metadata --official` + `--only pricing`：多源合并，官方值赢冲突；
+3. **Validate** → **Cross-check vendor pricing pages**（只出报告）；
+4. 有变化就开 PR（`api/` 下任何文件，含 `overrides.json`）。
+
+### 多源合并的优先级
+
+```
+overrides.json（人工/官方页已核对）
+        ↓ 高于
+官方逐模型页 / 官方 API（official:*，需官方内部一致）
+        ↓ 高于
+聚合源（models.dev、openrouter；冲突时用 sync.config.json 的 tie_break）
+```
+
+- 官方源之间互相矛盾时**不猜**，回落到 `tie_break`，并把字段标为未解决写入日志；
+- 官方值与聚合源冲突且没有 override 时，官方直接赢（`resolve_values` 的 `_official_agreement`）；
+- 所以「页面与 API 不一致」的模型必须靠 `overrides.json` 钉住页面值，否则下次同步会被 API 改回。
+
+## 五、密钥
+
+官方 API 只在「核对 / 发现新模型」时需要，都只用读权限：
+
+| 变量 | 用在哪 | 备注 |
+|:---|:---|:---|
+| `GEMINI_API_KEY` | `harvest_official`（`models.list`）、`sync_models --official` | 走 `x-goog-api-key` 头，不要 `?key=` |
+| `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` | `sync_models --official` | 只能列模型 id，不给上下文/输出上限 |
+
+- **CI**：仓库 Settings → Secrets and variables → Actions，名称与上表一致；
+- **本地**：放在**私有目录**（与仓库平级的 `model-data-private/.env.local`，不在本仓库内、也不会被 git 跟踪）：
+
+  ```bash
+  set -a; . ../model-data-private/.env.local; set +a
+  python -m tools.ops.harvest_official --fetch --check
+  ```
+
+- ⚠️ **不要把密钥写进本仓库的任何文件**（含文档、脚本、工作流）。本仓库是**公开**的，
+  一旦提交就等于泄漏，只能作废重签；密钥泄露后改历史也清不干净。

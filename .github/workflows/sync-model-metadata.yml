@@ -49,6 +49,15 @@ jobs:
       - name: Unit tests
         run: python -m unittest discover -s tools/model_sync/tests -t . -v
 
+      # 先按官方逐模型页校正元数据（写 overrides.json），再走多源合并，
+      # 这样官方值会盖过 models.dev / openrouter，且与本次同步同一个 PR。
+      # 网络失败不影响主流程：聚合源 + 现有 overrides 仍会照常运行。
+      - name: Align metadata with vendor pages
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python -m tools.ops.harvest_official --fetch --apply
+
       - name: Sync metadata and prices
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -84,13 +93,12 @@ jobs:
       - name: Detect changes
         id: diff
         run: |
-          # git diff misses newly created files (pricing.json on first run)
+          # git diff 漏掉新文件（首次生成 pricing.json）
           if [ -z "$(git status --porcelain -- api)" ]; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
-            git --no-pager status --short -- metadata
-            git --no-pager diff --stat -- api
+            git --no-pager status --short -- api
           fi
 
       - name: Commit directly
@@ -123,6 +131,7 @@ jobs:
           自动同步（厂商 API / models.dev / OpenRouter，配置见 api/newapi/sync.config.json）。
 
           请 review：
+          - api/newapi/overrides.json：按厂商**逐模型官方页**对齐的 `context_length` / `max_output_tokens`（每项带来源 URL 与核对日期）；只有逐模型页能驱动这项，`models.list` 单独有值的仅作提示。
           - api/newapi/models.json：上下文、最大输出、模态、能力的刷新；新增模型需确认后再合并。
           - api/newapi/pricing.json：价格为参考价快照：有官方条目的模型用厂商牌价（`price_kind: vendor_official`），其余才是聚合源（`aggregator_reference`）；合并本 PR 不会自动改价。
 

@@ -11,3 +11,8 @@ api/newapi/billing_basis.json
 
 # 每天生成的官方快照（可复现，需要留档时 git add -f）
 raw/official-metadata-*.json
+
+# 密钥（本地私有目录才是正确位置，这里只是双保险）
+.env
+.env.*
+*.key

@@ -189,15 +189,21 @@ models.dev              ├─► tools/model_sync ─► overrides.json ─► 
 openrouter（tie-break）  ┘
 ```
 
-- 事实字段（上下文 / 最大输出 / 模态 / 能力 / 免费标记）由多源合并；源下不一致时用
-  `api/newapi/sync.config.json` 的 `tie_break`（当前 `openrouter`）裁决，裁决结果会打印在同步日志里。
+- 事实字段（上下文 / 最大输出 / 模态 / 能力 / 免费标记）由多源合并：**官方逐模型页 > 官方 API >
+  聚合源**。官方源之间互相矛盾时不猜，回落到 `api/newapi/sync.config.json` 的 `tie_break`（当前 `openrouter`），
+  裁决结果会打印在同步日志里。
 - 人工核对过的值写入 `api/newapi/overrides.json`，优先级最高（请附官方文档链接与核对日期）。
+  官方页与 `models.list` 打架的模型靠它**钉住页面值**，否则下次同步会被 API 改回。
 - 发布地址（new-api 通过 `SYNC_UPSTREAM_BASE` 读取）：
   - `https://raw.githubusercontent.com/wietrade/model-data/main`
   - `https://cdn.jsdelivr.net/gh/wietrade/model-data@main`（约 12h 缓存）
   也可用 GitHub Pages（`https://wietrade.github.io/model-data`），目录结构一致。
 - `api/newapi/pricing.json` 只是价格快照，**不参与** new-api 自动写库；后台能直接写库的仍是“上游倍率预设”与“models.dev 价格预设”两个虚拟渠道。
-- 每日 02:17 UTC 的 GitHub Actions 会自动跑一遍并开 PR；合并前请重点看新增模型与价格涨跌。
+- 每日 02:17 UTC 的 GitHub Actions 会：按厂商逐模型页对齐元数据（写 overrides.json）→ 多源同步 →
+  校验 → 开 PR。合并前请重点看 `overrides.json` 的改动、新增模型与价格涨跌。
+- 官方 API key 只放**仓库 Secret**（`GEMINI_API_KEY` / `OPENAI_API_KEY` / `ANTHROPIC_API_KEY`）与
+  本地私有目录 `model-data-private/.env.local`，**绝不写进本仓库文件**。细节见
+  [`docs/official-sources.md`](docs/official-sources.md)。
 
 ## 价格文件
 

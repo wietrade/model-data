@@ -174,9 +174,11 @@
     },
     {
       "model_name": "gemini-3.1-flash-image",
-      "note": "第二轮官方核实（https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-image，2026-10-25 复核）。",
+      "note": "第二轮官方核实（https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-image，2026-10-25 复核）。Google 官方页核对（2026-10-26）：context_length=131072，max_output_tokens=32768。依据 https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-image?hl=en（与 models.list 冲突，取页面：页面 131072 / API 65536；页面 32768 / API 65536）",
       "fields": {
-        "lifecycle": "ga"
+        "lifecycle": "ga",
+        "context_length": 131072,
+        "max_output_tokens": 32768
       }
     },
     {
