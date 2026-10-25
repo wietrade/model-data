@@ -24,9 +24,11 @@ from pathlib import Path
 if __package__ in (None, ""):  # 允许直接 python tools/model_sync/validate.py
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
     from tools.model_sync import expr as expr_mod
+    from tools.model_sync import merge as merge_mod
     from tools.model_sync.normalize import CAPABILITY_ORDER
 else:
     from . import expr as expr_mod
+    from . import merge as merge_mod
     from .normalize import CAPABILITY_ORDER
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -297,13 +299,26 @@ def check_pricing(models, pricing, official, context_by_name, report: Report):
                     report.error(f"{name}: {field} 与官方抄录不一致（官方 {want} / 快照 {got}）")
 
 
-def check_live(pricing, live, report: Report):
-    catalog = {row["model_name"]: row.get("billing_expr") for row in pricing}
+def check_live(pricing, live, report: Report, basis=None):
+    """Compare the deployed expressions with what this checkout would produce.
+
+    公开目录里没有结算价，表达式只按牌价生成；要比对线上，必须同时给出
+    私有结算价文件（``--basis``），否则只有纯牌价模型能对上。
+    """
+    catalog = {}
+    for row in pricing:
+        source_row = dict(row)
+        if basis:
+            entry = merge_mod.basis_for(row["model_name"], basis)
+            if entry:
+                source_row["billing_basis"] = entry
+        expression, _ = expr_mod.build(source_row)
+        catalog[row["model_name"]] = expression
     drift = [name for name, value in live.items() if catalog.get(name) != value]
     if drift:
         report.error(
             f"线上生效价格与 catalog 不一致 {len(drift)} 条: {drift[:6]}"
-            "（改价必须走 scripts/ops/apply_billing.py，不要直接改库）"
+            "（改价必须走 export_billing --basis + apply_billing.py，不要直接改库）"
         )
     unknown = set(live) - set(catalog)
     if unknown:
@@ -313,6 +328,7 @@ def check_live(pricing, live, report: Report):
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="校验 metadata 与价格快照")
     parser.add_argument("--live", help="线上 billing_expr JSON（{model: expr}），用于检测漂移")
+    parser.add_argument("--basis", help="私有结算价文件；比对线上表达式时必填")
     parser.add_argument("--strict", action="store_true", help="把 WARN 也计为失败")
     args = parser.parse_args(argv)
 
@@ -332,7 +348,8 @@ def main(argv=None) -> int:
 
     if args.live:
         with open(args.live, encoding="utf-8") as handle:
-            check_live(pricing, json.load(handle), report)
+            basis_doc = merge_mod.load_billing_basis(args.basis) if args.basis else None
+            check_live(pricing, json.load(handle), report, basis_doc)
 
     print(
         f"models={len(models)} vendors={len(vendors)} pricing={len(pricing)} "

@@ -225,11 +225,6 @@ openrouter（tie-break）  ┘
 每条 `pricing.json` 记录都用 `price_kind` 标明来源。
 这样「某个转售商的最低报价」不会在无人察觉时替掉厂商牌价。
 
-优先级：**官方 > 聚合源 > 目录免费标记**。官方有条目的模型一律用官方价；聚合源（models.dev / OpenRouter）
-补官方未覆盖的模型；目录里 `is_free: true` 但两边都没有报价的模型，直接写 `0`（`price_kind: free`）。
-每条 `pricing.json` 记录都用 `price_kind` 标明来源。
-这样「某个转售商的最低报价」不会在无人察觉时替掉厂商牌价。
-
 字段语义（schema v2，USD / 每 1M tokens）：
 
 | 字段 | 含义 |
@@ -244,7 +239,7 @@ openrouter（tie-break）  ┘
 | `effective_from` / `effective_to` | 该价格的有效期（`YYYY-MM-DD`），长期价写 `null` |
 | `upcoming[]` | 已公布但尚未生效的价格（如 `gemini-4-argon` 2026-12-01 涨价） |
 | `per_image` | 按张计价；仅当没有 token 价时作为 `fixed()` 兜底，否则只供展示 |
-| `billing_mode` / `billing_expr` | 该模型实际结算用的计费表达式，由 `tools/model_sync/expr.py` 从上面的价格字段确定性生成 |
+| `billing_mode` / `billing_expr` | **按牌价**生成的计费表达式，由 `tools/model_sync/expr.py` 从上面的价格字段确定性生成。线上实际结算使用结算价重算的版本（部署机导出），与此不同 |
 | `billing_unexpressible` | 官方价里无法用引擎变量表达的收费项，逐条列出，绝不猜测 |
 | `confidence` / `quote` | 抄录置信度与官方原文片段，用于复核 |
 
@@ -279,11 +274,12 @@ LLM 的 token 价继续用上面的标量字段；**按张 / 按秒 / 按次 / �
 
 规则：
 
-- `meters[]` **不生成计费表达式**：引擎的图片费用走 `output_image` → `img_o` token 变量，
-  `input_image` 按张与 `resolution` 条件都没有可观测变量，宁可留在 `billing_unexpressible`；
+- `output_image` 计量的 `meters[]` 会生成 `tier("image", fixed(price)) * image_count`；
+  `input_image` 按张目前没有可观测变量，留在 `billing_unexpressible`；
+- `when` 只能写网关真正能读到的请求字段（`quality` / `size`），读不到的档位宁可报 `billing_unexpressible`，不猜；
 - 同一 `dim` 的多条 rate 用不同 `when` 区分，条件不得重叠；
-- token 与按张价可以并存（例如 Gemini 图像模型既有 `$120/1M image tokens`，又有按分辨率的每张价），
-  但两者各自来自官方原文，**不得互相推导覆盖**；
+- **同一行里 token 价优先于按张价**：引擎先看 `p`/`c`，所以纯按张计费的模型不能同时带 token 牌价，
+  这类模型的价格只在私有结算价里给（公开行是空价行）；
 - `meters` 只描述可直接标价的维度；没有 `meters` 的模型表示只按 token 计费。
 
 > `unresolved[]` 记录官方提到但未给出具体数值的项（例：`gpt-5.5` 高档缓存价未明确），
@@ -291,33 +287,48 @@ LLM 的 token 价继续用上面的标量字段；**按张 / 按秒 / 按次 / �
 
 ### 从数据源到线上
 
-`pricing.json` 里的 `billing_expr` 只是数据。真正生效要写进 new-api 的 options：
+`pricing.json` 里的 `billing_expr` 只是**按牌价**的表达式。线上按**结算价**计费，
+所以要在部署机上用私有 basis 导出一份 payload：
 
 ```bash
-python tools/model_sync/sync_models.py --only pricing
-python -m scripts.model_sync.export_billing -o /tmp/billing.json
-python scripts/ops/apply_billing.py   # 在 new-api 仓库执行 -i /tmp/billing.json --dry-run
-python scripts/ops/apply_billing.py   # 在 new-api 仓库执行 -i /tmp/billing.json
-systemctl restart new-api
+# 1. 改完元数据/牌价后先自检（CI 也会跑）
+python -m tools.model_sync.validate
+python -m unittest discover -s tools/model_sync/tests -t .
+
+# 2. 在部署机上导出（--basis 指向私有结算价文件）
+python -m tools.model_sync.export_billing \
+    --basis /opt/model-data-private/billing_basis.json -o /tmp/billing.json
 ```
 
-模型的增删改名同理，见 `scripts/ops/README.md`。每一步都可重复执行，线上状态
-因此能从 git 复现，而不依赖谁还记得后台点过什么。
+然后到 new-api 仓库落库：
+
+```bash
+python scripts/ops/apply_billing.py -i /tmp/billing.json --dry-run   # 先看变更
+python scripts/ops/apply_billing.py -i /tmp/billing.json
+systemctl restart new-api                                            # options 只在启动时读
+```
+
+模型的增删改名同理，见 new-api 仓库的 `scripts/ops/README.md`。每一步都可重复执行，
+线上状态因此能从「公开目录 + 私有结算价」两份 git/文件复现，而不依赖谁还记得后台点过什么。
 
 ### 校验（改完必跑）
 
 ```bash
-python -m scripts.model_sync.validate            # 元数据 + 价格快照自洽性
-python -m scripts.model_sync.validate --live /tmp/expr.json   # 额外比对线上实际生效价格
+python -m tools.model_sync.validate                           # 元数据 + 价格快照自洽性
+python -m unittest discover -s tools/model_sync/tests -t .    # 单测（含公开边界检查）
+
+# 在部署机上比对线上实际生效的表达式（必须带私有结算价，否则会对不上）
+python -m tools.model_sync.validate \
+    --live /tmp/expr.json --basis /opt/model-data-private/billing_basis.json
 ```
 
 检查项：名称唯一、vendor 存在、枚举闭集、`max_output ≤ context`、`:free` 与 `is_free` 一致、
 阶梯阈值落在上下文内、`billing_expr` 可由价格字段复现、快照与 `pricing.official.json` 一致、
 三份 i18n 文件是否同步。CI 会在每日同步后自动执行。
 
-> **改价红线**：任何价格变更都必须先改 `pricing.official.json` / `pricing.json`，再走
-> `scripts/ops/apply_billing.py` 落库。直接调 `PATCH /api/option/model_pricing` 或改数据库会绕过
-> 官方原文校验，`--live` 校验会把这类漂移报成错误。
+> **改价红线**：任何价格变更都必须先改 `pricing.official.json` / `pricing.json`（结算成本则改私有
+> basis），再走 `export_billing --basis` + `apply_billing.py` 落库。直接调
+> `PATCH /api/option/model_pricing` 或改数据库会绕过官方原文校验，`--live` 校验会把这类漂移报成错误。
 
 ## 原始第三方快照（raw/）
 
@@ -327,14 +338,13 @@ python -m scripts.model_sync.validate --live /tmp/expr.json   # 额外比对线�
 |:---|:---|:---|
 | `cheaperinference.json` | `platform.cheaperinference.com/markets` | 模型事实字段（上下文、最大输出、模态、能力标记），**已剔除全部价格字段** |
 
-抓取：`python tools/model_sync/fetch_cheaperinference.py`（走 `HTTPS_PROXY`，只取首屏内嵌数据）。
+抓取脚本（`fetch_cheaperinference.py` / `merge_cheaperinference.py`）未随本次拆分保留；
+`raw/` 里的快照是历史抓取结果，需要更新时按下方规则人工重跑并核对。
 
-`derived` 块由 `fetch_cheaperinference.derive()` 生成，规则只有它一处实现，合并脚本会重新推导而不是直接读快照里的 `derived`：
+`derived` 块记录当时的推导结果，规则如下（抓取/合并脚本未随拆分保留，`derived` 只作参考，不直接采信）：
 
 - `kind` 为 `text` / `decision` 时，`image` 模态只信 `vision` 布尔；`image` / `video` / `retrieval` 仍信 `image-input` token（图生视频、多模态 embedding 的 `vision` 常为 false）
 - 输出模态不含 `text` 时丢弃 `structured-output`（站点对图片 / 语音 / 转写模型也一律打了这个 token）
 - `context-128k` / `context-1m` 只是尺寸提示，`image-edit` 我方词表暂无对应项，三者都不写入目录
-
-合并：`python tools/model_sync/merge_cheaperinference.py`（dry-run）→ 确认后 `--write`。
 
 合并前先跑一次对比，确认差异是针对模型事实（context / modalities / capabilities），价格一律不采用。
