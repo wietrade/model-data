@@ -49,6 +49,46 @@ python -m tools.ops.verify_official_prices \
 - 没有逐模型页的 id（preview / 已下线 / 开源权重）才用 `models.list` 或聚合源；
 - `overrides.json` 的 `fields` 优先级最高，同步脚本每次都会重新叠加，不会被聚合源冲掉。
 
+### 结构化：一键抓成快照并对账
+
+```bash
+# 抓 + 生成快照 + 出差异表（不写任何数据文件）
+python -m tools.ops.harvest_official --fetch --check
+
+# 确认后写回 overrides.json（只动 context_length / max_output_tokens）
+python -m tools.ops.harvest_official --fetch --apply
+```
+
+产出 `raw/official-metadata-<date>.json`（默认被 .gitignore 忽略，需要留档时 `git add -f`），
+每个模型一条记录：
+
+```json
+{
+  "model": "gemini-4-argon",
+  "vendor": "Google",
+  "status": "200",
+  "source_kind": "official_doc+api",
+  "basis": "page",
+  "context_length": 1048576,
+  "max_output_tokens": 65536,
+  "conflicts": [{ "field": "max_output_tokens", "doc": 65536, "api": 32768 }],
+  "catalog_context_length": 1048576,
+  "catalog_max_output_tokens": 65536
+}
+```
+
+`basis` 是关键字段：
+
+| basis | 含义 | 能否自动校正 |
+|:---|:---|:---|
+| `page` | 逐模型官方页解析成功 | ✅ 可以（`--apply` 会写 overrides） |
+| `api_only` | 页面缺失/无数据，只有 `models.list` | ❌ 只作提示——它给过错值（两个图像模型的限制被对调过） |
+| `none` | 两边都没有 | ❌ 保留目录现值 |
+
+页面与 API 同时有值时以页面为准，并把分歧记在 `conflicts` 里（`--apply` 不写冲突项）。
+
+> 价格**不参与**自动写回：`pricing.official.json` 是人工确认的结果，工具只出报告（`verify_official_prices`）。
+
 ## 三、已知的坑
 
 | 坑 | 说明 |

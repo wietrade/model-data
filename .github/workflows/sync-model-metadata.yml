@@ -74,6 +74,13 @@ jobs:
         continue-on-error: true
         run: python -m tools.ops.verify_official_prices --fetch
 
+      # 逐模型官方页（OpenAI/Anthropic .md、Gemini HTML）→ 上下文/最大输出差异
+      - name: Cross-check vendor model pages
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python -m tools.ops.harvest_official --fetch --check
+
       - name: Detect changes
         id: diff
         run: |
