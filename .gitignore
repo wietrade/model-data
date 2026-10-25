@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.tmp/
+*.log
+
+# 私有：上游结算价（只存在于部署机，绝不提交）
+api/newapi/billing_basis.json
+*_billing_basis.json
