@@ -5,7 +5,7 @@
 | 产物 | 用途 | 是否被 new-api 自动消费 |
 |:---|:---|:---|
 | `api/newapi/models.json`、`vendors.json`（含 `i18n/zh`、`i18n/en`） | 模型元数据（描述、能力、模态、上下文、最大输出、免费标记） | 是，走「模型元数据同步」（预览 + 字段级应用） |
-| `api/newapi/pricing.json` | 当前采用的列表价（USD / 每 1M tokens），逐条 `price_kind` 标明来源 | **否**，仅生成 diff 供人工确认后再改 `model_ratio` 等 |
+| `api/newapi/pricing.json` | 当前牌价（USD / 每 1M tokens），逐条 `price_kind` 标明来源，附按牌价生成的 `billing_expr` | **否**；上线由部署机 `export_billing --basis <私有结算价>` 导出后 `apply_billing.py` 落库 |
 | `api/newapi/pricing.official.json` | 厂商官方定价页抄录（输入源，人工维护） | **否**，由 `pricing.json` 消费 |
 
 价格优先级：`pricing.official.json` > 聚合源（models.dev / OpenRouter）> 目录 `is_free`。
@@ -18,6 +18,10 @@
 
 分开的原因：元数据变更风险低、可自动应用；价格变更直接影响实收，必须人工过目，
 且厂商调价频率远高于新模型发布。两者失败也互不影响。
+
+> 本仓库是**公开**的，只放牌价。上游结算价（我方采购成本）在部署机的私有文件里，
+> 由 `export_billing --basis <文件>` 叠加后生成线上表达式；`pricing.json` 里的
+> `billing_expr` 只是按牌价算出来的参考值。
 
 ## 用法
 
