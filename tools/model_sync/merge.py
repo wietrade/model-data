@@ -577,11 +577,12 @@ def per_image_basis_row(record, entry, meta):
         "vendor_name": record.get("vendor_name") or "",
         "price_kind": "aggregator_reference",
         "source_kind": "aggregator",
-        "source": meta.get("source") or "upstream:basis",
+        # 公开仓不能出现采购渠道名/URL：这里只写事实类别。
+        "source": "settlement",
         "currency": "USD",
         "unit": "per_image",
     }
-    for key in ("source_url", "retrieved_at"):
+    for key in ("retrieved_at",):
         value = entry.get(key) or meta.get(key)
         if value:
             row[key] = value
@@ -617,15 +618,15 @@ def settlement_only_row(record, entry, meta):
         "vendor_name": record.get("vendor_name") or "",
         "price_kind": "aggregator_reference",
         "source_kind": "aggregator",
-        "source": meta.get("source") or "upstream:basis",
+        # 同上：采购渠道名与结算文档 URL 不属于公开牌价。
+        "source": "settlement",
         "currency": "USD",
         "unit": "per_1m_tokens",
     }
-    for key in ("source_url", "retrieved_at"):
+    for key in ("retrieved_at",):
         value = entry.get(key) or meta.get(key)
         if value:
             row[key] = value
-    row["source"] = entry.get("source") or row["source"]
     row.update(settlement_fields(entry))
     row["billing_basis"] = entry
     return row
