@@ -114,3 +114,11 @@ python3 -m unittest discover -s tools/model_sync/tests -t . -v
 - 有差异时推到固定分支 `chore/model-metadata-sync` 并开/更新 PR，
   由人审阅 diff 后合并；**不会**直接推到 `main`
 - Fork 仓库需要先在 Actions 页面启用 workflow，并按需配置上述三个 API key secret
+
+## 配套工具
+
+| 脚本 | 用途 |
+|:---|:---|
+| `tools/ops/compare_snapshot.py` | 把 `raw/` 里的第三方快照与本目录逐字段比对，输出差异清单（只读，不改数据） |
+| `tools/ops/promote_upcoming_pricing.py` | 把已到生效日的 `upcoming[]` 价格转正；`cron-promote-upcoming.sh` 每天调用 |
+| `export_billing --basis <私有文件>` | 在部署机上生成线上计费表达式（公开仓库不含结算价） |
