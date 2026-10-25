@@ -128,6 +128,8 @@ jobs:
             # Fall back to a direct commit so unattended updates keep working.
             echo "::warning::pull request creation not permitted; committing directly to ${{ github.event.repository.default_branch }}"
             git push origin "HEAD:${{ github.event.repository.default_branch }}"
+            # 内容已经进默认分支，临时分支只会在仓库里留垃圾，直接删掉。
+            git push origin --delete "$branch" || true
             {
               echo "### metadata sync"
               echo "PR creation is not permitted for this repository, so the update was committed directly."
