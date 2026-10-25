@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import json
 import urllib.error
+import urllib.parse
 import urllib.request
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -337,12 +338,24 @@ def _official_anthropic(api_key, timeout):
 
 
 def _official_google(api_key, timeout):
-    payload = _get_json(
-        OFFICIAL_ENDPOINTS["google"] + "?key=" + api_key,
-        timeout=timeout,
-    )
+    """``models.list``，key 走 ``x-goog-api-key`` 头并翻完所有分页。
+
+    - 不用 ``?key=``：URL 会进异常信息和工作流日志，等于把密钥写进 CI 输出；
+    - 默认 ``pageSize`` 只有 50，不翻页会静默漏掉尾部模型（实测 60 个只拿到 50）。
+    """
+    base = OFFICIAL_ENDPOINTS["google"]
+    url = base + "?pageSize=200"
+    items = []
+    for _ in range(20):  # 防御性上限，避免 pageToken 异常时死循环
+        payload = _get_json(url, timeout=timeout, headers={"x-goog-api-key": api_key})
+        items.extend(payload.get("models") or [])
+        token = payload.get("nextPageToken")
+        if not token:
+            break
+        url = base + "?pageSize=200&pageToken=" + urllib.parse.quote(str(token), safe="")
+
     out = []
-    for item in payload.get("models", []):
+    for item in items:
         name = str(item.get("name") or "")
         if name.startswith("models/"):
             name = name[len("models/"):]
