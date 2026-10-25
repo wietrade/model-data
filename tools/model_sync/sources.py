@@ -270,10 +270,12 @@ def fetch_official(vendors, environ, timeout=30):
     completeness check, never the sole source of truth for a deploy.
     """
     out = []
+    skipped = []
     for vendor_key in vendors:
         env_key = OFFICIAL_ENV_KEYS.get(vendor_key)
         api_key = (environ.get(env_key) or "").strip() if env_key else ""
         if not api_key:
+            skipped.append("%s (no %s)" % (vendor_key, env_key or "-"))
             continue
         try:
             if vendor_key == "openai":
@@ -284,6 +286,9 @@ def fetch_official(vendors, environ, timeout=30):
                 out.extend(_official_google(api_key, timeout))
         except (urllib.error.URLError, ValueError, TimeoutError, OSError) as exc:
             print("warn: official %s list unavailable: %s" % (vendor_key, exc))
+    if skipped:
+        # 官方接口都要 API key；没配就跳过，日志里明说，避免误以为「抓到了但没数据」。
+        print("note: official sources skipped: %s" % ", ".join(skipped))
     return out
 
 
