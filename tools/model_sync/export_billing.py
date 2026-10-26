@@ -15,6 +15,9 @@ so a price change is one command instead of hand-editing expressions in the UI.
 ``--alias live=source`` maps a model still deployed under an old name onto the
 expression of the model that replaced it (for example a ``:free`` suffix that
 was dropped after the model turned out to be paid).
+
+默认还会读 ``reference-data/metadata/aliases.json``：渠道侧那些**官方不存在的
+id**（例如 ``gpt-image-2.5``）不在目录里建条目，但要能按对应的官方模型计费。
 """
 
 from __future__ import annotations
@@ -27,6 +30,22 @@ import sys
 from . import expr
 from .merge import basis_for, load_billing_basis
 from .normalize import normalize_key
+
+ALIASES_PATH = os.path.join("reference-data", "metadata", "aliases.json")
+
+
+def load_aliases(path=None):
+    """读取渠道别名表：``{上游 id: 目录里的官方模型}``。缺文件不算错。"""
+    target = path or ALIASES_PATH
+    try:
+        with open(target, encoding="utf-8") as handle:
+            document = json.load(handle)
+    except FileNotFoundError:
+        return {}
+    mapping = document.get("aliases") if isinstance(document, dict) else None
+    if not isinstance(mapping, dict):
+        return {}
+    return {str(k): str(v) for k, v in mapping.items() if str(k).strip() and str(v).strip()}
 
 
 def load_prices(path):
@@ -97,9 +116,14 @@ def main(argv=None):
         metavar="LIVE=SOURCE",
         help="deployed model name that should reuse the expression of SOURCE",
     )
+    parser.add_argument(
+        "--aliases-file",
+        default=None,
+        help="渠道别名表（默认 reference-data/metadata/aliases.json）",
+    )
     args = parser.parse_args(argv)
 
-    aliases = {}
+    aliases = load_aliases(args.aliases_file)
     for item in args.alias:
         if "=" not in item:
             raise SystemExit(f"--alias expects LIVE=SOURCE, got {item!r}")

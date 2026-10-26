@@ -1819,63 +1819,9 @@
       "knowledge_cutoff": ""
     },
     {
-      "model_name": "gpt-image-2.5",
-      "vendor_name": "OpenAI",
-      "description": "OpenAI 图像生成模型，画质与指令遵循提升版",
-      "icon": "OpenAI",
-      "name_rule": 0,
-      "status": 1,
-      "tags": "图像生成",
-      "capabilities": [
-        "image_generation",
-        "vision"
-      ],
-      "input_modalities": [
-        "text",
-        "image"
-      ],
-      "output_modalities": [
-        "image"
-      ],
-      "context_length": 0,
-      "max_output_tokens": 0,
-      "is_free": false,
-      "endpoints": null,
-      "lifecycle": "ga",
-      "release_date": "",
-      "knowledge_cutoff": ""
-    },
-    {
       "model_name": "gpt-image-2.5-flare",
       "vendor_name": "OpenAI",
       "description": "OpenAI 图像生成模型，偏风格化与快速出图",
-      "icon": "OpenAI",
-      "name_rule": 0,
-      "status": 1,
-      "tags": "图像生成",
-      "capabilities": [
-        "image_generation",
-        "vision"
-      ],
-      "input_modalities": [
-        "text",
-        "image"
-      ],
-      "output_modalities": [
-        "image"
-      ],
-      "context_length": 0,
-      "max_output_tokens": 0,
-      "is_free": false,
-      "endpoints": null,
-      "lifecycle": "ga",
-      "release_date": "",
-      "knowledge_cutoff": ""
-    },
-    {
-      "model_name": "gpt-image-medium",
-      "vendor_name": "OpenAI",
-      "description": "OpenAI 中等画质图像生成模型，成本更低",
       "icon": "OpenAI",
       "name_rule": 0,
       "status": 1,

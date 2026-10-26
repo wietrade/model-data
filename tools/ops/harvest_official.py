@@ -168,11 +168,36 @@ def gemini_api_map(fetcher: Fetcher, api_key: str) -> tuple[dict, str]:
     return official_meta.parse_gemini_api(json.loads(body)), GEMINI_LIST
 
 
-def collect(fetcher: Fetcher, catalog, gemini_map):
+def collect(fetcher: Fetcher, catalog, gemini_map, platform_only=()):
+    """抓每个模型对应的官方页。
+
+    ``platform_only`` 是 ``overrides.json`` 里标了 ``platform_only: true`` 的模型名：
+    它们是上游/转售平台的命名，官方根本没有这个 id，抓了只会得到 404。
+    直接记 ``source_kind: platform_only`` 并跳过请求，免得每次复跑都误报「官方无数据」。
+    """
     rows = []
     for model in catalog:
         vendor = model.get("vendor_name") or ""
         name = model.get("model_name") or ""
+        if name in platform_only:
+            rows.append(
+                {
+                    "model": name,
+                    "vendor": vendor,
+                    "status": "-",
+                    "source_kind": "platform_only",
+                    "basis": "none",
+                    "source_url": None,
+                    "resolved_name": name,
+                    "url_candidates": [],
+                    "context_length": None,
+                    "max_output_tokens": None,
+                    "conflicts": None,
+                    "catalog_context_length": model.get("context_length"),
+                    "catalog_max_output_tokens": model.get("max_output_tokens"),
+                }
+            )
+            continue
         # 拿平台命名直接拼官方 URL 会 404；逐级退化到官方 id 再判定
         url = None
         status, body = "ERR", b""
@@ -429,7 +454,13 @@ def main(argv=None) -> int:
     catalog = json.loads(MODELS.read_text(encoding="utf-8"))["data"]
     gemini_map, gemini_src = gemini_api_map(fetcher, (os.environ.get("GEMINI_API_KEY") or "").strip())
 
-    rows = collect(fetcher, catalog, gemini_map)
+    overrides_doc = json.loads(OVERRIDES.read_text(encoding="utf-8")) if OVERRIDES.exists() else {}
+    platform_only = {
+        str(item.get("model_name") or "")
+        for item in overrides_doc.get("models") or []
+        if item.get("platform_only")
+    }
+    rows = collect(fetcher, catalog, gemini_map, platform_only)
     diffs = diff_rows(rows)
     now = datetime.now().astimezone()
     generated_at = now.isoformat(timespec="seconds")

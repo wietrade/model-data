@@ -1,0 +1,8 @@
+{
+  "_comment": "渠道/上游的模型 id → 我们目录里的官方模型。这些 id 在厂商官方列表里不存在（OpenAI: https://developers.openai.com/api/docs/models/all），但上游确实在卖、客户可能在调用，所以目录不建条目，只保留计费表达式。映射目标刻意选**与本条原表达式完全等价**的模型（同样按 ¥0.12/张 → fixed(0.017647)*image_count），让改名不改变任何金额；`gpt-image-2.5-sunburst` 走官方 token 价，不能当别名目标。",
+  "_checked_at": "2026-10-26",
+  "aliases": {
+    "gpt-image-2.5": "gpt-image-2.5-flare",
+    "gpt-image-medium": "gpt-image-2"
+  }
+}

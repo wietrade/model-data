@@ -229,6 +229,30 @@ def check_overrides(models, report: Report):
                 )
 
 
+def check_aliases(models, report: Report) -> None:
+    """渠道别名表：别名不能出现在目录里，目标必须在目录里。
+
+    ``reference-data/metadata/aliases.json`` 记的是「上游在卖但官方没有」的 id
+    （例如 gpt-image-2.5）。它们在目录里没有条目，只借用某个官方模型的计费表达式，
+    所以两个方向都要检查：别名不该抢目录名额，目标写错了会导出失败。
+    """
+    path = ROOT / "reference-data" / "metadata" / "aliases.json"
+    if not path.exists():
+        return
+    document = json.loads(path.read_text(encoding="utf-8"))
+    aliases = document.get("aliases") or {}
+    if not isinstance(aliases, dict):
+        report.error("aliases.json 的 aliases 必须是对象")
+        return
+    names = {str(m.get("model_name") or "") for m in models}
+    for alias, target in aliases.items():
+        alias, target = str(alias), str(target)
+        if alias in names:
+            report.error(f"aliases: {alias} 既是目录条目又是别名，只保留一种")
+        if target not in names:
+            report.error(f"aliases: {alias} 指向的 {target} 不在 models.json 里")
+
+
 def check_lifecycle_coverage(models, report: Report):
     total = len(models)
     if not total:
@@ -403,6 +427,7 @@ def main(argv=None) -> int:
     report = Report()
     check_metadata(models, vendors, report)
     check_overrides(models, report)
+    check_aliases(models, report)
     check_lifecycle_coverage(models, report)
     check_i18n(models, report)
     check_cron_scripts(report)

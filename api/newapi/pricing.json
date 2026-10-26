@@ -1151,11 +1151,6 @@
       "price_kind": "unpriced"
     },
     {
-      "model_name": "gpt-image-2.5",
-      "vendor_name": "OpenAI",
-      "price_kind": "unpriced"
-    },
-    {
       "model_name": "gpt-image-2.5-flare",
       "vendor_name": "OpenAI",
       "price_kind": "unpriced"
@@ -1197,11 +1192,6 @@
       "input_image": 8.0,
       "cache_read": 1.25,
       "cache_read_image": 2.0
-    },
-    {
-      "model_name": "gpt-image-medium",
-      "vendor_name": "OpenAI",
-      "price_kind": "unpriced"
     },
     {
       "model_name": "grok-4.5",
