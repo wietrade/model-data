@@ -15,11 +15,32 @@ Merge policy (deliberate, keeps hand-maintained content alive):
 
 from __future__ import annotations
 
+import copy
 import json
+from pathlib import Path
 
 from .normalize import CAPABILITY_ORDER, normalize_key
 
 MODALITY_ORDER = ("text", "image", "file", "audio", "video")
+
+# 汇率只在一处配置：sources/fx.json。数据行必须存**原币值**，禁止手写换算结果，
+# 否则同一批数据会同时出现几个隐含汇率（2026-10-26 真的踩到过）。
+FX_PATH = Path(__file__).resolve().parents[2] / "sources" / "fx.json"
+
+# 需要随币种换算的数值字段（按 1M tokens / 每张图 计价）
+PRICE_NUMBER_FIELDS = (
+    "input",
+    "output",
+    "output_text",
+    "output_image",
+    "input_image",
+    "cache_read",
+    "cache_read_image",
+    "cache_write",
+    "cache_write_1h",
+    "cache_write_12h",
+    "per_image",
+)
 
 FACTUAL_FIELDS = (
     "vendor_name",
@@ -538,7 +559,7 @@ def attach_newapi_ratios(row):
     return row
 
 
-def official_price_row(record, official):
+def official_price_row(record, official, fx=None):
     """Turn one ``pricing.official.json`` row into a ``pricing.json`` row.
 
     只搬运厂商官方价与其出处（``source_url`` / ``retrieved_at`` / ``confidence``）。
@@ -563,7 +584,64 @@ def official_price_row(record, official):
         value = official.get(field)
         if value is not None:
             row[field] = value
-    return attach_newapi_ratios(row)
+    return attach_newapi_ratios(convert_to_usd(row, fx))
+
+
+def load_fx(path=None):
+    """读汇率表：``{"units_per_usd": {"CNY": 6.677446, ...}}``。"""
+    target = Path(path) if path else FX_PATH
+    try:
+        document = json.loads(target.read_text(encoding="utf-8"))
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {"units_per_usd": {"USD": 1.0}}
+    rates = document.get("units_per_usd")
+    if not isinstance(rates, dict) or "USD" not in rates:
+        return {"units_per_usd": {"USD": 1.0}}
+    return document
+
+
+def _scale_prices(source, factor):
+    for field in PRICE_NUMBER_FIELDS:
+        value = source.get(field)
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
+            source[field] = round(float(value) / factor, 6)
+
+
+def convert_to_usd(row, fx=None):
+    """把一行原币官方价换算成 USD；已经是 USD 的行原样返回。
+
+    换算覆盖基础价、``tiers``/``time_tiers`` 里的所有价位与 ``meters`` 单价——
+    漏掉任何一层都会得到一半 USD 一半原币的脏数据。
+    """
+    currency = (row.get("currency") or "USD").upper()
+    if currency == "USD":
+        return row
+
+    rates = (fx or load_fx()).get("units_per_usd") or {}
+    factor = rates.get(currency)
+    if not isinstance(factor, (int, float)) or factor <= 0:
+        raise ValueError(f"sources/fx.json 里没有 {currency} 的汇率，无法换算 {row.get('model_name')}")
+
+    converted = copy.deepcopy(row)
+    _scale_prices(converted, factor)
+    for tier in converted.get("tiers") or []:
+        if isinstance(tier, dict):
+            _scale_prices(tier, factor)
+    time_tiers = converted.get("time_tiers")
+    for point in time_tiers if isinstance(time_tiers, list) else [time_tiers]:
+        if not isinstance(point, dict):
+            continue
+        for window in [point.get("peak")] + list(point.get("windows") or []):
+            if isinstance(window, dict):
+                _scale_prices(window, factor)
+    for meter in converted.get("meters") or []:
+        if isinstance(meter, dict) and isinstance(meter.get("price"), (int, float)):
+            meter["price"] = round(float(meter["price"]) / factor, 6)
+
+    converted["currency"] = "USD"
+    converted["fx_to_usd"] = factor
+    return converted
+
 
 
 def has_usable_price(official):
