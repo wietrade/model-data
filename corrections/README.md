@@ -73,10 +73,23 @@ L2 是**唯一**允许写入「外部知识」的地方，并且每条都必须�
 
 ## 当前状态（2026-10-26）
 
-- 条目 67 条，覆盖 51 个模型；`high` 41 / `medium` 26
-- 来源：豆包 2026-10-26 的 138 条核实报告（每条带厂商官方 URL），我们只摘了有明确官方数值/结论的部分
-- 尚未收录：站点侧 `detail_Input` 的 46 条 video 漏标（结论是「站点漏标」，但没有统一修法）、
-  `railOnly`/`costPlus` 语义（官方全站没有解释，无法判定）
+- 条目 **131 条**，覆盖 84 个模型；`high` 128 / `medium` 3
+- 来源：豆包 138 条核实报告（每条带厂商官方 URL）+ Claude 复核稿中**能对上官方页**的 41 条
+- 8 条是读官方**配置文件**直接拿到的，优先于任何二手转述：
+  `sentence_bert_config.json` 的 `max_seq_length`（MiniLM-L6 256、MiniLM-L12 128、mpnet 384、
+  paraphrase-MiniLM 128、clip-multilingual 128、multi-qa-mpnet 512），CLIP `text_config.max_position_embeddings` 77
+- 仍未收录：`detail_Input` 的 46 条 video 漏标（站点侧问题，没有统一修法）、`railOnly`/`costPlus` 语义
+
+## 口径：记模型规格，不记某家部署限额
+
+`contextLength` / `maxOutputTokens` 一律记**模型自身规格**：
+
+- 某个云厂商/网关把 1M 上下文的模型压到 131K，那是它的服务限额，不进这里；
+- 站点把计费档位阈值（如 Claude 的 100K 定价分档）当上下文窗口，属于录入错误，修正；
+- 站点内部自相矛盾（`maxOutputTokens > contextLength`）时，修到能自洽的一侧；
+- 站点把同一个 256K 一边写成十进制 256000、一边写成二进制 262144，统一到二进制值。
+
+反例记录：`gpt-oss-20b` 的 32,768 来自某云厂商部署文档，官方页写的是 131,072 → 采用 131,072。
 
 ## 用法
 
