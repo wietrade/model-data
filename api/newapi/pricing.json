@@ -942,6 +942,21 @@
       "billing_expr": "tier(\"standard\", p * 0.15 + c * 0.5 + cr * 0.03)"
     },
     {
+      "model_name": "glm-5.3-prime",
+      "vendor_name": "Z.AI",
+      "price_kind": "aggregator_reference",
+      "source_kind": "aggregator",
+      "source": "openrouter",
+      "source_model_id": "z-ai/glm-5.3-prime",
+      "currency": "USD",
+      "unit": "per_1m_tokens",
+      "input": 2.8,
+      "output": 8.8,
+      "cache_read": 0.56,
+      "billing_mode": "tiered_expr",
+      "billing_expr": "tier(\"standard\", p * 2.8 + c * 8.8 + cr * 0.56)"
+    },
+    {
       "model_name": "gpt-5.4",
       "vendor_name": "OpenAI",
       "price_kind": "vendor_official",
