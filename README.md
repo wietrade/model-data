@@ -230,23 +230,21 @@ overrides.json  >  官方逐模型页 / 官方 API（official:*，需官方内�
 
 | 用途 | URL | 说明 |
 |:---|:---|:---|
-| 直连 | `https://raw.githubusercontent.com/wietrade/model-data/main` | 推送即生效 |
-| 加速 | `https://cdn.jsdelivr.net/gh/wietrade/model-data@main` | 约 12h 缓存，对时效敏感就别用 |
-| 内部镜像 | `https://api.nowhub.org/model-data` | 部署机 nginx，每 30 分钟 `git fetch` + `reset --hard` 跟一次 |
+| 直连 | `https://raw.githubusercontent.com/wietrade/model-data/main` | 推送即生效；**部署机（东京）用的就是这个** |
+| 备选加速 | `https://cdn.jsdelivr.net/gh/wietrade/model-data@main` | 约 12h 缓存，对时效敏感就别用 |
 
-> GitHub Pages **未启用**（`wietrade.github.io/model-data` 返回 404），别照抄旧文档里的这个地址。
+> 没有自建镜像、没有 GitHub Pages（`wietrade.github.io/model-data` 返回 404，Pages 从未启用）。
+> 本仓库就是**唯一数据源**：改这里 → 推送 → new-api「同步资料」即拿到，中间不经过任何副本。
 
-#### 内部镜像的同步机制
+#### 为什么不搞本地镜像
 
-部署机 `/opt/model-data` 是**只读镜像**，crontab 每 30 分钟：
+2026-10-26 曾经在部署机 nginx 上挂过一个 `/model-data/ → /opt/model-data/` 的镜像，
+本意是绕开 raw 直连问题。但部署机在东京，实测 raw **0.5～1.5s / 200 / 字节数一致**，镜像不解决任何问题，
+反而当天就暴露了代价：服务器上一次手工 `chmod` 让工作区变脏，`git pull --ff-only`
+**连续 21 个 commit 静默失败**，线上一直在拉删不掉的旧供应商。
 
-```
-*/30 * * * * cd /opt/model-data && { git fetch -q origin main && git reset --hard -q FETCH_HEAD; } >> /var/log/model-data-pull.log 2>&1
-```
-
-用 `reset --hard` 而不是 `pull --ff-only`：2026-10-26 曾因在服务器上手工 `chmod +x` 让工作区变脏，
-`pull` **连续 21 个 commit 静默失败**（只写进日志没人看），镜像停在旧版本，线上一直拉到删不掉的旧供应商。
-镜像目录不允许有任何本地改动——要改就改仓库、推上去、等它自己跟。
+现已**撤掉镜像入口**，`SYNC_UPSTREAM_BASE` 直指 raw。`/opt/model-data` 这个 checkout 仍保留，
+但只作为 cron 脚本（`cron-promote-upcoming.sh`）的执行目录，**不再对外提供数据**。
 
 ### 不用拉什么
 
