@@ -1471,9 +1471,7 @@
       "confidence": "high",
       "quote": "Text tokens: Input $5 / Cached input $1.25（文本输出不计费）。Image tokens: Input $8 / Cached input $2 / Output $30。Standard $30 per 1M image tokens, Batch $15。Output modalities: image。",
       "notes": "官方模型页 2026-10-25 复核：gpt-image-2.5-sunburst 是官方推荐替代已弃用的 chatgpt-image-latest 的图像模型；输入 text/image，输出仅 image，文本输出不计费；支持 low/medium/high/xhigh/max/auto 质量档；端点 images/generations、images/edits、batch 可用；官方未公布 token 上下文/输出上限。快照：gpt-image-2.5-sunburst-2026-09-08。",
-      "source_model_id": "gpt-image-2.5-sunburst",
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 5 + img_o * 30 + cr * 1.25 + img_cr * 2 + img * 8)"
+      "source_model_id": "gpt-image-2.5-sunburst"
     },
     {
       "model_name": "gpt-image-2.5-sunburst-2026-09-08",
@@ -1494,9 +1492,7 @@
       "confidence": "high",
       "quote": "Text tokens: Input $5 / Cached input $1.25（文本输出不计费）。Image tokens: Input $8 / Cached input $2 / Output $30。Standard $30 per 1M image tokens, Batch $15。Output modalities: image。",
       "notes": "官方模型页 2026-10-25 复核：gpt-image-2.5-sunburst 是官方推荐替代已弃用的 chatgpt-image-latest 的图像模型；输入 text/image，输出仅 image，文本输出不计费；支持 low/medium/high/xhigh/max/auto 质量档；端点 images/generations、images/edits、batch 可用；官方未公布 token 上下文/输出上限。快照：gpt-image-2.5-sunburst-2026-09-08。",
-      "source_model_id": "gpt-image-2.5-sunburst",
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 5 + img_o * 30 + cr * 1.25 + img_cr * 2 + img * 8)"
+      "source_model_id": "gpt-image-2.5-sunburst"
     },
     {
       "model_name": "grok-4.5",
