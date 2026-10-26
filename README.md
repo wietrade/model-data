@@ -83,7 +83,7 @@ export NEWAPI_TOKEN=$(cat /opt/model-data-private/newapi.token)
 两个必须知道的行为：
 
 1. `PUT /api/option/` 对这个 key 是**整表替换**。`push_billing` 会先 `GET` 当前值再合并，
-   否则 payload 里没有的模型（如 `gpt-oss-120b`、已下架的 `glm-5.3-prime`）会被静默删掉。
+   否则 payload 里没有的模型（如已下架的 `glm-5.3-prime`、`gpt-oss-120b`）会被 静默删掉。
 2. `GET /api/option/` 返回的是**内存视图**，可能比库里多几个注册默认值。合并后写回会把它们一并固化；
    这些值本来就在生效，不改变行为。
 

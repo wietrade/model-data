@@ -1204,11 +1204,6 @@
       "price_kind": "unpriced"
     },
     {
-      "model_name": "gpt-oss-120b",
-      "vendor_name": "OpenAI",
-      "price_kind": "unpriced"
-    },
-    {
       "model_name": "grok-4.5",
       "vendor_name": "xAI",
       "price_kind": "vendor_official",

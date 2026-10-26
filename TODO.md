@@ -2,19 +2,16 @@
 
 按优先级排列；做完就删掉对应条目。
 
-## 0. `gpt-oss-120b` 没有官方价，下次落库前必须补私有 basis
+## 0. ~~`gpt-oss-120b` 没有官方价~~ —— 2026-10-26 已下架
 
-- **背景**：2026-10-26 起 `api/newapi/` 只放厂商公开数据，聚合站报价（models.dev / OpenRouter）不再发布。
-  `gpt-oss-120b` 只有 openrouter 的 0.15 / 0.6 / 0.075，已随之从 `pricing.json` 移除，
-  现在是一行 `{"price_kind": "unpriced"}`。
-- **影响**：线上 `billing_setting.billing_expr` 里它还有一条 `p(0.15) + c(0.6) + cr(0.075)`，
-  但**重新导出时算不出来**（公开价没了，私有 `billing_basis.json` 里也没有它）。
-  拿私有 basis 跑 `export_billing` 得到 67 条，线上是 69 条，差异是
-  `gpt-oss-120b` 和已下架的 `glm-5.3-prime`。
-- **要做什么**：给它定一个结算价写进私有 `billing_basis.json`（条目必须写全 `BASIS_FIELDS`），
-  或者确认要下架它。**在这之前不要用任何“整表替换”的方式落库**（如 `push_billing` 的
-  非合并模式、或 new-api 后台「同步价格」的批量应用），否则会静默删掉它的计费配置。
-  当前 `push_billing` 默认先 GET 再合并，会把它原样保留。
+开源权重模型没有厂商牌价（OpenAI 页面只有模型卡，Google Cloud 列的是自己的托管价），
+它的结算价也没在私有 `billing_basis.json` 里，导致每次导出都算不出来。已直接从目录删除：
+
+- 从 `api/**/models.json` 与 `api/newapi/pricing.json` 移除条目（模型数 68 → 67）
+- 写进 `sources/overrides.json` 的 `excluded`，聚合源再列也带不回来
+
+线上 `billing_setting.billing_expr` / `billing_mode` 里它可能还有旧条目——那只是残留，
+不影响任何已上架模型；`push_billing` 的合并模式会原样保留，需要时可手工清。
 
 ## 0b. ~~线上有 8 条表达式落后于仓库~~ —— 2026-10-26 已落库
 

@@ -63,7 +63,7 @@ python -m tools.ops.verify_official_prices \
 > 例外：**开源权重模型没有厂商牌价**。`gpt-oss-120b` / `gpt-oss-20b` 在 OpenAI 页面只有
 > 模型卡（Apache 2.0、HuggingFace 下载），**没有价格表**；Google Cloud 列的是它自己的托管价
 > （$0.09 / $0.36）。这类只能记某个托管方的参考价，并在 `notes` 写明是哪一家、哪个日期。
-> 目前 `gpt-oss-120b` 记 0.15 / 0.6，**出处待补**。
+> `gpt-oss-120b` 因无可靠牌价已于 2026-10-26 从目录删除（列入 `overrides.json` 的 `excluded`）。
 
 ## 二、元数据（上下文 / 最大输出）
 

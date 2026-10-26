@@ -1421,34 +1421,6 @@
       "knowledge_cutoff": ""
     },
     {
-      "model_name": "gpt-oss-120b",
-      "vendor_name": "OpenAI",
-      "description": "gpt-oss-120b is an open-weight, 117B-parameter Mixture-of-Experts (MoE) language model from OpenAI designed for high-reasoning, agentic, and general-purpose production use cases. It activates 5.1B par",
-      "icon": "OpenAI",
-      "name_rule": 0,
-      "status": 1,
-      "tags": "推理,工具,开源权重",
-      "capabilities": [
-        "reasoning",
-        "tools",
-        "structured_output",
-        "cache_implicit"
-      ],
-      "input_modalities": [
-        "text"
-      ],
-      "output_modalities": [
-        "text"
-      ],
-      "context_length": 131072,
-      "max_output_tokens": 131072,
-      "is_free": false,
-      "endpoints": null,
-      "lifecycle": "",
-      "release_date": "2025-08-05",
-      "knowledge_cutoff": "2024-06"
-    },
-    {
       "model_name": "laguna-s-2.1:free",
       "vendor_name": "Poolside",
       "description": "Laguna S 2.1 is the latest coding agent model from [Poolside](<https://poolside.ai/>). Laguna S 2.1 is a 118B total parameter model with 8B active parameters, scoring 70.2% on Terminal-Bench 2.1 and..",

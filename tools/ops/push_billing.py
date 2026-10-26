@@ -68,6 +68,13 @@ def main(argv=None) -> int:
     parser.add_argument("-i", "--input", required=True, help="export_billing 的输出")
     parser.add_argument("--base-url", default=DEFAULT_BASE)
     parser.add_argument("--token", default=os.environ.get("NEWAPI_TOKEN", ""))
+    parser.add_argument(
+        "--drop-model",
+        action="append",
+        default=[],
+        metavar="NAME",
+        help="从两个 map 里删掉这些模型（可重复）。用于已下架的模型，必须先确认它们已不在模型目录里",
+    )
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--apply", action="store_true")
     args = parser.parse_args(argv)
@@ -92,12 +99,17 @@ def main(argv=None) -> int:
         changed = sorted(k for k in payload[key] if k in current[key] and current[key][k] != payload[key][k])
         kept = sorted(set(current[key]) - set(payload[key]))
         new.update(payload[key])
+        dropped = [name for name in args.drop_model if name in new]
+        for name in dropped:
+            del new[name]
         merged[key] = new
-        print(f"{key}: {len(current[key])} -> {len(new)}  (+{len(added)} / ~{len(changed)} / 保留 {len(kept)})")
+        print(f"{key}: {len(current[key])} -> {len(new)}  (+{len(added)} / ~{len(changed)} / 保留 {len(kept)} / 删 {len(dropped)})")
         for name in added[:5]:
             print(f"    + {name}")
         for name in changed[:8]:
             print(f"    ~ {name}")
+        for name in dropped:
+            print(f"    - {name}")
         if kept:
             print(f"    保留（payload 里没有）: {', '.join(kept)}")
 

@@ -352,15 +352,6 @@
       }
     },
     {
-      "model_name": "gpt-oss-120b",
-      "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-oss-120b，2026-10-25 复核）。",
-      "fields": {
-        "context_length": 131072,
-        "max_output_tokens": 131072,
-        "knowledge_cutoff": "2024-06"
-      }
-    },
-    {
       "model_name": "grok-4.7",
       "note": "第二轮官方核实（https://docs.x.ai/developers/grok-4-7，2026-10-25 复核）。 第三轮核实：docs.x.ai/developers/models/grok-4.7 列为 frontier/Latest 现役模型。",
       "fields": {
@@ -427,6 +418,7 @@
     "Qwen3-235B-A22B-Thinking-2507",
     "Qwen3-Coder-480B-A35B-Instruct-FP8",
     "free",
-    "glm-5.3-prime"
+    "glm-5.3-prime",
+    "gpt-oss-120b"
   ]
 }
