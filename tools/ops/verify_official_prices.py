@@ -32,7 +32,7 @@ SOURCES = {
     "openai": "https://developers.openai.com/api/docs/pricing.md",
 }
 PREFIXES = {"claude": ("claude-",), "openai": ("gpt-",)}
-OFFICIAL = ROOT / "api" / "newapi" / "pricing.official.json"
+OFFICIAL = ROOT / "sources" / "pricing.official.json"
 
 
 def fetch(url: str, proxy: str | None, timeout: int = 60) -> str:

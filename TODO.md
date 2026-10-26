@@ -11,7 +11,7 @@
   workflow 会把它作为独立 PR 再提出来。
 - **要做什么**：
   1. 去 Moonshot 官方定价页核对 `kimi-k3.1-pro` 现价；
-  2. 若确为涨价：更新 `api/newapi/pricing.official.json`（带 `source_url` + `quote`）→
+  2. 若确为涨价：更新 `sources/pricing.official.json`（带 `source_url` + `quote`）→
      `sync_models --only pricing` → `validate`；
   3. **同时检查结算侧**：若上游同步调价，改私有 `billing_basis.json`
      （注意条目必须写全 `BASIS_FIELDS`，缺字段会导致该计费项归零），

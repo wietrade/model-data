@@ -13,16 +13,23 @@
 
 ## 目录
 
+仓库分成**输入**和**发布物**两块：`api/` 下全部是 new-api 直接拉取的结果，`sources/` 是生成它们用的人工/半人工输入，**不发布、不被 new-api 读取**。
+
 ```
-api/newapi/           models.json / vendors.json / pricing.json / pricing.official.json
-                      overrides.json / sync.config.json
-api/i18n/{zh,en}/     语言包（模型与供应商描述）
+api/newapi/           【发布】models.json / vendors.json / pricing.json
+api/i18n/{zh,en}/     【发布】语言包（模型与供应商描述）
+sources/              【输入】overrides.json（人工核对钉值）
+                      pricing.official.json（厂商牌价抄录）/ sync.config.json（同步配置）
 raw/                  第三方快照（cheaperinference）+ 每日官方快照（后者默认 gitignore）
 docs/                 official-sources.md（官方数据源与优先级速查）
 tools/model_sync/     多源合并、表达式生成、校验（纯 Python，无三方依赖）
 tools/ops/            官方页抓取核对、快照比对、upcoming 价格转正
 .github/workflows/    每日自动同步
 ```
+
+> 为什么分开：`api/` 是**对外契约**——把 `SYNC_UPSTREAM_BASE` 指向它就是 new-api 的模型目录来源，
+> 多一个文件都会让「发布了什么」变得含糊。`overrides.json` 里的取舍理由、`pricing.official.json`
+> 的抄录原文，都是**生成过程中的中间证据**，放 `sources/` 才不会与发布物混淆。
 
 > 去哪里查官方数据、取哪几个字段、有哪些坑：见 [`docs/official-sources.md`](docs/official-sources.md)。
 > 当前待办：见 [`TODO.md`](TODO.md)。
@@ -161,9 +168,9 @@ systemctl restart new-api
 ```
 厂商逐模型页（.md / HTML） / 官方 models.list / models.dev / openrouter
         │
-        │  tools/model_sync 合并（冲突时按下方优先级）
+        │  tools/model_sync 合并（冲突时按下方优先级；最后叠加 sources/overrides.json）
         ▼
-api/newapi/models.json + i18n   api/newapi/pricing.json   api/newapi/overrides.json
+api/newapi/models.json + i18n   api/newapi/pricing.json        ← 发布物
         │
         │  git push
         ▼
@@ -214,7 +221,7 @@ overrides.json  >  官方逐模型页 / 官方 API（official:*，需官方内�
 
 | 文件 | 内容 | 维护方式 |
 |:---|:---|:---|
-| `api/newapi/pricing.official.json` | 厂商官方定价页抄录，`price_kind: vendor_official`，逐条带 `source_url` 与 `quote` | 人工（官方页核对后导入） |
+| `sources/pricing.official.json` | 厂商官方定价页抄录，`price_kind: vendor_official`，逐条带 `source_url` 与 `quote` | 人工（官方页核对后导入） |
 | `api/newapi/pricing.json` | 每个已发布模型的**牌价**（官方优先、聚合源次之）+ 由牌价生成的 `billing_expr` | `tools/model_sync` 生成 |
 
 ### 官方价的机器核对
@@ -265,7 +272,7 @@ Google 的 `https://ai.google.dev/gemini-api/docs/pricing.md` 返回的仍是 HT
 | 内容 | 位置 | 是否公开 |
 |:---|:---|:---|
 | 模型目录、能力/模态、生命周期 | `api/newapi/models.json`、`api/i18n/**` | ✅ |
-| 厂商官方牌价 | `api/newapi/pricing.official.json` | ✅ |
+| 厂商官方牌价 | `sources/pricing.official.json` | ✅ |
 | 参考牌价与由其生成的表达式 | `api/newapi/pricing.json` | ✅ |
 | **上游结算价**（我们的采购成本、汇率折算、分组折扣） | 私有：`/opt/model-data-private/billing_basis.json` | ❌ |
 | **线上实际结算表达式**（含结算单价） | 只在部署机上生成，从不提交 | ❌ |

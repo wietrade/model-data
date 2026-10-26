@@ -53,7 +53,7 @@ python -m tools.ops.verify_official_prices \
 > `llms.txt` 是 404。页面里确实有 88 个 `<table>`、价格是可读文本，所以理论上可解析，
 > 但每模型重复三列且夹着生效日期与过渡价，目前仍按人工抄录处理。
 
-人工确认后写进 `api/newapi/pricing.official.json`，每条必须带 `source_url` 与 `quote`（官方原文）。
+人工确认后写进 `sources/pricing.official.json`，每条必须带 `source_url` 与 `quote`（官方原文）。
 `pricing.json` 由 `python -m tools.model_sync.sync_models --only pricing` 生成，不要手改。
 
 > **`pricing.json` 记的是厂商牌价，不是我们的进货成本。** 成本（结算价）走私有的
@@ -92,7 +92,7 @@ python -m tools.ops.verify_official_prices \
 逐模型官方页  >  models.list（官方 API）  >  聚合站（models.dev / openrouter）
 ```
 
-- 冲突时取逐模型官方页，并在 `api/newapi/overrides.json` 的 `note` 里写清「两个来源分别是什么、为何这样取舍、核对日期」；
+- 冲突时取逐模型官方页，并在 `sources/overrides.json` 的 `note` 里写清「两个来源分别是什么、为何这样取舍、核对日期」；
 - 没有逐模型页的 id（preview / 已下线 / 开源权重）才用 `models.list` 或聚合源；
 - `overrides.json` 的 `fields` 优先级最高，同步脚本每次都会重新叠加，不会被聚合源冲掉。
 

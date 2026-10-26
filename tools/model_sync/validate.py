@@ -193,7 +193,7 @@ def check_overrides(models, report: Report):
     每日同步会重写 models.json；如果 overrides 没生效（字段名拼错、
     merge 逻辑回退），数据会静默回到聚合源的旧值——这里做兜底断言。
     """
-    path = META / "newapi" / "overrides.json"
+    path = ROOT / "sources" / "overrides.json"
     if not path.exists():
         report.warn("缺少 overrides.json，人工核对值无法固化")
         return
@@ -369,7 +369,7 @@ def main(argv=None) -> int:
     models = load(META / "newapi" / "models.json")
     vendors = load(META / "newapi" / "vendors.json")
     pricing = load(META / "newapi" / "pricing.json")
-    official = load(META / "newapi" / "pricing.official.json")
+    official = load(ROOT / "sources" / "pricing.official.json")
 
     report = Report()
     check_metadata(models, vendors, report)

@@ -128,10 +128,10 @@ jobs:
           git push --force origin "$branch"
 
           cat > /tmp/pr-body.md <<'BODY'
-          自动同步（厂商 API / models.dev / OpenRouter，配置见 api/newapi/sync.config.json）。
+          自动同步（厂商 API / models.dev / OpenRouter，配置见 sources/sync.config.json）。
 
           请 review：
-          - api/newapi/overrides.json：按厂商**逐模型官方页**对齐的 `context_length` / `max_output_tokens`（每项带来源 URL 与核对日期）；只有逐模型页能驱动这项，`models.list` 单独有值的仅作提示。
+          - sources/overrides.json：按厂商**逐模型官方页**对齐的 `context_length` / `max_output_tokens`（每项带来源 URL 与核对日期）；只有逐模型页能驱动这项，`models.list` 单独有值的仅作提示。
           - api/newapi/models.json：上下文、最大输出、模态、能力的刷新；新增模型需确认后再合并。
           - api/newapi/pricing.json：价格为参考价快照：有官方条目的模型用厂商牌价（`price_kind: vendor_official`），其余才是聚合源（`aggregator_reference`）；合并本 PR 不会自动改价。
 

@@ -17,5 +17,5 @@
   "official": true,
   "allow_new": false,
   "allow_new_models": [],
-  "overrides": "api/newapi/overrides.json"
+  "overrides": "sources/overrides.json"
 }

@@ -44,7 +44,7 @@ sys.path.insert(0, str(ROOT))
 from tools.model_sync import official_meta  # noqa: E402
 
 MODELS = ROOT / "api" / "newapi" / "models.json"
-OVERRIDES = ROOT / "api" / "newapi" / "overrides.json"
+OVERRIDES = ROOT / "sources" / "overrides.json"
 GEMINI_LIST = "https://generativelanguage.googleapis.com/v1beta/models?pageSize=200"
 FIELDS = ("context_length", "max_output_tokens")
 
