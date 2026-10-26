@@ -32,17 +32,24 @@ python tools/ops/mark_legacy.py       --date 20261026
 
 ## 为什么单独一层
 
-抓取快照（`raw/cheaperinference-<date>.json`）的价值在于**忠实**：它记录站点当时逐字写了什么。
+> **这一层只管模型元数据**（上下文、最大输出、能力、生命周期、路由）。
+> 价格不在这里，也不该在这里：官方价在 `reference-data/price/pricing.official.json`，
+> 我们自己的结算价在私有目录。第三方站点的价格字段在抓取阶段就被剔除了。
+
+抓取快照（`source-data/cheaperinference-<date>.json`）的价值在于**忠实**：它记录站点当时逐字写了什么。
 一旦把我们的推断写回快照，这份数据就既不能证明站点说过什么，也不能证明我们查过什么。
 所以分三层：
 
 ```
-L1  raw/cheaperinference-<date>.json            站点原话，一字不改
+L1  source-data/cheaperinference-<date>.json            站点原话，一字不改
 L2  corrections/<date>/corrections.json         官方核实值 + 出处
-L3  raw/cheaperinference-<date>.verified.json   L1 + L2，给下游用
+L3  source-data/cheaperinference-<date>.verified.json   L1 + L2，给下游用
 ```
 
 L2 是**唯一**允许写入「外部知识」的地方，并且每条都必须能被单独复核。
+
+每一期的目录里还有一份人读的核实报告（`report.md`），记录这批修正的统计与争议条目，
+例如 `corrections/20261026/report.md`。
 
 ## 文件格式
 
@@ -50,7 +57,7 @@ L2 是**唯一**允许写入「外部知识」的地方，并且每条都必须�
 {
   "id": "cheaperinference-20261026",
   "source_set": "厂商官方文档（逐条核对，见 source_url）",
-  "applies_to": "raw/cheaperinference-20261026.json",
+  "applies_to": "source-data/cheaperinference-20261026.json",
   "compiled_at": "2026-10-26",
   "counts": {"high": 41, "medium": 26},
   "corrections": [
@@ -193,10 +200,10 @@ python -m tools.ops.apply_corrections --date 20261026
 
 # 等价于
 python -m tools.ops.apply_corrections \
-    --snapshot raw/cheaperinference-20261026.json \
+    --snapshot source-data/cheaperinference-20261026.json \
     --corrections corrections/20261026/corrections.json \
     --routing corrections/20261026/routing.json \
-    --out raw/cheaperinference-20261026.verified.json \
+    --out source-data/cheaperinference-20261026.verified.json \
     --changelog corrections/20261026/changelog.csv
 
 # 先看会改哪些、还剩多少矛盾，不落盘

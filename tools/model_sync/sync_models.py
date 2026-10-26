@@ -126,7 +126,7 @@ def parse_args(argv):
     parser.add_argument(
         "--config",
         default=None,
-        help="sync config JSON (default: <root>/sources/sync.config.json)",
+        help="sync config JSON (default: <root>/reference-data/metadata/sync.config.json)",
     )
     parser.add_argument("--dry-run", action="store_true", help="print changes, write nothing")
     parser.add_argument(
@@ -142,17 +142,17 @@ def main(argv=None):
     args = parse_args(argv)
     root = os.path.abspath(args.root)
     api_dir = os.path.join(root, "api")
-    src_dir = os.path.join(root, "sources")
+    src_dir = os.path.join(root, "reference-data")
     models_path = os.path.join(api_dir, "newapi", "models.json")
     vendors_path = os.path.join(api_dir, "newapi", "vendors.json")
     pricing_path = os.path.join(api_dir, "newapi", "pricing.json")
-    official_pricing_path = os.path.join(src_dir, "pricing.official.json")
+    official_pricing_path = os.path.join(src_dir, "price", "pricing.official.json")
 
     if not os.path.exists(models_path):
         print("error: %s not found (wrong --root?)" % models_path, file=sys.stderr)
         return 2
 
-    config_path = args.config or os.path.join(src_dir, "sync.config.json")
+    config_path = args.config or os.path.join(src_dir, "metadata", "sync.config.json")
     config = load_json(config_path, {})
 
     if args.vendors is None:

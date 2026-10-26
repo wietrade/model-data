@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """比对第三方快照与本目录的模型事实，输出差异清单。
 
-用途：``raw/`` 里的快照只是旁证，不能直接并入 ``api/newapi/models.json``。
+用途：``source-data/`` 里的快照只是旁证，不能直接并入 ``api/newapi/models.json``。
 本脚本给出「哪些字段、双方各是什么值」，由人对照官方文档决定改哪边。
 
 用法::
 
-    python -m tools.ops.compare_snapshot raw/cheaperinference-20261026.json
-    python -m tools.ops.compare_snapshot raw/... --format json -o /tmp/diff.json
+    python -m tools.ops.compare_snapshot source-data/cheaperinference-20261026.json
+    python -m tools.ops.compare_snapshot source-data/... --format json -o /tmp/diff.json
 """
 
 from __future__ import annotations
@@ -129,7 +129,7 @@ def render_markdown(matched, unmatched, diffs, snapshot_path):
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("snapshot", help="raw/ 下的第三方快照")
+    parser.add_argument("snapshot", help="source-data/ 下的第三方快照")
     parser.add_argument("--local", default=str(DEFAULT_LOCAL), help="本地 models.json")
     parser.add_argument("--format", choices=("markdown", "json"), default="markdown")
     parser.add_argument("-o", "--output", help="写入文件而不是打印")

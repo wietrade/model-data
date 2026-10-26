@@ -1,8 +1,8 @@
 # cheaperinference 模型数据核实报告
 
-**日期**：2026-10-26　**快照**：`raw/cheaperinference-20261026.json`　**站点**：`platform.cheaperinference.com`
+**日期**：2026-10-26　**快照**：`source-data/cheaperinference-20261026.json`　**站点**：`platform.cheaperinference.com`
 
-**成品数据**：`raw/cheaperinference-20261026.verified.json`（618 KB，527 条 × 29–31 键）
+**成品数据**：`source-data/cheaperinference-20261026.verified.json`（618 KB，527 条 × 29–31 键）
 
 > **时效**：本报告描述的是 2026-10-26 这一期快照。§2（数字统计）与 §3（核实范围）在下次抓取后
 > 会变；§4（口径）与 §8（验收清单）跨期有效，可直接给外部核实方用。
@@ -22,13 +22,13 @@
 分三层，职责严格隔离，任何一步出问题都能回退：
 
 ```
-L1  raw/cheaperinference-20261026.json             站点原话，detail_* 一字不改
+L1  source-data/cheaperinference-20261026.json             站点原话，detail_* 一字不改
         │  ↑ 抓取自服务端渲染页面（RSC payload），527 条 × 29 键
         │
 L2  corrections/20261026/corrections.json          162 条官方核实值（带 source_url / 原文引用）
     corrections/20261026/routing.json              7 条上游路由（servedAs / retiredAt）
         │
-L3  raw/cheaperinference-20261026.verified.json    L1 + L2，供下游消费
+L3  source-data/cheaperinference-20261026.verified.json    L1 + L2，供下游消费
 ```
 
 ### 为什么必须分三层
@@ -44,13 +44,13 @@ L3  raw/cheaperinference-20261026.verified.json    L1 + L2，供下游消费
 
 | 文件 | 内容 | 条数 |
 |:---|:---|---:|
-| `raw/...20261026.json` | L1 站点原文 | 527 |
+| `source-data/...20261026.json` | L1 站点原文 | 527 |
 | `corrections/20261026/corrections.json` | L2 核实值（**不可再生**） | 162 |
 | `corrections/20261026/routing.json` | 上游路由（人工查证） | 7 |
 | `corrections/20261026/legacy.json` | 老代不核实清单（派生） | 101 |
 | `corrections/20261026/changelog.csv` | 变更表（派生） | 168 |
 | `corrections/README.md` | 口径文档 | — |
-| `raw/...20261026.verified.json` | L3 成品 | 527 |
+| `source-data/...20261026.verified.json` | L3 成品 | 527 |
 | `tools/ops/fetch_site.py` | L1 生产者（带自检） | — |
 | `tools/ops/apply_corrections.py` | L2 → L3 | — |
 | `tools/ops/classify_scope.py` | 核实范围划分（`scope.json` 纯派生，不入库） | — |
@@ -350,7 +350,7 @@ embedding 不存在"输出 token"，输出是向量 → `maxOutputTokens` 一律
 - [ ] **B2** 抓取成功后做 schema 漂移检测（新增/消失字段立刻告警）
 - [ ] **B3** L1 → L1 快照 diff 工具（现在只能靠人工比对，站点一直在变）
 - [ ] **B4** 确定抓取节奏基线（多久抓一次、变更率多少算异常）
-- [x] **B5** ~~`compare_snapshot` 默认路径还指向 10-23 的旧快照~~ → `normalize_snapshot` 改为自动取 `raw/` 下最新一期（2026-10-26）
+- [x] **B5** ~~`compare_snapshot` 默认路径还指向 10-23 的旧快照~~ → `normalize_snapshot` 改为自动取 `source-data/` 下最新一期（2026-10-26）
 - [x] **B6** ~~`clean_snapshot` 默认路径同上~~ → 该工具已移除，职责由 `fetch_site`（产出 L1 时归一）+ `apply_corrections`（同步 `context-*` 标签）承担
 - [ ] **B7** `normalize_snapshot` 不认识 `detail_Provider` / `costPlus: null`
 

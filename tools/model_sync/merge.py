@@ -23,9 +23,9 @@ from .normalize import CAPABILITY_ORDER, normalize_key
 
 MODALITY_ORDER = ("text", "image", "file", "audio", "video")
 
-# 汇率只在一处配置：sources/fx.json。数据行必须存**原币值**，禁止手写换算结果，
+# 汇率只在一处配置：reference-data/price/fx.json。数据行必须存**原币值**，禁止手写换算结果，
 # 否则同一批数据会同时出现几个隐含汇率（2026-10-26 真的踩到过）。
-FX_PATH = Path(__file__).resolve().parents[2] / "sources" / "fx.json"
+FX_PATH = Path(__file__).resolve().parents[2] / "reference-data" / "price" / "fx.json"
 
 # 需要随币种换算的数值字段（按 1M tokens / 每张图 计价）
 PRICE_NUMBER_FIELDS = (
@@ -574,7 +574,7 @@ def convert_to_usd(row, fx=None):
     rates = (fx or load_fx()).get("units_per_usd") or {}
     factor = rates.get(currency)
     if not isinstance(factor, (int, float)) or factor <= 0:
-        raise ValueError(f"sources/fx.json 里没有 {currency} 的汇率，无法换算 {row.get('model_name')}")
+        raise ValueError(f"reference-data/price/fx.json 里没有 {currency} 的汇率，无法换算 {row.get('model_name')}")
 
     converted = copy.deepcopy(row)
     _scale_prices(converted, factor)

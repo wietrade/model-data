@@ -6,7 +6,7 @@
 |:---|:---|:---|
 | `api/newapi/models.json`、`vendors.json`（含 `i18n/zh`、`i18n/en`） | 模型元数据（描述、能力、模态、上下文、最大输出、免费标记） | 是，走「模型元数据同步」（预览 + 字段级应用） |
 | `api/newapi/pricing.json` | 官方价（USD / 每 1M tokens）+ 出处；无官方价的模型只有一行壳（`price_kind: unpriced`） | **否**；上线由部署机 `export_billing --basis <私有结算价>` 导出后 `push_billing` 落库 |
-| `sources/pricing.official.json` | 厂商官方定价页抄录（输入源，人工维护） | **否**，由 `pricing.json` 消费 |
+| `reference-data/price/pricing.official.json` | 厂商官方定价页抄录（输入源，人工维护） | **否**，由 `pricing.json` 消费 |
 
 价格优先级：`pricing.official.json` > 目录 `is_free`。**聚合站报价与结算价都不进发布文件**：
 聚合价只是我们自己算倍率时的旁证，结算价是我们的成本，两者都不属于公开数据。
@@ -124,6 +124,6 @@ python3 -m unittest discover -s tools/model_sync/tests -t . -v
 
 | 脚本 | 用途 |
 |:---|:---|
-| `tools/ops/compare_snapshot.py` | 把 `raw/` 里的第三方快照与本目录逐字段比对，输出差异清单（只读，不改数据） |
+| `tools/ops/compare_snapshot.py` | 把 `source-data/` 里的第三方快照与本目录逐字段比对，输出差异清单（只读，不改数据） |
 | `tools/ops/promote_upcoming_pricing.py` | 把已到生效日的 `upcoming[]` 价格转正；`cron-promote-upcoming.sh` 每天调用 |
 | `export_billing --basis <私有文件>` | 在部署机上生成线上计费表达式（公开仓库不含结算价） |

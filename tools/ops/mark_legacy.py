@@ -20,7 +20,7 @@ import re
 from collections import Counter
 from pathlib import Path
 
-RAW = Path("raw")
+RAW = Path("source-data")
 ROOT = Path("corrections")
 
 
@@ -138,7 +138,7 @@ def main():
 
     payload = {
         "id": "legacy-%s" % day,
-        "applies_to": "raw/cheaperinference-%s.json" % day,
+        "applies_to": "source-data/cheaperinference-%s.json" % day,
         "note": (
             "这些模型不再花核实成本：字段保留站点原值，也不进 corrections。"
             "判定依据：同家族已有更新代（快照里能看到）、官方已下线/退役，或第三方标注 deprecated；"

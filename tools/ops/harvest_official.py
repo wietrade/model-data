@@ -44,7 +44,7 @@ sys.path.insert(0, str(ROOT))
 from tools.model_sync import official_meta  # noqa: E402
 
 MODELS = ROOT / "api" / "newapi" / "models.json"
-OVERRIDES = ROOT / "sources" / "overrides.json"
+OVERRIDES = ROOT / "reference-data" / "metadata" / "overrides.json"
 GEMINI_LIST = "https://generativelanguage.googleapis.com/v1beta/models?pageSize=200"
 FIELDS = ("context_length", "max_output_tokens")
 
@@ -332,7 +332,7 @@ def main(argv=None) -> int:
     parser.add_argument("--proxy", help="抓取时使用的 HTTPS 代理")
     parser.add_argument("--check", action="store_true", help="打印差异表")
     parser.add_argument("--apply", action="store_true", help="把差异写进 overrides.json（仅元数据）")
-    parser.add_argument("--out", help="快照输出路径（默认 raw/official-metadata-<date>.json）")
+    parser.add_argument("--out", help="快照输出路径（默认 source-data/official-metadata-<date>.json）")
     parser.add_argument("--format", choices=("markdown", "json"), default="markdown")
     args = parser.parse_args(argv)
 
@@ -361,7 +361,7 @@ def main(argv=None) -> int:
         },
         "models": rows,
     }
-    out_path = Path(args.out) if args.out else ROOT / "raw" / ("official-metadata-%s.json" % day)
+    out_path = Path(args.out) if args.out else ROOT / "source-data" / ("official-metadata-%s.json" % day)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(
         json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n"

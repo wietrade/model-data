@@ -3,9 +3,9 @@
 
 三层结构::
 
-    L1  raw/cheaperinference-<date>.json         站点原话，一字不改
+    L1  source-data/cheaperinference-<date>.json         站点原话，一字不改
     L2  corrections/<date>/corrections.json  官方核实值 + source_url
-    L3  raw/cheaperinference-<date>.verified.json L1 + L2，供下游消费
+    L3  source-data/cheaperinference-<date>.verified.json L1 + L2，供下游消费
 
 硬性规则（脚本会强制检查，不是文档里的约定）：
 
@@ -18,9 +18,9 @@
 
     python -m tools.ops.apply_corrections --date 20261026
     python -m tools.ops.apply_corrections \\
-        --snapshot raw/cheaperinference-20261026.json \\
+        --snapshot source-data/cheaperinference-20261026.json \\
         --corrections corrections/20261026/corrections.json \\
-        --out raw/cheaperinference-20261026.verified.json \\
+        --out source-data/cheaperinference-20261026.verified.json \\
         --changelog .tmp/changelog-20261026.csv
     python -m tools.ops.apply_corrections --snapshot ... --corrections ... --dry-run
 """
@@ -234,10 +234,10 @@ def main(argv=None) -> int:
         day = args.date.replace("-", "")
         root = Path("corrections") / day
         routing = root / "routing.json"
-        args.snapshot = args.snapshot or str(Path("raw") / ("cheaperinference-%s.json" % day))
+        args.snapshot = args.snapshot or str(Path("source-data") / ("cheaperinference-%s.json" % day))
         args.corrections = args.corrections or str(root / "corrections.json")
         args.routing = args.routing or (str(routing) if routing.exists() else None)
-        args.out = args.out or str(Path("raw") / ("cheaperinference-%s.verified.json" % day))
+        args.out = args.out or str(Path("source-data") / ("cheaperinference-%s.verified.json" % day))
         args.changelog = args.changelog or str(root / "changelog.csv")
     if not args.snapshot or not args.corrections:
         parser.error("需要 --date，或同时提供 --snapshot 与 --corrections")

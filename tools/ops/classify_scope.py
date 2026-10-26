@@ -27,7 +27,7 @@
     python -m tools.ops.classify_scope --list ignore                # 列出某一档
 
 目录约定（按快照隔离，一次快照一套）：
-    raw/cheaperinference-<date>.json
+    source-data/cheaperinference-<date>.json
     corrections/<date>/{corrections,legacy,routing}.json
 """
 
@@ -40,7 +40,7 @@ from collections import Counter, OrderedDict
 from datetime import date
 from pathlib import Path
 
-RAW = Path("raw")
+RAW = Path("source-data")
 CORRECTIONS_ROOT = Path("corrections")
 
 def resolve_date(day: str | None = None) -> str:

@@ -21,7 +21,7 @@
 
 用法::
 
-    python -m tools.ops.fetch_site --proxy http://127.0.0.1:7897 --out raw/cheaperinference-20261026.json
+    python -m tools.ops.fetch_site --proxy http://127.0.0.1:7897 --out source-data/cheaperinference-20261026.json
     python -m tools.ops.fetch_site --limit 5 --no-details      # 只试解析
     python -m tools.ops.fetch_site --save-html .tmp/pages     # 顺便留证据
 """

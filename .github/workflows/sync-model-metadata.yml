@@ -1,16 +1,11 @@
 name: sync-model-metadata
 
+# 只支持手动触发。
+# 2026-10-26 决定：元数据和价格一律人工发起、人工合并，不再定时拉取。
+# 删掉的两个触发器：
+#   schedule  '17 2 * * *'                     每日自动抓取
+#   push      tools/model_sync/** 变更时自跑      改代码顺带改数据
 on:
-  push:
-    branches: [main]
-    # only the pipeline itself triggers a run; metadata commits made by the
-    # action are excluded so it cannot loop
-    paths:
-      - '.github/workflows/sync-model-metadata.yml'
-      - 'tools/model_sync/**'
-  schedule:
-    # daily at 02:17 UTC
-    - cron: '17 2 * * *'
   workflow_dispatch:
     inputs:
       allow_new:
@@ -128,10 +123,10 @@ jobs:
           git push --force origin "$branch"
 
           cat > /tmp/pr-body.md <<'BODY'
-          自动同步（厂商 API / models.dev / OpenRouter，配置见 sources/sync.config.json）。
+          手动触发（厂商 API / models.dev / OpenRouter，配置见 reference-data/metadata/sync.config.json）。
 
           请 review：
-          - sources/overrides.json：按厂商**逐模型官方页**对齐的 `context_length` / `max_output_tokens`（每项带来源 URL 与核对日期）；只有逐模型页能驱动这项，`models.list` 单独有值的仅作提示。
+          - reference-data/metadata/overrides.json：按厂商**逐模型官方页**对齐的 `context_length` / `max_output_tokens`（每项带来源 URL 与核对日期）；只有逐模型页能驱动这项，`models.list` 单独有值的仅作提示。
           - api/newapi/models.json：上下文、最大输出、模态、能力的刷新；新增模型需确认后再合并。
           - api/newapi/pricing.json：价格为参考价快照：有官方条目的模型用厂商牌价（`price_kind: vendor_official`），其余才是聚合源（`aggregator_reference`）；合并本 PR 不会自动改价。
 

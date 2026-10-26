@@ -16,25 +16,41 @@
 
 ## 目录
 
-仓库分成**输入**和**发布物**两块：`api/` 下全部是 new-api 直接拉取的结果，`sources/` 是生成它们用的人工/半人工输入，**不发布、不被 new-api 读取**。
+仓库按**数据从哪来 → 我们整理成什么 → 最后发布什么**分成三层：
+
+| 层 | 目录 | 是什么意思 | 什么时候看 |
+|:---|:---|:---|:---|
+| ① 参考数据来源 | `source-data/` | 别人写的原话：第三方站点快照、厂商官方页抓取结果。**只读留证**，不直接进模型目录 | 查证时 |
+| ② 现有参考数据 | `reference-data/` | 我们人工整理出来的输入：元数据钉值、厂商官方牌价、汇率、合并配置 | 改数据时 |
+| ③ 最终数据 | `api/` | 生成好的发布物，new-api 直接拉取 | 只读，不手改 |
 
 ```
-api/newapi/           【发布】models.json / vendors.json / pricing.json
-api/i18n/{zh,en}/     【发布】语言包（模型与供应商描述）
-sources/              【输入】overrides.json（人工核对钉值）
-                      pricing.official.json（厂商牌价抄录）/ sync.config.json（同步配置）
-raw/                  第三方快照（cheaperinference）+ 每日官方快照（后者默认 gitignore）
-docs/                 official-sources.md（官方数据源与优先级速查）
-tools/model_sync/     多源合并、表达式生成、校验（纯 Python，无三方依赖）
-tools/ops/            官方页抓取核对、快照比对、upcoming 价格转正
-.github/workflows/    每日自动同步
+source-data/                          【① 来源】第三方快照 + 官方页抓取（只读）
+reference-data/
+├── metadata/                         【② 参考】模型"是什么"
+│   ├── overrides.json                    人工核对后钉住的权威值
+│   └── sync.config.json                  从哪些源合并、优先级
+└── price/                            【② 参考】模型"多少钱"
+    ├── pricing.official.json             厂商官方牌价抄录（带 source_url + quote）
+    └── fx.json                           汇率（数据行只存原币）
+api/newapi/                           【③ 最终】models.json / vendors.json / pricing.json
+api/i18n/{zh,en}/                     【③ 最终】语言包（模型与供应商描述）
+corrections/                          修正台账：把①的值修正成②的依据（只含元数据）
+docs/                                 official-sources.md（官方数据源与优先级速查）
+tools/model_sync/                     多源合并、表达式生成、校验（纯 Python，无三方依赖）
+tools/ops/                            官方页抓取核对、快照比对、价格转正
+.github/workflows/                    手动触发的同步流程
 ```
 
-> 为什么分开：`api/` 是**对外契约**——把 `SYNC_UPSTREAM_BASE` 指向它就是 new-api 的模型目录来源，
-> 多一个文件都会让「发布了什么」变得含糊。`overrides.json` 里的取舍理由、`pricing.official.json`
-> 的抄录原文，都是**生成过程中的中间证据**，放 `sources/` 才不会与发布物混淆。
+> **元数据和价格从不放在同一个文件里。** ②层分成 `metadata/` 与 `price/` 两个子目录，
+> ③层对应 `models.json` 与 `pricing.json` 两个文件。`pricing.json` 里出现 `billing_expr`、
+> `billing_mode`、`*_cny` 会被 `validate` 直接报错。
 
-> **`api/newapi/` 的边界**：只放**厂商公开数据** + new-api 落库必需的展示字段。
+> 为什么①和②必须分开：快照的价值在于**忠实**——它记录站点当时逐字写了什么。
+> 一旦把我们的判断写回快照，就既无法证明站点说过什么，也无法验证我们查过什么。
+> 所以修正在 `corrections/`，钉值在 `reference-data/`，快照保持原样。
+
+> **`api/` 的边界**：只放**厂商公开数据** + new-api 落库必需的展示字段。
 > 属于我们平台的一律不进：结算价、成本、采购渠道名、聚合站报价、我们算出来的倍率与计费表达式。
 > 其中 `models.json` 的 `description` / `tags` / `icon` / `status` 是展示配置（供 new-api 直接写库），
 > 不含任何商业信息；`pricing.json` 只有官方价，无官方价的模型仅留 `{"price_kind": "unpriced"}` 一行。
@@ -205,7 +221,7 @@ export NEWAPI_TOKEN=$(cat /opt/model-data-private/newapi.token)
 ```
 厂商逐模型页（.md / HTML） / 官方 models.list / models.dev / openrouter
         │
-        │  tools/model_sync 合并（冲突时按下方优先级；最后叠加 sources/overrides.json）
+        │  tools/model_sync 合并（冲突时按下方优先级；最后叠加 reference-data/metadata/overrides.json）
         ▼
 api/newapi/models.json + i18n   api/newapi/pricing.json        ← 发布物
         │
@@ -245,7 +261,7 @@ overrides.json  >  官方逐模型页 / 官方 API（official:*，需官方内�
 
 ## 消费方契约
 
-> **外部平台只需要这一节列出的文件。** 仓库里其他目录（`sources/` `corrections/` `raw/` `tools/` `docs/`）
+> **外部平台只需要这一节列出的文件。** 仓库里其他目录（`reference-data/` `source-data/` `corrections/` `tools/` `docs/`）
 > 都是我们维护这套数据的**过程记录**，不是对外接口，随时可能重构。
 
 ### 要拉什么
@@ -284,10 +300,10 @@ overrides.json  >  官方逐模型页 / 官方 API（official:*，需官方内�
 
 | 目录 | 是什么 | 为什么不用 |
 |:---|:---|:---|
-| `sources/overrides.json` | 人工钉值 + 取舍理由 | 结果已烘焙进 `models.json`；单独读会误判（它只记「钉住了什么」，不含多源上下文） |
-| `sources/pricing.official.json` | 官方定价页抄录（原文 + `source_url` + `quote`） | 同上，结果已落进 `pricing.json` |
-| `sources/sync.config.json` | 我们的多源合并配置 | 实现细节 |
-| `corrections/`、`raw/` | 快照原件与逐字段改动台账 | 审计用，给人看；`changelog.csv` 是派生品 |
+| `reference-data/metadata/overrides.json` | 人工钉值 + 取舍理由 | 结果已烘焙进 `models.json`；单独读会误判（它只记「钉住了什么」，不含多源上下文） |
+| `reference-data/price/pricing.official.json` | 官方定价页抄录（原文 + `source_url` + `quote`） | 同上，结果已落进 `pricing.json` |
+| `reference-data/metadata/sync.config.json` | 我们的多源合并配置 | 实现细节 |
+| `corrections/`、`source-data/` | 快照原件与逐字段改动台账 | 审计用，给人看；`changelog.csv` 是派生品 |
 | `tools/` | 生成上述文件的脚本 | 想自己重算再去 fork |
 
 ### new-api 的两个同步按钮，分别读什么
@@ -319,7 +335,7 @@ overrides.json  >  官方逐模型页 / 官方 API（official:*，需官方内�
 `overrides.json` 里确实有我们的口径（哪些模型按 `legacy` 算、哪些不发布），但这些判断在**生成
 `models.json` 时就已经落成确定值**。消费者拿到的是拍过板的数据，不需要、也不应该自己重跑一遍合并。
 
-不认同某个判断时的正确做法：fork `sources/overrides.json` 后重跑 `tools/`，而不是读完 `models.json` 再打补丁。
+不认同某个判断时的正确做法：fork `reference-data/metadata/overrides.json` 后重跑 `tools/`，而不是读完 `models.json` 再打补丁。
 
 ### 两个字段是我们的展示约定
 
@@ -345,7 +361,7 @@ overrides.json  >  官方逐模型页 / 官方 API（official:*，需官方内�
 
 | 文件 | 内容 | 维护方式 |
 |:---|:---|:---|
-| `sources/pricing.official.json` | 厂商官方定价页抄录，`price_kind: vendor_official`，逐条带 `source_url` 与 `quote` | 人工（官方页核对后导入） |
+| `reference-data/price/pricing.official.json` | 厂商官方定价页抄录，`price_kind: vendor_official`，逐条带 `source_url` 与 `quote` | 人工（官方页核对后导入） |
 | `api/newapi/pricing.json` | 每个已发布模型的**官方价** + 出处；无官方价的模型只留一行壳（`price_kind: unpriced`，不带任何数字） | `tools/model_sync` 生成 |
 
 > **`api/newapi/` 只放厂商公开数据。** 属于我们平台的一律不进这个目录：
@@ -406,7 +422,7 @@ Google 的 `https://ai.google.dev/gemini-api/docs/pricing.md` 返回的仍是 HT
 | 内容 | 位置 | 是否公开 |
 |:---|:---|:---|
 | 模型目录、能力/模态、生命周期 | `api/newapi/models.json`、`api/i18n/**` | ✅ |
-| 厂商官方牌价 | `sources/pricing.official.json` | ✅ |
+| 厂商官方牌价 | `reference-data/price/pricing.official.json` | ✅ |
 | 参考牌价与由其生成的表达式 | `api/newapi/pricing.json` | ✅ |
 | **上游结算价**（我们的采购成本、汇率折算、分组折扣） | 私有：`/opt/model-data-private/billing_basis.json` | ❌ |
 | **线上实际结算表达式**（含结算单价） | 只在部署机上生成，从不提交 | ❌ |
@@ -532,11 +548,11 @@ python -m tools.model_sync.validate \
 > basis），再走 `export_billing --basis` + `push_billing` 落库。直接调
 > `PATCH /api/option/model_pricing` 或改数据库会绕过官方原文校验，`--live` 校验会把这类漂移报成错误。
 
-## 原始第三方快照（raw/）
+## 参考数据来源（source-data/）
 
-`raw/` 存放**未合并**的第三方抓取快照，供人工比对后决定是否并入 `api/newapi/models.json`。
+`source-data/` 存放**未合并**的第三方抓取快照，供人工比对后决定是否并入 `api/newapi/models.json`。
 命名统一为 `cheaperinference-<YYYYMMDD>[-限定词].json`；L3 用 `<YYYYMMDD>.verified.json` 后缀。
-**每期只保留最新一份**（历史在 git 里），目录自身说明见 `raw/README.md`。
+**每期只保留最新一份**（历史在 git 里），目录自身说明见 `source-data/README.md`。
 
 | 文件 | 来源 | 内容 |
 |:---|:---|:---|
@@ -547,9 +563,9 @@ python -m tools.model_sync.validate \
 ### 快照分三层，不要合并
 
 ```
-L1  raw/cheaperinference-<date>.json            站点原话，一字不改
+L1  source-data/cheaperinference-<date>.json            站点原话，一字不改
 L2  corrections/<date>/corrections.json         官方核实值 + source_url + quote
-L3  raw/cheaperinference-<date>.verified.json   L1 + L2，给下游用
+L3  source-data/cheaperinference-<date>.verified.json   L1 + L2，给下游用
 ```
 
 > 一次快照一套，放在 `corrections/<YYYYMMDD>/`；口径文档固定在 `corrections/README.md`。
@@ -569,7 +585,7 @@ L3  raw/cheaperinference-<date>.verified.json   L1 + L2，给下游用
 不能直接并入目录。用下面的脚本生成差异清单，再对照官方文档决定改哪边：
 
 ```bash
-python -m tools.ops.compare_snapshot raw/cheaperinference-20261026.json
+python -m tools.ops.compare_snapshot source-data/cheaperinference-20261026.json
 ```
 
 比对四个维度：`context_length`、`max_output_tokens`、`input_modalities`、`output_modalities`、`capabilities`。
@@ -604,14 +620,14 @@ python -m tools.ops.compare_snapshot raw/cheaperinference-20261026.json
 
 ```bash
 python -m tools.ops.normalize_snapshot --report                              # 只打印审计
-python -m tools.ops.normalize_snapshot -o raw/cheaperinference-normalized.json
+python -m tools.ops.normalize_snapshot -o source-data/cheaperinference-normalized.json
 ```
 
 > 工具分工：
 >
 > | 工具 | 干什么 | 产出 |
 > |:---|:---|:---|
-> | `tools/ops/normalize_snapshot.py` | **仅为我们目录比对**做的适配：把站点值映射到本仓库词表、补计费维度、标 `*_source`（会改结构）。不传 `-i` 时自动取 `raw/` 下最新一期 | `raw/cheaperinference-normalized.json`（默认 gitignore） |
+> | `tools/ops/normalize_snapshot.py` | **仅为我们目录比对**做的适配：把站点值映射到本仓库词表、补计费维度、标 `*_source`（会改结构）。不传 `-i` 时自动取 `source-data/` 下最新一期 | `source-data/cheaperinference-normalized.json`（默认 gitignore） |
 >
 > 要和 `api/newapi/models.json` 对账 → 用 `compare_snapshot`（内部会调 `normalize_snapshot`）。
 >
@@ -640,14 +656,14 @@ input_modalities / output_modalities / capabilities / image_edit / endpoints`，
 （实测 103/505 条的模态是推出来的）。只想要站点原文、不想要任何推断时：
 
 ```bash
-python -m tools.ops.normalize_snapshot --strict -o raw/cheaperinference-strict.json
+python -m tools.ops.normalize_snapshot --strict -o source-data/cheaperinference-strict.json
 ```
 
 strict 模式下这 103 条的 `input_modalities` 直接留空（同时进 `unknown[]`），
 `capabilities` 也不再从 token 回退——适合「宁缺毋滥」的对比。
 
 抓取脚本（`fetch_cheaperinference.py` / `merge_cheaperinference.py`）未随本次拆分保留；
-`raw/` 里的快照是历史抓取结果，需要更新时按下方规则人工重跑并核对。
+`source-data/` 里的快照是历史抓取结果，需要更新时按下方规则人工重跑并核对。
 
 `derived` 块记录当时的推导结果，规则如下（抓取/合并脚本未随拆分保留，`derived` 只作参考，不直接采信）：
 
