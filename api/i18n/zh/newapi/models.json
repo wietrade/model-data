@@ -475,12 +475,12 @@
       "output_modalities": [
         "text"
       ],
-      "context_length": 1048576,
-      "max_output_tokens": 943718,
+      "context_length": 1000000,
+      "max_output_tokens": 384000,
       "is_free": false,
       "endpoints": null,
       "lifecycle": "ga",
-      "release_date": "2026-09-10",
+      "release_date": "2026-10-17",
       "knowledge_cutoff": ""
     },
     {

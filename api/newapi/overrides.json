@@ -3,20 +3,11 @@
   "_comment": "人工核对的权威值，优先级高于所有自动源。用于解决源冲突或补充源缺 口；请在 note 里写清依据与核对日期。excluded 里的模型不会被发布，即使聚合源仍然列出。",
   "models": [
     {
-      "model_name": "gemini-3-pro-image",
-      "note": "官方模型页 ai.google.dev/gemini-api/docs/models/gemini-3-pro-image（2026-09-08 更新）：输入 token 上限 65,536，输出 32,768；官方价格表 >200K 档对本模型不可达。",
+      "model_name": "MiniMax-M3",
+      "note": "第二轮官方核实（https://platform.minimaxi.com/docs/faq/models.md，2026-10-25 复核）。",
       "fields": {
-        "context_length": 65536,
-        "max_output_tokens": 32768,
-        "lifecycle": "ga"
-      }
-    },
-    {
-      "model_name": "gemini-3-pro-image-preview",
-      "note": "官方模型页 ai.google.dev/gemini-api/docs/models/gemini-3-pro-image（2026-09-08 更新）：输入 token 上限 65,536，输出 32,768；官方价格表 >200K 档对本模型不可达。",
-      "fields": {
-        "context_length": 65536,
-        "max_output_tokens": 32768
+        "lifecycle": "ga",
+        "release_date": "2026-06-01"
       }
     },
     {
@@ -33,6 +24,21 @@
         ],
         "tags": "已弃用",
         "lifecycle": "deprecated"
+      }
+    },
+    {
+      "model_name": "claude-fable-5",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "fields": {
+        "lifecycle": "legacy"
+      }
+    },
+    {
+      "model_name": "claude-fable-5-1",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "fields": {
+        "lifecycle": "ga",
+        "knowledge_cutoff": "2026-06"
       }
     },
     {
@@ -54,17 +60,11 @@
       }
     },
     {
-      "model_name": "claude-fable-5",
+      "model_name": "claude-haiku-5-5",
       "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
       "fields": {
-        "lifecycle": "legacy"
-      }
-    },
-    {
-      "model_name": "claude-opus-5",
-      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
-      "fields": {
-        "lifecycle": "legacy"
+        "lifecycle": "ga",
+        "knowledge_cutoff": "2026-06"
       }
     },
     {
@@ -96,18 +96,10 @@
       }
     },
     {
-      "model_name": "claude-sonnet-5",
+      "model_name": "claude-opus-5",
       "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
       "fields": {
         "lifecycle": "legacy"
-      }
-    },
-    {
-      "model_name": "claude-fable-5-1",
-      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
-      "fields": {
-        "lifecycle": "ga",
-        "knowledge_cutoff": "2026-06"
       }
     },
     {
@@ -119,75 +111,18 @@
       }
     },
     {
+      "model_name": "claude-sonnet-5",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "fields": {
+        "lifecycle": "legacy"
+      }
+    },
+    {
       "model_name": "claude-sonnet-5-5",
       "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
       "fields": {
         "lifecycle": "ga",
         "knowledge_cutoff": "2026-06"
-      }
-    },
-    {
-      "model_name": "claude-haiku-5-5",
-      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
-      "fields": {
-        "lifecycle": "ga",
-        "knowledge_cutoff": "2026-06"
-      }
-    },
-    {
-      "model_name": "gemini-4-argon",
-      "note": "官方模型页 https://ai.google.dev/gemini-api/docs/models/gemini-4-argon（2026-10-26 复核）：Context window 1,048,576（输入输出统一），Max output 65,536（默认同步；long decode 可到 1,048,576）。原先的 943,718 来自 openrouter，不是官方口径。",
-      "fields": {
-        "lifecycle": "ga",
-        "context_length": 1048576,
-        "max_output_tokens": 65536
-      }
-    },
-    {
-      "model_name": "gemini-nano-banana-2.1",
-      "note": "官方模型页 https://ai.google.dev/gemini-api/docs/models/gemini-nano-banana-2.1（2026-10-26 复核）：Input token limit 131,072 / Output token limit 32,768。models.list 的 inputTokenLimit 报 65,536，与逐模型页冲突，采信逐模型页；原 58,982 是 openrouter 的 0.9× 折算值。",
-      "fields": {
-        "context_length": 131072,
-        "max_output_tokens": 32768
-      }
-    },
-    {
-      "model_name": "gemini-3.1-flash-image-preview",
-      "note": "官方 models.list（2026-10-26）：inputTokenLimit 65,536 / outputTokenLimit 65,536，与 models.dev 一致；该 id 无独立模型页（404），故采信 API。原 58,982 是 openrouter 的 0.9× 折算值。",
-      "fields": {
-        "max_output_tokens": 65536
-      }
-    },
-    {
-      "model_name": "gemma-4-26b-a4b-it:free",
-      "note": "官方 models.list（2026-10-26）：inputTokenLimit 262,144 / outputTokenLimit 32,768，与 models.dev 一致；原 235,929 来自 openrouter。该 id 无独立模型页（404）。",
-      "fields": {
-        "max_output_tokens": 32768
-      }
-    },
-    {
-      "model_name": "gemma-4-31b-it:free",
-      "note": "官方 models.list（2026-10-26）：inputTokenLimit 262,144 / outputTokenLimit 32,768，与 models.dev 一致；原 16,384 来自 openrouter。该 id 无独立模型页（404）。",
-      "fields": {
-        "max_output_tokens": 32768
-      }
-    },
-    {
-      "model_name": "gemini-3.1-flash-image",
-      "note": "第二轮官方核实（https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-image，2026-10-25 复核）。Google 官方页核对（2026-10-26）：context_length=131072，max_output_tokens=32768。依据 https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-image?hl=en（与 models.list 冲突，取页面：页面 131072 / API 65536；页面 32768 / API 65536）",
-      "fields": {
-        "lifecycle": "ga",
-        "context_length": 131072,
-        "max_output_tokens": 32768
-      }
-    },
-    {
-      "model_name": "grok-4.7",
-      "note": "第二轮官方核实（https://docs.x.ai/developers/grok-4-7，2026-10-25 复核）。 第三轮核实：docs.x.ai/developers/models/grok-4.7 列为 frontier/Latest 现役模型。",
-      "fields": {
-        "context_length": 500000,
-        "knowledge_cutoff": "2026-05",
-        "lifecycle": "ga"
       }
     },
     {
@@ -211,6 +146,16 @@
       }
     },
     {
+      "model_name": "deepseek-v4.1-flash",
+      "note": "官方定价/模型页（https://api-docs.deepseek.com/zh-cn/quick_start/pricing/，2026-10-26 核对）：上下文 1M、输出最大 384K。该 ID 是 DeepSeek-V4.1-Flash-1017 的版本名写法，官方注明旧 ID 仍可调用并由 V4.1-Flash-1017 提供服务；原聚合源给的 1,048,576 / 943,718 属思考预算混入，已纠正。",
+      "fields": {
+        "context_length": 1000000,
+        "max_output_tokens": 384000,
+        "lifecycle": "ga",
+        "release_date": "2026-10-17"
+      }
+    },
+    {
       "model_name": "deepseek-v4.1-flash-1017",
       "note": "第二轮官方核实（https://api-docs.deepseek.com/zh-cn/updates，2026-10-25 复核）。 与 deepseek-flash 同为 DeepSeek-V4.1-Flash-1017 的规格：上下文 1M、最大输出 384K（api-docs.deepseek.com/quick_start/pricing）。",
       "fields": {
@@ -221,11 +166,74 @@
       }
     },
     {
-      "model_name": "kimi-k3",
-      "note": "第二轮官方核实（https://platform.kimi.com/docs/changelog/index.md，2026-10-25 复核）。",
+      "model_name": "dots-3-note-preview:free",
+      "note": "第三轮核实：HF dots-studio/dots3-note-prev，集合更新日 2026-08-14；官方写 512K 上下文（SGLang 配置 524288），保留 524288 不做改动。",
+      "fields": {
+        "release_date": "2026-08-14"
+      }
+    },
+    {
+      "model_name": "gemini-3-pro-image",
+      "note": "官方模型页 ai.google.dev/gemini-api/docs/models/gemini-3-pro-image（2026-09-08 更新）：输入 token 上限 65,536，输出 32,768；官方价格表 >200K 档对本模型不可达。",
+      "fields": {
+        "context_length": 65536,
+        "max_output_tokens": 32768,
+        "lifecycle": "ga"
+      }
+    },
+    {
+      "model_name": "gemini-3-pro-image-preview",
+      "note": "官方模型页 ai.google.dev/gemini-api/docs/models/gemini-3-pro-image（2026-09-08 更新）：输入 token 上限 65,536，输出 32,768；官方价格表 >200K 档对本模型不可达。",
+      "fields": {
+        "context_length": 65536,
+        "max_output_tokens": 32768
+      }
+    },
+    {
+      "model_name": "gemini-3.1-flash-image",
+      "note": "第二轮官方核实（https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-image，2026-10-25 复核）。Google 官方页核对（2026-10-26）：context_length=131072，max_output_tokens=32768。依据 https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-image?hl=en（与 models.list 冲突，取页面：页面 131072 / API 65536；页面 32768 / API 65536）",
       "fields": {
         "lifecycle": "ga",
-        "context_length": 1048576
+        "context_length": 131072,
+        "max_output_tokens": 32768
+      }
+    },
+    {
+      "model_name": "gemini-3.1-flash-image-preview",
+      "note": "官方 models.list（2026-10-26）：inputTokenLimit 65,536 / outputTokenLimit 65,536，与 models.dev 一致；该 id 无独立模型页（404），故采信 API。原 58,982 是 openrouter 的 0.9× 折算值。",
+      "fields": {
+        "max_output_tokens": 65536
+      }
+    },
+    {
+      "model_name": "gemini-4-argon",
+      "note": "官方模型页 https://ai.google.dev/gemini-api/docs/models/gemini-4-argon（2026-10-26 复核）：Context window 1,048,576（输入输出统一），Max output 65,536（默认同步；long decode 可到 1,048,576）。原先的 943,718 来自 openrouter，不是官方口径。",
+      "fields": {
+        "lifecycle": "ga",
+        "context_length": 1048576,
+        "max_output_tokens": 65536
+      }
+    },
+    {
+      "model_name": "gemini-nano-banana-2.1",
+      "note": "官方模型页 https://ai.google.dev/gemini-api/docs/models/gemini-nano-banana-2.1（2026-10-26 复核）：Input token limit 131,072 / Output token limit 32,768。models.list 的 inputTokenLimit 报 65,536，与逐模型页冲突，采信逐模型页；原 58,982 是 openrouter 的 0.9× 折算值。",
+      "fields": {
+        "context_length": 131072,
+        "max_output_tokens": 32768
+      }
+    },
+    {
+      "model_name": "gemma-4-26b-a4b-it:free",
+      "note": "官方 models.list（2026-10-26）：inputTokenLimit 262,144 / outputTokenLimit 32,768，与 models.dev 一致；原 235,929 来自 openrouter。该 id 无独立模型页（404）。",
+      "fields": {
+        "max_output_tokens": 32768
+      }
+    },
+    {
+      "model_name": "gemma-4-31b-it:free",
+      "note": "官方 models.list（2026-10-26）：inputTokenLimit 262,144 / outputTokenLimit 32,768，与 models.dev 一致；原 16,384 来自 openrouter。该 id 无独立模型页（404）。",
+      "fields": {
+        "max_output_tokens": 32768
       }
     },
     {
@@ -236,37 +244,10 @@
       }
     },
     {
-      "model_name": "MiniMax-M3",
-      "note": "第二轮官方核实（https://platform.minimaxi.com/docs/faq/models.md，2026-10-25 复核）。",
-      "fields": {
-        "lifecycle": "ga",
-        "release_date": "2026-06-01"
-      }
-    },
-    {
-      "model_name": "minimax-m3.1-flash",
-      "note": "第二轮官方核实（https://platform.minimaxi.com/docs/faq/models.md，2026-10-25 复核）。",
-      "fields": {
-        "lifecycle": "ga",
-        "release_date": "2026-10-19"
-      }
-    },
-    {
-      "model_name": "qwen3.8-flash",
-      "note": "第二轮官方核实（https://help.aliyun.com/zh/model-studio/newly-released-models，2026-10-25 复核）。",
-      "fields": {
-        "lifecycle": "ga",
-        "release_date": "2026-08-26"
-      }
-    },
-    {
-      "model_name": "gpt-oss-120b",
-      "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-oss-120b，2026-10-25 复核）。",
-      "fields": {
-        "context_length": 131072,
-        "max_output_tokens": 131072,
-        "knowledge_cutoff": "2024-06"
-      }
+      "model_name": "glm-5.3-prime",
+      "note": "第三轮核实：智谱官方模型概览无 glm-5.3-prime（官方加速变体为 GLM-5.3-FlashX）→ 判定为平台/转售命名，lifecycle 等字段永久留空，不再进入核实队列。",
+      "fields": {},
+      "platform_only": true
     },
     {
       "model_name": "gpt-5.4",
@@ -321,6 +302,16 @@
       }
     },
     {
+      "model_name": "gpt-6-astra",
+      "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-6-astra.md，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga",
+        "knowledge_cutoff": "2026-04",
+        "context_length": 1050000,
+        "max_output_tokens": 128000
+      }
+    },
+    {
       "model_name": "gpt-6-luna",
       "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-6-luna.md，2026-10-25 复核）。",
       "fields": {
@@ -333,16 +324,6 @@
     {
       "model_name": "gpt-6-sol",
       "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-6-sol.md，2026-10-25 复核）。",
-      "fields": {
-        "lifecycle": "ga",
-        "knowledge_cutoff": "2026-04",
-        "context_length": 1050000,
-        "max_output_tokens": 128000
-      }
-    },
-    {
-      "model_name": "gpt-6-astra",
-      "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-6-astra.md，2026-10-25 复核）。",
       "fields": {
         "lifecycle": "ga",
         "knowledge_cutoff": "2026-04",
@@ -377,25 +358,21 @@
       }
     },
     {
-      "model_name": "lfm-2.5-2.6b:free",
-      "note": "第三轮核实：docs.liquid.ai 规格 131K 上下文；发布日期 2026-08-04。",
+      "model_name": "gpt-oss-120b",
+      "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-oss-120b，2026-10-25 复核）。",
       "fields": {
         "context_length": 131072,
-        "release_date": "2026-08-04"
+        "max_output_tokens": 131072,
+        "knowledge_cutoff": "2024-06"
       }
     },
     {
-      "model_name": "dots-3-note-preview:free",
-      "note": "第三轮核实：HF dots-studio/dots3-note-prev，集合更新日 2026-08-14；官方写 512K 上下文（SGLang 配置 524288），保留 524288 不做改动。",
+      "model_name": "grok-4.7",
+      "note": "第二轮官方核实（https://docs.x.ai/developers/grok-4-7，2026-10-25 复核）。 第三轮核实：docs.x.ai/developers/models/grok-4.7 列为 frontier/Latest 现役模型。",
       "fields": {
-        "release_date": "2026-08-14"
-      }
-    },
-    {
-      "model_name": "nemotron-3.5-content-safety:free",
-      "note": "第三轮核实：NVIDIA 发布公告日期。",
-      "fields": {
-        "release_date": "2026-06-02"
+        "context_length": 500000,
+        "knowledge_cutoff": "2026-05",
+        "lifecycle": "ga"
       }
     },
     {
@@ -406,17 +383,50 @@
       }
     },
     {
+      "model_name": "kimi-k3",
+      "note": "第二轮官方核实（https://platform.kimi.com/docs/changelog/index.md，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga",
+        "context_length": 1048576
+      }
+    },
+    {
+      "model_name": "lfm-2.5-2.6b:free",
+      "note": "第三轮核实：docs.liquid.ai 规格 131K 上下文；发布日期 2026-08-04。",
+      "fields": {
+        "context_length": 131072,
+        "release_date": "2026-08-04"
+      }
+    },
+    {
+      "model_name": "minimax-m3.1-flash",
+      "note": "第二轮官方核实（https://platform.minimaxi.com/docs/faq/models.md，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga",
+        "release_date": "2026-10-19"
+      }
+    },
+    {
+      "model_name": "nemotron-3.5-content-safety:free",
+      "note": "第三轮核实：NVIDIA 发布公告日期。",
+      "fields": {
+        "release_date": "2026-06-02"
+      }
+    },
+    {
+      "model_name": "qwen3.8-flash",
+      "note": "第二轮官方核实（https://help.aliyun.com/zh/model-studio/newly-released-models，2026-10-25 复核）。",
+      "fields": {
+        "lifecycle": "ga",
+        "release_date": "2026-08-26"
+      }
+    },
+    {
       "model_name": "xing4.0-29b-a4b:free",
       "note": "第三轮核实：中国电信星辰发布日。",
       "fields": {
         "release_date": "2026-09-17"
       }
-    },
-    {
-      "model_name": "glm-5.3-prime",
-      "note": "第三轮核实：智谱官方模型概览无 glm-5.3-prime（官方加速变体为 GLM-5.3-FlashX）→ 判定为平台/转售命名，lifecycle 等字段永久留空，不再进入核实队列。",
-      "fields": {},
-      "platform_only": true
     }
   ],
   "excluded": [
