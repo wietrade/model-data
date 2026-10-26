@@ -1706,34 +1706,6 @@
       "knowledge_cutoff": ""
     },
     {
-      "model_name": "glm-5.3-prime",
-      "vendor_name": "Z.AI",
-      "description": "GLM-5.3-Prime is the high-speed variant of Z.ai's GLM-5.3, inheriting its full capabilities while delivering 1.5–2× the output throughput through inference acceleration. It supports text input and out",
-      "icon": "ZAI",
-      "name_rule": 0,
-      "status": 1,
-      "tags": "推理,工具,平台命名",
-      "capabilities": [
-        "reasoning",
-        "tools",
-        "structured_output",
-        "cache_implicit"
-      ],
-      "input_modalities": [
-        "text"
-      ],
-      "output_modalities": [
-        "text"
-      ],
-      "context_length": 1000000,
-      "max_output_tokens": 131072,
-      "is_free": false,
-      "endpoints": null,
-      "lifecycle": "",
-      "release_date": "2026-09-23",
-      "knowledge_cutoff": ""
-    },
-    {
       "model_name": "grok-4.5",
       "vendor_name": "xAI",
       "description": "grok-4.5",
