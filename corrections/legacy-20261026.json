@@ -2,7 +2,7 @@
   "id": "legacy-20261026",
   "applies_to": "raw/cheaperinference-20261026.json",
   "note": "这些模型不再花核实成本：字段保留站点原值，也不进 corrections。判定依据：同家族已有更新代（快照里能看到）、官方已下线/退役，或第三方标注 deprecated；标注均为人工判断，非官方 EOL 声明。",
-  "count": 102,
+  "count": 101,
   "models": {
     "claude-haiku-4.5": {
       "superseded_by": "claude-*-5.5",
@@ -110,11 +110,6 @@
       "type": "text"
     },
     "gemma-3-12b-it": {
-      "superseded_by": "gemma-4-31b-it",
-      "reason": "Gemma 3 代已被 Gemma 4 取代",
-      "type": "text"
-    },
-    "gemma-3-27b-it": {
       "superseded_by": "gemma-4-31b-it",
       "reason": "Gemma 3 代已被 Gemma 4 取代",
       "type": "text"

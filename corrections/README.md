@@ -101,14 +101,39 @@ L2 是**唯一**允许写入「外部知识」的地方，并且每条都必须�
 
 | 大类 | 条数 | 例子 |
 |:---|--:|:---|
-| 落后 ≥2 个体系代 / 上游已下线 | 102 | `gpt-4o`/`gpt-4.1`/`gpt-5`/`gpt-5.1`/`gpt-5.2`、`claude-*-4.x`、`gemini-2.5`/`3.1`、`glm-4.x`、`qwen3`/`qwen3.5`、`kimi-k2`、`deepseek-r1`/`v3`、`grok-4.1`/`4.20`、`mistral-*`（old）、`llama-*`、`nova-*`、`flux-1/2`、`recraft-v2/v3` |
+| 落后 ≥2 个体系代 / 上游已下线 | 101 | `gpt-4o`/`gpt-4.1`/`gpt-5`/`gpt-5.1`/`gpt-5.2`、`claude-*-4.x`、`gemini-2.5`/`3.1`、`glm-4.x`、`qwen3`/`qwen3.5`、`kimi-k2`、`deepseek-r1`/`v3`、`grok-4.1`/`4.20`、`mistral-*`（old）、`llama-*`、`nova-*`、`flux-1/2`、`recraft-v2/v3` |
 
 不按代际判老的例外：ASR / TTS / 转写 / OCR / embedding / image / video 这些**专用模型版本节奏不同**，
 以及名字带 `next` 的（如 `qwen3-coder-next`）。
 
-效果：412 条未核实里剔掉 102 条，剩 310 条。
+效果：411 条未核实里剔掉 101 条，剩 310 条。
 
 其中 2 条是「上游已下线、站点仍在卖」而非代际落后，优先于家族规则判定：`mimo-v2.5`（小米 2026-10-21 下线）、`grok-code-fast-1`（xAI 2026-05-15 退役转发 grok-build-0.1）；同理 `grok-4.1-fast-*` 的取代目标已改为 grok-4.3。
+
+## 两个口径：模型规格 vs 站点实际服务
+
+`contextLength` / `maxOutputTokens` 一律记 **模型自身规格**（有官方出处、可引用、不随上游路由变化）。
+同一句话在三个地方可能给出三个数，以规格为准：
+
+| 模型 | 站点原文 `detail_ContextWindow` | 官方规格 | 站点实际服务 |
+|:---|:---|:---|:---|
+| `grok-4` | 2,000,000 | 256,000（grok-4-0709） | 1,000,000 —— xAI 2026-05-15 退役后转发到 grok-4.3 |
+| `gemma-3-27b-it` | 40,000 | 131,072（Google 模型卡） | 某部署截断到 40,000 |
+| `claude-haiku-5.5` | 100,000 | 1,000,000 | 1,000,000（站点少打一个 0） |
+
+「站点实际服务」不写进主字段，另存 `corrections/routing-*.json`，应用后成为 L3 的
+`servedAs` / `retiredAt` 两个附加键：
+
+```bash
+python -m tools.ops.apply_corrections \
+    --snapshot raw/cheaperinference-20261026.json \
+    --corrections corrections/cheaperinference-20261026.json \
+    --routing corrections/routing-20261026.json \
+    --out raw/cheaperinference-20261026.verified.json
+```
+
+为什么不混进 `contextLength`：上游路由随时会改，写进主字段会让同一个模型的值反复漂移，
+且无法再引用任何一个官方页面作为出处。`servedAs` 是提示性的，`contextLength` 是可引用的。
 
 ## 核实范围（scope-20261026.json）
 
@@ -117,8 +142,8 @@ L2 是**唯一**允许写入「外部知识」的地方，并且每条都必须�
 
 | tier | 条数 | 含义 |
 |:---|--:|:---|
-| `done` | 115 | 已有官方核实条目 |
-| `legacy` | 102 | 老代 / 上游已下线，不再核实（见上节） |
+| `done` | 116 | 已有官方核实条目 |
+| `legacy` | 101 | 老代 / 上游已下线，不再核实（见上节） |
 | `main` | 208 | **主流厂商，缺数据也必须核**（其中 44 条目前有缺口） |
 | `ignore` | 48 | **非主流 + 缺数据 ⇒ 直接忽略** |
 | `review` | 40 | 非主流但信息齐全（站点数据够用，不另行核实） |

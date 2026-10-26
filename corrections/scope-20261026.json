@@ -886,9 +886,8 @@
       "type": "text"
     },
     "gemma-3-27b-it": {
-      "tier": "legacy",
-      "why": "Gemma 3 代已被 Gemma 4 取代",
-      "superseded_by": "gemma-4-31b-it",
+      "tier": "done",
+      "why": "已有官方核实条目",
       "type": "text"
     },
     "gemma-3-4b-it": {
@@ -1530,19 +1529,25 @@
     "grok-4": {
       "tier": "done",
       "why": "已有官方核实条目",
-      "type": "text"
+      "type": "text",
+      "served_as": "grok-4.3",
+      "retired_at": "2026-05-15"
     },
     "grok-4.1-fast-non-reasoning": {
       "tier": "legacy",
       "why": "xAI 2026-05-15 退役，请求转发到 grok-4.3",
       "superseded_by": "grok-4.3",
-      "type": "text"
+      "type": "text",
+      "served_as": "grok-4.3",
+      "retired_at": "2026-05-15"
     },
     "grok-4.1-fast-reasoning": {
       "tier": "legacy",
       "why": "xAI 2026-05-15 退役，请求转发到 grok-4.3",
       "superseded_by": "grok-4.3",
-      "type": "text"
+      "type": "text",
+      "served_as": "grok-4.3",
+      "retired_at": "2026-05-15"
     },
     "grok-4.20-beta": {
       "tier": "legacy",
@@ -1611,7 +1616,9 @@
       "tier": "legacy",
       "why": "xAI 2026-05-15 退役，请求转发到 grok-build-0.1",
       "superseded_by": "grok-build-0.1",
-      "type": "text"
+      "type": "text",
+      "served_as": "grok-build-0.1",
+      "retired_at": "2026-05-15"
     },
     "grok-imagine-image": {
       "vendor": "xai",
@@ -2163,7 +2170,9 @@
       "tier": "legacy",
       "why": "小米官方 2026-10-21 下线，ID 不再可用",
       "superseded_by": "（无，已下线）",
-      "type": "text"
+      "type": "text",
+      "served_as": null,
+      "retired_at": "2026-10-21"
     },
     "mimo-v2.5-pro": {
       "vendor": "xiaomi",

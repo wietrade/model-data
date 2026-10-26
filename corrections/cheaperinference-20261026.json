@@ -1861,6 +1861,17 @@
       "verified_at": "2026-10-26",
       "reason": "Claude 核实（official）；L1 原值 1048576",
       "origin": "claude-batch2"
+    },
+    {
+      "id": "gemma-3-27b-it",
+      "field": "contextLength",
+      "value": 131072,
+      "source_url": "https://ai.google.dev/gemma/docs/core/model_card_3",
+      "quote": "Total input context of 128K tokens for the 4B, 12B, and 27B sizes；output up to 128K（与输入共享）",
+      "confidence": "high",
+      "verified_at": "2026-10-26",
+      "reason": "站点 40,000 是某个部署的截断值，非模型规格；按 contextLength=模型自身规格 口径改为 128K",
+      "origin": "claude-batch2"
     }
   ]
 }

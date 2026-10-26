@@ -3558,7 +3558,7 @@
       "group": "text",
       "vision": false,
       "reasoning": false,
-      "contextLength": 40000,
+      "contextLength": 131072,
       "maxOutputTokens": 16384,
       "imageEdit": false,
       "kind": "text",
@@ -6441,7 +6441,9 @@
       "detail_Streaming": "Supported",
       "detail_ContextWindow": "2,000,000 tokens",
       "detail_MaximumOutput": "256,000 tokens",
-      "detail_SupportedParameters": "Not reported"
+      "detail_SupportedParameters": "Not reported",
+      "servedAs": "grok-4.3",
+      "retiredAt": "2026-05-15"
     },
     {
       "id": "grok-4.1-fast-non-reasoning",
@@ -6478,7 +6480,9 @@
       "detail_Streaming": "Supported",
       "detail_ContextWindow": "1,000,000 tokens",
       "detail_MaximumOutput": "1,000,000 tokens",
-      "detail_SupportedParameters": "include_reasoning, max_tokens, reasoning, response_format, stop, structured_outputs, temperature, tool_choice, tools"
+      "detail_SupportedParameters": "include_reasoning, max_tokens, reasoning, response_format, stop, structured_outputs, temperature, tool_choice, tools",
+      "servedAs": "grok-4.3",
+      "retiredAt": "2026-05-15"
     },
     {
       "id": "grok-4.1-fast-reasoning",
@@ -6516,7 +6520,9 @@
       "detail_Streaming": "Supported",
       "detail_ContextWindow": "1,000,000 tokens",
       "detail_MaximumOutput": "1,000,000 tokens",
-      "detail_SupportedParameters": "include_reasoning, max_tokens, reasoning, response_format, stop, structured_outputs, temperature, tool_choice, tools"
+      "detail_SupportedParameters": "include_reasoning, max_tokens, reasoning, response_format, stop, structured_outputs, temperature, tool_choice, tools",
+      "servedAs": "grok-4.3",
+      "retiredAt": "2026-05-15"
     },
     {
       "id": "grok-4.20-beta",
@@ -6914,7 +6920,9 @@
       "detail_Streaming": "Supported",
       "detail_ContextWindow": "256,000 tokens",
       "detail_MaximumOutput": "256,000 tokens",
-      "detail_SupportedParameters": "Not reported"
+      "detail_SupportedParameters": "Not reported",
+      "servedAs": "grok-build-0.1",
+      "retiredAt": "2026-05-15"
     },
     {
       "id": "grok-imagine-image-2.0",
@@ -9555,7 +9563,8 @@
       "detail_Streaming": "Supported",
       "detail_ContextWindow": "1,000,000 tokens",
       "detail_MaximumOutput": "131,100 tokens",
-      "detail_SupportedParameters": "include_reasoning, max_tokens, reasoning, response_format, stop, structured_outputs, temperature, tool_choice, tools"
+      "detail_SupportedParameters": "include_reasoning, max_tokens, reasoning, response_format, stop, structured_outputs, temperature, tool_choice, tools",
+      "retiredAt": "2026-10-21"
     },
     {
       "id": "mimo-v2.5-pro",
@@ -19058,7 +19067,7 @@
   ],
   "audit": {
     "corrections_id": "cheaperinference-20261026",
-    "applied": 150,
+    "applied": 160,
     "skipped_low_confidence": 3,
     "min_confidence": "high",
     "remaining_max_output_over_context": 0,

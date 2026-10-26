@@ -45,7 +45,9 @@ SAFE_FIELDS = {
     "kind",
     "providerLabel",
     "providerSlug",
+    "servedAs",
 }
+ROUTING_FIELDS = ("servedAs", "retiredAt")
 CAP_ACTIONS = ("add_capabilities", "remove_capabilities")
 LEVELS = {"high": 3, "medium": 2, "low": 1}
 CAP_ORDER = [
@@ -136,6 +138,36 @@ def apply(snapshot, corrections, min_confidence="high"):
     return changelog, skipped, warnings
 
 
+def apply_routing(snapshot, routing):
+    """把「实际服务的模型」写成附加字段 servedAs / retiredAt。
+
+    这些字段与核实结论无关（contextLength 等仍记原型号规格），只是让下游知道
+    请求其实被转到了哪里，避免用户按旧规格使用已退役的 id。
+    """
+    by_id = {m["id"]: m for m in snapshot["models"]}
+    changelog, errors = [], []
+    for model_id, item in (routing.get("models") or {}).items():
+        record = by_id.get(model_id)
+        if record is None:
+            errors.append("%s：快照里没有这个模型" % model_id)
+            continue
+        if not str(item.get("source_url", "")).startswith("http"):
+            errors.append("%s：缺 source_url" % model_id)
+            continue
+        for field, key in (("servedAs", "served_as"), ("retiredAt", "retired_at")):
+            value = item.get(key)
+            if value is None or record.get(field) == value:
+                continue
+            old = record.get(field)
+            record[field] = value
+            changelog.append([model_id, field, json.dumps(old, ensure_ascii=False),
+                              json.dumps(value, ensure_ascii=False), item.get("confidence", "high"),
+                              item["source_url"], "上游路由：%s" % item.get("quote", "")])
+    if errors:
+        raise SystemExit("路由层自检失败：\n  " + "\n  ".join(errors))
+    return changelog
+
+
 def check_invariants(before, after):
     """返回（detail_* 是否被动过, 仍未解决的 max>context 列表）。"""
     by_before = {m["id"]: m for m in before["models"]}
@@ -158,6 +190,7 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--snapshot", required=True, help="L1 抓取快照")
     parser.add_argument("--corrections", required=True, help="L2 核实层")
+    parser.add_argument("--routing", help="可选：上游路由层（servedAs / retiredAt）")
     parser.add_argument("--out", help="L3 输出路径")
     parser.add_argument("--changelog", help="变更清单 CSV")
     parser.add_argument("--min-confidence", default="high", choices=sorted(LEVELS, key=LEVELS.get))
@@ -170,6 +203,10 @@ def main(argv=None) -> int:
     entries = corrections.get("corrections", corrections if isinstance(corrections, list) else [])
 
     changelog, skipped, warnings = apply(snapshot, entries, args.min_confidence)
+    routing_rows = []
+    if args.routing:
+        routing_rows = apply_routing(snapshot, load(args.routing))
+        changelog.extend(routing_rows)
     moved, violations = check_invariants(original, snapshot)
 
     if moved:
@@ -187,7 +224,9 @@ def main(argv=None) -> int:
     })
 
     print("应用 %d 处（跳过 %d 条低置信度）｜detail_* 未改动｜剩余 max>context %d 条"
-          % (len(changelog), len(skipped), len(violations)))
+          % (len(changelog) - len(routing_rows), len(skipped), len(violations)))
+    if routing_rows:
+        print("路由标注 %d 处（servedAs / retiredAt）" % len(routing_rows))
     for line in warnings[:10]:
         print("! %s" % line)
     for model_id, ctx, out in violations[:10]:

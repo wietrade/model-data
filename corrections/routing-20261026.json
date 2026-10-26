@@ -1,0 +1,47 @@
+{
+  "id": "routing-20261026",
+  "applies_to": "raw/cheaperinference-20261026.json",
+  "note": "上游已退役、站点仍在售的 id。contextLength / maxOutputTokens 仍按原型号官方规格记录（口径稳定、可引用），本文件只记录『请求实际被转到哪个模型』，供下游做提示或 id 映射。这里是附加信息，不参与核实结论的判定。",
+  "models": {
+    "grok-4": {
+      "served_as": "grok-4.3",
+      "retired_at": "2026-05-15",
+      "source_url": "https://docs.x.ai/developers/migration/may-15-retirement",
+      "quote": "grok-4-0709 于 2026-05-15 退役，请求转发到 grok-4.3",
+      "source_type": "official",
+      "confidence": "high"
+    },
+    "grok-4.1-fast-reasoning": {
+      "served_as": "grok-4.3",
+      "retired_at": "2026-05-15",
+      "source_url": "https://docs.x.ai/developers/migration/may-15-retirement",
+      "quote": "grok-4-1-fast-* 于 2026-05-15 退役，请求转发到 grok-4.3",
+      "source_type": "official",
+      "confidence": "high"
+    },
+    "grok-4.1-fast-non-reasoning": {
+      "served_as": "grok-4.3",
+      "retired_at": "2026-05-15",
+      "source_url": "https://docs.x.ai/developers/migration/may-15-retirement",
+      "quote": "grok-4-1-fast-* 于 2026-05-15 退役，请求转发到 grok-4.3",
+      "source_type": "official",
+      "confidence": "high"
+    },
+    "grok-code-fast-1": {
+      "served_as": "grok-build-0.1",
+      "retired_at": "2026-05-15",
+      "source_url": "https://docs.x.ai/developers/migration/may-15-retirement",
+      "quote": "grok-code-fast-1 于 2026-05-15 退役，请求转发到 grok-build-0.1",
+      "source_type": "official",
+      "confidence": "high"
+    },
+    "mimo-v2.5": {
+      "served_as": null,
+      "retired_at": "2026-10-21",
+      "source_url": "https://mimo.mi.com/docs/en-US/updates/model",
+      "quote": "mimo-v2.5 已于 2026-10-21 下线，ID 不再可用（站点 servedAt 仍为 2026-10-20）",
+      "source_type": "official",
+      "confidence": "high"
+    }
+  }
+}

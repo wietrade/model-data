@@ -38,6 +38,7 @@ from pathlib import Path
 L1 = Path("raw/cheaperinference-20261026.json")
 CORRECTIONS = Path("corrections/cheaperinference-20261026.json")
 LEGACY = Path("corrections/legacy-20261026.json")
+ROUTING = Path("corrections/routing-20261026.json")
 
 # --------------------------------------------------------------------------
 # 厂商识别：顺序敏感，先具体后笼统
@@ -144,16 +145,23 @@ def classify(model: dict, covered: set[str], legacy: dict) -> dict:
     return base
 
 
-def build(snapshot: Path, corrections: Path, legacy_path: Path) -> dict:
+def build(snapshot: Path, corrections: Path, legacy_path: Path, routing_path: Path = ROUTING) -> dict:
     models = json.loads(snapshot.read_text(encoding="utf-8"))["models"]
     covered = {c["id"] for c in json.loads(corrections.read_text(encoding="utf-8"))["corrections"]}
     legacy = {}
     if legacy_path.exists():
         legacy = json.loads(legacy_path.read_text(encoding="utf-8"))["models"]
+    routing = {}
+    if routing_path and Path(routing_path).exists():
+        routing = json.loads(Path(routing_path).read_text(encoding="utf-8"))["models"]
 
     out = OrderedDict()
     for m in sorted(models, key=lambda x: x["id"]):
-        out[m["id"]] = {**classify(m, covered, legacy), "type": m.get("type")}
+        entry = {**classify(m, covered, legacy), "type": m.get("type")}
+        if m["id"] in routing:
+            entry["served_as"] = routing[m["id"]].get("served_as")
+            entry["retired_at"] = routing[m["id"]].get("retired_at")
+        out[m["id"]] = entry
     return {
         "snapshot": str(snapshot),
         "generated_at": date.today().isoformat(),
@@ -196,11 +204,12 @@ def main() -> None:
     ap.add_argument("--snapshot", type=Path, default=L1)
     ap.add_argument("--corrections", type=Path, default=CORRECTIONS)
     ap.add_argument("--legacy", type=Path, default=LEGACY)
+    ap.add_argument("--routing", type=Path, default=ROUTING)
     ap.add_argument("-o", "--out", type=Path)
     ap.add_argument("--list", choices=TIER_ORDER, help="列出某一档的模型")
     args = ap.parse_args()
 
-    plan = build(args.snapshot, args.corrections, args.legacy)
+    plan = build(args.snapshot, args.corrections, args.legacy, args.routing)
     if args.list:
         for mid, v in plan["models"].items():
             if v["tier"] == args.list:
