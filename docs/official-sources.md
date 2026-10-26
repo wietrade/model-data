@@ -47,6 +47,11 @@ python -m tools.ops.verify_official_prices \
 人工确认后写进 `api/newapi/pricing.official.json`，每条必须带 `source_url` 与 `quote`（官方原文）。
 `pricing.json` 由 `python -m tools.model_sync.sync_models --only pricing` 生成，不要手改。
 
+> **`gpt-oss-120b` 不采用 GCP 价（2026-10-26 决定）**。Google Cloud 列 $0.09 / $0.36，
+> 但我们目录记 **0.15 / 0.6**——我方进货渠道不是 GCP，按 GCP 价会低于成本。
+> 同理 `gpt-oss-20b` 在 GCP 是 0.07 / 0.25，不直接套用。
+> 该条目前没有 `source_url`，属于已知例外；要改之前先确认渠道。
+
 ## 二、元数据（上下文 / 最大输出）
 
 | 厂商 | 官方页面 | 取哪两个数 |
@@ -57,6 +62,10 @@ python -m tools.ops.verify_official_prices \
 | Anthropic（总览） | `https://platform.claude.com/docs/en/about-claude/models/overview.md` | 当前阵容四款的 Context / Max output 对照表 |
 | Google | `https://ai.google.dev/gemini-api/docs/models/<id>`（中文加 `?hl=zh-cn`） | `Input token limit`、`Output token limit` |
 | Google（无逐模型页时） | `GET https://generativelanguage.googleapis.com/v1beta/models?pageSize=200` | `inputTokenLimit` / `outputTokenLimit` |
+| xAI | `https://docs.x.ai/developers/models/<id>.md` | **Markdown**，`Context window` / `Pricing` 表（含 ≤200K 与 ≥200K 两档、cached input、Batch 8 折） |
+| DeepSeek | `https://api-docs.deepseek.com/zh-cn/quick_start/pricing` | `上下文长度` / `输出长度` / 峰谷两套价 |
+| xAI | `https://docs.x.ai/developers/models/<id>.md` | **Markdown**，`Context window` / `Pricing` 表（含 ≤200K 与 ≥200K 两档、cached input、Batch 8 折） |
+| DeepSeek | `https://api-docs.deepseek.com/zh-cn/quick_start/pricing`（逐模型详情页同域） | `上下文长度` / `输出长度` / 峰谷两套价 |
 
 调用 Google API 的注意事项（`tools/model_sync/sources.py:_official_google` 已实现）：
 

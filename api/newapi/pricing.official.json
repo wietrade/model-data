@@ -41,6 +41,152 @@
   ],
   "data": [
     {
+      "model_name": "MiniMax-M3",
+      "vendor_name": "MiniMax",
+      "price_kind": "vendor_official",
+      "source_kind": "official_doc",
+      "source_url": "https://platform.minimax.io/docs/pricing/overview",
+      "retrieved_at": "2026-10-23T23:15:00+08:00",
+      "currency": "USD",
+      "unit": "per_1m_tokens",
+      "input": 0.3,
+      "output": 1.2,
+      "output_text": null,
+      "output_image": null,
+      "cache_read": 0.06,
+      "cache_write": null,
+      "cache_write_1h": null,
+      "per_image": null,
+      "tiers": [
+        {
+          "prompt_tokens_at_least": 512000,
+          "input": 0.6,
+          "output": 2.4,
+          "output_text": null,
+          "output_image": null,
+          "cache_read": 0.12,
+          "cache_write": null,
+          "cache_write_1h": null
+        }
+      ],
+      "effective_from": null,
+      "effective_to": null,
+      "upcoming": null,
+      "confidence": "high",
+      "quote": "MiniMax-M3 ≤ 512k input tokens Permanent 50% off | ~~$0.60~~ $0.30 | ~~$2.40~~ $1.20 | ~~$0.12~~ $0.06；MiniMax-M3 > 512k input tokens | ~~$1.20~~ $0.60 | ~~$4.80~~ $2.40 | ~~$0.24~~ $0.12",
+      "notes": "按输入长度两档，整条请求按落在的档计价（与 tiers 语义一致）；表格中的划线价是原价，现行价为永久五折。Priority 服务档（service_tier=priority）为 Standard 的 1.5 倍：≤512k $0.45/$1.80/$0.09，>512k $0.90/$3.60/$0.18——这是请求级参数，不另建档位。"
+    },
+    {
+      "model_name": "chatgpt-image-latest",
+      "vendor_name": "OpenAI",
+      "price_kind": "vendor_official",
+      "source_kind": "official_doc",
+      "source_url": "https://developers.openai.com/api/docs/pricing",
+      "retrieved_at": "2026-10-25T10:20:00+08:00",
+      "currency": "USD",
+      "unit": "per_1m_tokens",
+      "input": 5.0,
+      "output": 32.0,
+      "output_text": 10.0,
+      "output_image": 32.0,
+      "input_image": 8.0,
+      "cache_read": 1.25,
+      "cache_read_image": 2.0,
+      "cache_write": null,
+      "cache_write_1h": null,
+      "per_image": null,
+      "tiers": null,
+      "effective_from": null,
+      "effective_to": null,
+      "upcoming": null,
+      "confidence": "high",
+      "quote": "chatgpt-image-latest | Image | $8.00 | $32.00 | $2.00；chatgpt-image-latest | Text | $5.00 | $10.00 | $1.25；模型页：'This points to the Image snapshot previously used in ChatGPT.' | 2026-10-25 复核：Status: Deprecated；Input modalities: text, image；Output modalities: image, text。",
+      "notes": "按模态分别计价：图像输入 $8、图像输出 $32、图像缓存读 $2；文本输入 $5、文本输出 $10、文本缓存读 $1.25。Batch 为 Standard 的 50%。input/output 记文本侧为基准，图像侧见 input_image/output_image。 Token 价与按张价并存：Responses/图像 token 按 token 计，Images API 按上图质量×尺寸的单张价计费，两者各自官方原文，不互相推导。 别名关系：官方把 chatgpt-image-latest 定义为「指向 ChatGPT 当时所用 Image 快照」的浮动别名，另注明该快照为 ChatGPT 之前使用的版本；gpt-image-1.5 是固定快照 gpt-image-1.5-2025-12-16。两者 2026-10-23 的价格表逐格相同（文本 5/1.25/10、图像 8/2/32、按张 low 0.009/0.013、medium 0.034/0.05、high 0.133/0.2），端点与限流亦一致，当前可视为同一代模型；但别名会随 ChatGPT 换型而漂移，gpt-image-1.5 不会。\nOpenAI 模型页（developers.openai.com/api/docs/models/chatgpt-image-latest，2026-10-25 复核）：Status=Deprecated，官方建议改用 gpt-image-2.5-sunburst；输入 text/image，输出 image/text；官方未公布该模型的 token 上下文/输出上限。",
+      "meters": [
+        {
+          "dim": "output_image",
+          "price": 0.009,
+          "unit": "image",
+          "when": {
+            "quality": "low",
+            "size": "1024x1024"
+          }
+        },
+        {
+          "dim": "output_image",
+          "price": 0.013,
+          "unit": "image",
+          "when": {
+            "quality": "low",
+            "size": "1024x1536"
+          }
+        },
+        {
+          "dim": "output_image",
+          "price": 0.013,
+          "unit": "image",
+          "when": {
+            "quality": "low",
+            "size": "1536x1024"
+          }
+        },
+        {
+          "dim": "output_image",
+          "price": 0.034,
+          "unit": "image",
+          "when": {
+            "quality": "medium",
+            "size": "1024x1024"
+          }
+        },
+        {
+          "dim": "output_image",
+          "price": 0.05,
+          "unit": "image",
+          "when": {
+            "quality": "medium",
+            "size": "1024x1536"
+          }
+        },
+        {
+          "dim": "output_image",
+          "price": 0.05,
+          "unit": "image",
+          "when": {
+            "quality": "medium",
+            "size": "1536x1024"
+          }
+        },
+        {
+          "dim": "output_image",
+          "price": 0.133,
+          "unit": "image",
+          "when": {
+            "quality": "high",
+            "size": "1024x1024"
+          }
+        },
+        {
+          "dim": "output_image",
+          "price": 0.2,
+          "unit": "image",
+          "when": {
+            "quality": "high",
+            "size": "1024x1536"
+          }
+        },
+        {
+          "dim": "output_image",
+          "price": 0.2,
+          "unit": "image",
+          "when": {
+            "quality": "high",
+            "size": "1536x1024"
+          }
+        }
+      ]
+    },
+    {
       "model_name": "claude-fable-5",
       "vendor_name": "Anthropic",
       "price_kind": "vendor_official",
@@ -800,82 +946,21 @@
       "notes": "Gemma 4 在 Gemini API 仅提供 Free Tier，官方标价 Free of charge，Paid Tier 为 Not available；无付费 token 价。:free 为转售商免费档别名。"
     },
     {
-      "model_name": "MiniMax-M3",
-      "vendor_name": "MiniMax",
+      "model_name": "glm-5",
+      "vendor_name": "Z.AI",
       "price_kind": "vendor_official",
       "source_kind": "official_doc",
-      "source_url": "https://platform.minimax.io/docs/pricing/overview",
-      "retrieved_at": "2026-10-23T23:15:00+08:00",
+      "source_url": "https://open.bigmodel.cn/pricing",
+      "retrieved_at": "2026-10-23T18:59:09+08:00",
       "currency": "USD",
       "unit": "per_1m_tokens",
-      "input": 0.3,
-      "output": 1.2,
+      "input": 1.0,
+      "output": 3.2,
       "output_text": null,
       "output_image": null,
-      "cache_read": 0.06,
+      "cache_read": 0.2,
       "cache_write": null,
       "cache_write_1h": null,
-      "per_image": null,
-      "tiers": [
-        {
-          "prompt_tokens_at_least": 512000,
-          "input": 0.6,
-          "output": 2.4,
-          "output_text": null,
-          "output_image": null,
-          "cache_read": 0.12,
-          "cache_write": null,
-          "cache_write_1h": null
-        }
-      ],
-      "effective_from": null,
-      "effective_to": null,
-      "upcoming": null,
-      "confidence": "high",
-      "quote": "MiniMax-M3 ≤ 512k input tokens Permanent 50% off | ~~$0.60~~ $0.30 | ~~$2.40~~ $1.20 | ~~$0.12~~ $0.06；MiniMax-M3 > 512k input tokens | ~~$1.20~~ $0.60 | ~~$4.80~~ $2.40 | ~~$0.24~~ $0.12",
-      "notes": "按输入长度两档，整条请求按落在的档计价（与 tiers 语义一致）；表格中的划线价是原价，现行价为永久五折。Priority 服务档（service_tier=priority）为 Standard 的 1.5 倍：≤512k $0.45/$1.80/$0.09，>512k $0.90/$3.60/$0.18——这是请求级参数，不另建档位。"
-    },
-    {
-      "model_name": "minimax-m3.1-flash",
-      "vendor_name": "MiniMax",
-      "price_kind": "vendor_official",
-      "source_kind": "official_doc",
-      "source_url": "https://platform.minimax.io/docs/pricing/overview",
-      "retrieved_at": "2026-10-23T23:10:00+08:00",
-      "currency": "USD",
-      "unit": "per_1m_tokens",
-      "input": 0.15,
-      "output": 0.6,
-      "output_text": null,
-      "output_image": null,
-      "cache_read": 0.015,
-      "cache_write": null,
-      "cache_write_1h": null,
-      "per_image": null,
-      "tiers": null,
-      "effective_from": null,
-      "effective_to": null,
-      "upcoming": null,
-      "confidence": "high",
-      "quote": "MiniMax-M3.1-Flash | $0.15 | $0.60 | $0.015 (Input / Output / Prompt caching Read, $ per M tokens)",
-      "notes": "官方定价页 Pricing Overview → LLM 表：Input $0.15 / Output $0.60 / Prompt caching Read $0.015（USD per 1M tokens）。国内站同款 ¥1.00 / ¥4.00 / ¥0.10。MiniMax-M3 另有 ≤512k 与 >512k 两档，本模型为单一档。"
-    },
-    {
-      "model_name": "kimi-k3",
-      "vendor_name": "Moonshot AI",
-      "price_kind": "vendor_official",
-      "source_kind": "official_doc",
-      "source_url": "https://platform.kimi.com/docs/pricing/chat",
-      "retrieved_at": "2026-10-25T09:40:00+08:00",
-      "currency": "USD",
-      "unit": "per_1m_tokens",
-      "input": 3.0,
-      "output": 15.0,
-      "output_text": null,
-      "output_image": null,
-      "cache_read": 0.3,
-      "cache_write": 3.0,
-      "cache_write_1h": 6.0,
       "per_image": null,
       "tiers": null,
       "effective_from": null,
@@ -883,24 +968,22 @@
       "upcoming": null,
       "confidence": "high",
       "quote": null,
-      "notes": "国内站 CNY 原价：输入(未命中)¥20 / 输出¥100 / 缓存命中¥2 / 缓存写5min¥20 / 1h¥40；按汇率 6.6743 折算为 USD（in $3.0 / out $15.0 / cr $0.3 / cw $3.0 / cw1h $6.0）。"
+      "notes": "智谱国内站 open.bigmodel.cn：GLM-5.3 输入¥8/输出¥28/缓存命中¥2；缓存存储限时免费。All prices in CNY on domestic site."
     },
     {
-      "model_name": "chatgpt-image-latest",
-      "vendor_name": "OpenAI",
+      "model_name": "glm-5.3-prime",
+      "vendor_name": "Z.AI",
       "price_kind": "vendor_official",
       "source_kind": "official_doc",
-      "source_url": "https://developers.openai.com/api/docs/pricing",
-      "retrieved_at": "2026-10-25T10:20:00+08:00",
+      "source_url": "https://docs.z.ai/guides/overview/pricing",
+      "retrieved_at": "2026-10-23T18:59:09+08:00",
       "currency": "USD",
       "unit": "per_1m_tokens",
-      "input": 5.0,
-      "output": 32.0,
-      "output_text": 10.0,
-      "output_image": 32.0,
-      "input_image": 8.0,
-      "cache_read": 1.25,
-      "cache_read_image": 2.0,
+      "input": null,
+      "output": null,
+      "output_text": null,
+      "output_image": null,
+      "cache_read": null,
       "cache_write": null,
       "cache_write_1h": null,
       "per_image": null,
@@ -908,92 +991,9 @@
       "effective_from": null,
       "effective_to": null,
       "upcoming": null,
-      "confidence": "high",
-      "quote": "chatgpt-image-latest | Image | $8.00 | $32.00 | $2.00；chatgpt-image-latest | Text | $5.00 | $10.00 | $1.25；模型页：'This points to the Image snapshot previously used in ChatGPT.' | 2026-10-25 复核：Status: Deprecated；Input modalities: text, image；Output modalities: image, text。",
-      "notes": "按模态分别计价：图像输入 $8、图像输出 $32、图像缓存读 $2；文本输入 $5、文本输出 $10、文本缓存读 $1.25。Batch 为 Standard 的 50%。input/output 记文本侧为基准，图像侧见 input_image/output_image。 Token 价与按张价并存：Responses/图像 token 按 token 计，Images API 按上图质量×尺寸的单张价计费，两者各自官方原文，不互相推导。 别名关系：官方把 chatgpt-image-latest 定义为「指向 ChatGPT 当时所用 Image 快照」的浮动别名，另注明该快照为 ChatGPT 之前使用的版本；gpt-image-1.5 是固定快照 gpt-image-1.5-2025-12-16。两者 2026-10-23 的价格表逐格相同（文本 5/1.25/10、图像 8/2/32、按张 low 0.009/0.013、medium 0.034/0.05、high 0.133/0.2），端点与限流亦一致，当前可视为同一代模型；但别名会随 ChatGPT 换型而漂移，gpt-image-1.5 不会。\nOpenAI 模型页（developers.openai.com/api/docs/models/chatgpt-image-latest，2026-10-25 复核）：Status=Deprecated，官方建议改用 gpt-image-2.5-sunburst；输入 text/image，输出 image/text；官方未公布该模型的 token 上下文/输出上限。",
-      "meters": [
-        {
-          "dim": "output_image",
-          "price": 0.009,
-          "unit": "image",
-          "when": {
-            "quality": "low",
-            "size": "1024x1024"
-          }
-        },
-        {
-          "dim": "output_image",
-          "price": 0.013,
-          "unit": "image",
-          "when": {
-            "quality": "low",
-            "size": "1024x1536"
-          }
-        },
-        {
-          "dim": "output_image",
-          "price": 0.013,
-          "unit": "image",
-          "when": {
-            "quality": "low",
-            "size": "1536x1024"
-          }
-        },
-        {
-          "dim": "output_image",
-          "price": 0.034,
-          "unit": "image",
-          "when": {
-            "quality": "medium",
-            "size": "1024x1024"
-          }
-        },
-        {
-          "dim": "output_image",
-          "price": 0.05,
-          "unit": "image",
-          "when": {
-            "quality": "medium",
-            "size": "1024x1536"
-          }
-        },
-        {
-          "dim": "output_image",
-          "price": 0.05,
-          "unit": "image",
-          "when": {
-            "quality": "medium",
-            "size": "1536x1024"
-          }
-        },
-        {
-          "dim": "output_image",
-          "price": 0.133,
-          "unit": "image",
-          "when": {
-            "quality": "high",
-            "size": "1024x1024"
-          }
-        },
-        {
-          "dim": "output_image",
-          "price": 0.2,
-          "unit": "image",
-          "when": {
-            "quality": "high",
-            "size": "1024x1536"
-          }
-        },
-        {
-          "dim": "output_image",
-          "price": 0.2,
-          "unit": "image",
-          "when": {
-            "quality": "high",
-            "size": "1536x1024"
-          }
-        }
-      ]
+      "confidence": "low",
+      "quote": null,
+      "notes": "Z.AI 官方定价页仅列 GLM-5.3（Input $1.4 / Cached $0.26 / Output $4.4），无 Prime 加速变体单独价格行，无法官方确认 Prime 每 token 价格。"
     },
     {
       "model_name": "gpt-5.4",
@@ -1334,106 +1334,6 @@
       "cache_write_12h": 5.0
     },
     {
-      "model_name": "qwen3.8-flash",
-      "vendor_name": "Qwen",
-      "price_kind": "vendor_official",
-      "source_kind": "official_doc",
-      "source_url": "https://www.alibabacloud.com/help/en/model-studio/billing-for-model-studio",
-      "retrieved_at": "2026-10-23T22:40:00+08:00",
-      "currency": "USD",
-      "unit": "per_1m_tokens",
-      "input": 0.15,
-      "output": 0.47,
-      "output_text": null,
-      "output_image": null,
-      "cache_read": null,
-      "cache_write": null,
-      "cache_write_1h": null,
-      "per_image": null,
-      "tiers": null,
-      "effective_from": null,
-      "effective_to": null,
-      "upcoming": null,
-      "confidence": "high",
-      "quote": "qwen3.8-flash | International | 0<Token≤1M | $0.15 | $0.47 | 1 million tokens",
-      "notes": "阿里云百炼国际站 Qwen-Flash 分类，0<Token≤1M 单一档，无阶梯。国内站同款为 0.8元/2.7元 每百万 Token。"
-    },
-    {
-      "model_name": "grok-4.7",
-      "vendor_name": "xAI",
-      "price_kind": "vendor_official",
-      "source_kind": "official_doc",
-      "source_url": "https://docs.x.ai/developers/models/grok-4.7",
-      "retrieved_at": "2026-10-25T10:35:00+08:00",
-      "currency": "USD",
-      "unit": "per_1m_tokens",
-      "input": 2.0,
-      "output": 6.0,
-      "output_text": null,
-      "output_image": null,
-      "cache_read": 0.5,
-      "cache_write": null,
-      "cache_write_1h": null,
-      "per_image": null,
-      "tiers": null,
-      "effective_from": null,
-      "effective_to": null,
-      "upcoming": null,
-      "confidence": "high",
-      "quote": null,
-      "notes": "页面注明超 200K 上下文窗口的请求按更高费率计费（higher context pricing），具体上浮幅度未在本页列出。Batch API 已支持。"
-    },
-    {
-      "model_name": "glm-5",
-      "vendor_name": "Z.AI",
-      "price_kind": "vendor_official",
-      "source_kind": "official_doc",
-      "source_url": "https://open.bigmodel.cn/pricing",
-      "retrieved_at": "2026-10-23T18:59:09+08:00",
-      "currency": "USD",
-      "unit": "per_1m_tokens",
-      "input": 1.0,
-      "output": 3.2,
-      "output_text": null,
-      "output_image": null,
-      "cache_read": 0.2,
-      "cache_write": null,
-      "cache_write_1h": null,
-      "per_image": null,
-      "tiers": null,
-      "effective_from": null,
-      "effective_to": null,
-      "upcoming": null,
-      "confidence": "high",
-      "quote": null,
-      "notes": "智谱国内站 open.bigmodel.cn：GLM-5.3 输入¥8/输出¥28/缓存命中¥2；缓存存储限时免费。All prices in CNY on domestic site."
-    },
-    {
-      "model_name": "glm-5.3-prime",
-      "vendor_name": "Z.AI",
-      "price_kind": "vendor_official",
-      "source_kind": "official_doc",
-      "source_url": "https://docs.z.ai/guides/overview/pricing",
-      "retrieved_at": "2026-10-23T18:59:09+08:00",
-      "currency": "USD",
-      "unit": "per_1m_tokens",
-      "input": null,
-      "output": null,
-      "output_text": null,
-      "output_image": null,
-      "cache_read": null,
-      "cache_write": null,
-      "cache_write_1h": null,
-      "per_image": null,
-      "tiers": null,
-      "effective_from": null,
-      "effective_to": null,
-      "upcoming": null,
-      "confidence": "low",
-      "quote": null,
-      "notes": "Z.AI 官方定价页仅列 GLM-5.3（Input $1.4 / Cached $0.26 / Output $4.4），无 Prime 加速变体单独价格行，无法官方确认 Prime 每 token 价格。"
-    },
-    {
       "model_name": "gpt-image-2.5-sunburst",
       "vendor_name": "OpenAI",
       "price_kind": "vendor_official",
@@ -1478,6 +1378,178 @@
       "source_model_id": "gpt-image-2.5-sunburst",
       "billing_mode": "tiered_expr",
       "billing_expr": "tier(\"standard\", p * 5 + img_o * 30 + cr * 1.25 + img_cr * 2 + img * 8)"
+    },
+    {
+      "model_name": "grok-4.5",
+      "vendor_name": "xAI",
+      "price_kind": "vendor_official",
+      "source_kind": "official_doc",
+      "source_url": "https://docs.x.ai/developers/models/grok-4.5.md",
+      "retrieved_at": "2026-10-26T17:00:00+08:00",
+      "currency": "USD",
+      "unit": "per_1m_tokens",
+      "input": 2.0,
+      "output": 6.0,
+      "output_text": null,
+      "output_image": null,
+      "cache_read": 0.3,
+      "cache_write": null,
+      "cache_write_1h": null,
+      "per_image": null,
+      "tiers": [
+        {
+          "prompt_tokens_at_least": 200000,
+          "input": 4.0,
+          "output": 12.0,
+          "output_text": null,
+          "output_image": null,
+          "cache_read": 0.6,
+          "cache_write": null,
+          "cache_write_1h": null
+        }
+      ],
+      "effective_from": null,
+      "effective_to": null,
+      "upcoming": null,
+      "confidence": "high",
+      "quote": "| Input | $2.00 | $4.00 | / | Cached input | $0.30 | $0.60 | / | Output | $6.00 | $12.00 |",
+      "notes": "≤200K 与 ≥200K 两档；「Requests whose prompt reaches 200k tokens are billed at the higher rate for all tokens in the request」。Batch API 为标准价 8 折。"
+    },
+    {
+      "model_name": "grok-4.6",
+      "vendor_name": "xAI",
+      "price_kind": "vendor_official",
+      "source_kind": "official_doc",
+      "source_url": "https://docs.x.ai/developers/models/grok-4.6.md",
+      "retrieved_at": "2026-10-26T17:00:00+08:00",
+      "currency": "USD",
+      "unit": "per_1m_tokens",
+      "input": 2.0,
+      "output": 6.0,
+      "output_text": null,
+      "output_image": null,
+      "cache_read": 0.5,
+      "cache_write": null,
+      "cache_write_1h": null,
+      "per_image": null,
+      "tiers": [
+        {
+          "prompt_tokens_at_least": 200000,
+          "input": 4.0,
+          "output": 12.0,
+          "output_text": null,
+          "output_image": null,
+          "cache_read": 1.0,
+          "cache_write": null,
+          "cache_write_1h": null
+        }
+      ],
+      "effective_from": null,
+      "effective_to": null,
+      "upcoming": null,
+      "confidence": "high",
+      "quote": "| Input | $2.00 | $4.00 | / | Cached input | $0.50 | $1.00 | / | Output | $6.00 | $12.00 |",
+      "notes": "≤200K 与 ≥200K 两档，整条请求按落入的档计价。Batch API 为标准价 8 折。"
+    },
+    {
+      "model_name": "grok-4.7",
+      "vendor_name": "xAI",
+      "price_kind": "vendor_official",
+      "source_kind": "official_doc",
+      "source_url": "https://docs.x.ai/developers/models/grok-4.7",
+      "retrieved_at": "2026-10-25T10:35:00+08:00",
+      "currency": "USD",
+      "unit": "per_1m_tokens",
+      "input": 2.0,
+      "output": 6.0,
+      "output_text": null,
+      "output_image": null,
+      "cache_read": 0.5,
+      "cache_write": null,
+      "cache_write_1h": null,
+      "per_image": null,
+      "tiers": null,
+      "effective_from": null,
+      "effective_to": null,
+      "upcoming": null,
+      "confidence": "high",
+      "quote": null,
+      "notes": "页面注明超 200K 上下文窗口的请求按更高费率计费（higher context pricing），具体上浮幅度未在本页列出。Batch API 已支持。"
+    },
+    {
+      "model_name": "kimi-k3",
+      "vendor_name": "Moonshot AI",
+      "price_kind": "vendor_official",
+      "source_kind": "official_doc",
+      "source_url": "https://platform.kimi.com/docs/pricing/chat",
+      "retrieved_at": "2026-10-25T09:40:00+08:00",
+      "currency": "USD",
+      "unit": "per_1m_tokens",
+      "input": 3.0,
+      "output": 15.0,
+      "output_text": null,
+      "output_image": null,
+      "cache_read": 0.3,
+      "cache_write": 3.0,
+      "cache_write_1h": 6.0,
+      "per_image": null,
+      "tiers": null,
+      "effective_from": null,
+      "effective_to": null,
+      "upcoming": null,
+      "confidence": "high",
+      "quote": null,
+      "notes": "国内站 CNY 原价：输入(未命中)¥20 / 输出¥100 / 缓存命中¥2 / 缓存写5min¥20 / 1h¥40；按汇率 6.6743 折算为 USD（in $3.0 / out $15.0 / cr $0.3 / cw $3.0 / cw1h $6.0）。"
+    },
+    {
+      "model_name": "minimax-m3.1-flash",
+      "vendor_name": "MiniMax",
+      "price_kind": "vendor_official",
+      "source_kind": "official_doc",
+      "source_url": "https://platform.minimax.io/docs/pricing/overview",
+      "retrieved_at": "2026-10-23T23:10:00+08:00",
+      "currency": "USD",
+      "unit": "per_1m_tokens",
+      "input": 0.15,
+      "output": 0.6,
+      "output_text": null,
+      "output_image": null,
+      "cache_read": 0.015,
+      "cache_write": null,
+      "cache_write_1h": null,
+      "per_image": null,
+      "tiers": null,
+      "effective_from": null,
+      "effective_to": null,
+      "upcoming": null,
+      "confidence": "high",
+      "quote": "MiniMax-M3.1-Flash | $0.15 | $0.60 | $0.015 (Input / Output / Prompt caching Read, $ per M tokens)",
+      "notes": "官方定价页 Pricing Overview → LLM 表：Input $0.15 / Output $0.60 / Prompt caching Read $0.015（USD per 1M tokens）。国内站同款 ¥1.00 / ¥4.00 / ¥0.10。MiniMax-M3 另有 ≤512k 与 >512k 两档，本模型为单一档。"
+    },
+    {
+      "model_name": "qwen3.8-flash",
+      "vendor_name": "Qwen",
+      "price_kind": "vendor_official",
+      "source_kind": "official_doc",
+      "source_url": "https://www.alibabacloud.com/help/en/model-studio/billing-for-model-studio",
+      "retrieved_at": "2026-10-23T22:40:00+08:00",
+      "currency": "USD",
+      "unit": "per_1m_tokens",
+      "input": 0.15,
+      "output": 0.47,
+      "output_text": null,
+      "output_image": null,
+      "cache_read": null,
+      "cache_write": null,
+      "cache_write_1h": null,
+      "per_image": null,
+      "tiers": null,
+      "effective_from": null,
+      "effective_to": null,
+      "upcoming": null,
+      "confidence": "high",
+      "quote": "qwen3.8-flash | International | 0<Token≤1M | $0.15 | $0.47 | 1 million tokens",
+      "notes": "阿里云百炼国际站 Qwen-Flash 分类，0<Token≤1M 单一档，无阶梯。国内站同款为 0.8元/2.7元 每百万 Token。"
     }
   ]
 }
