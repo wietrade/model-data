@@ -402,8 +402,13 @@ python -m tools.model_sync.validate \
 python -m tools.ops.compare_snapshot raw/cheaperinference-20261023-full.json
 ```
 
-当前差异概况：命中 52 / 未命中 17，48 处字段不一致（上下文 17、最大输出 21、reasoning 4、图像输入 6）。
-剩余差异基本都是聚合站口径（如它把 long-decode 上限、或 0.9× 折算值当成 `max_output`），以官方文档为准，不必反向对齐。
+比对四个维度：`context_length`、`max_output_tokens`、`input_modalities`、`output_modalities`、`capabilities`。
+原始快照会先过 `normalize_snapshot`，所以 token 的过度声明不会造成假差异；若某个快照值本身是推出来的
+（`input_source=type` 或 `capabilities_source=tokens`），结果里会标「弱证据」。
+
+当前差异概况：命中 52 / 未命中 17，**85 处**字段不一致（能力 30、上下文 17、最大输出 21、输入模态 17），
+其中 6 处属于快照侧弱证据。上下文/最大输出的差异基本都是聚合站口径（long-decode 上限、0.9× 折算值），
+以官方文档为准，不必反向对齐。
 
 ### 清洗：同一个事实不要三套字段
 

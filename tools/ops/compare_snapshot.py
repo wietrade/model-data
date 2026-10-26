@@ -21,14 +21,18 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from tools.model_sync.normalize import normalize_key  # noqa: E402
+from tools.ops.normalize_snapshot import normalize_item  # noqa: E402
 
 DEFAULT_LOCAL = ROOT / "api" / "newapi" / "models.json"
 
-# 快照字段 -> 本地字段（None 表示需要布尔推断）
+# 对比字段：快照侧一律用**归一化后**的键名（原始快照会先过 normalize_snapshot）
 FIELD_MAP = {
-    "contextLength": "context_length",
-    "maxOutputTokens": "max_output_tokens",
+    "context_length": "context_length",
+    "max_output_tokens": "max_output_tokens",
 }
+
+# 集合类字段：模态与能力（清洗后直接用，不再从 bool 反推）
+SET_FIELDS = ("input_modalities", "output_modalities", "capabilities")
 
 
 def load_models(path: Path):
@@ -53,7 +57,15 @@ def build_index(items):
     return index
 
 
+def normalize_snapshot(items):
+    """原始快照（带 ``detail_*``）先洗一遍：token 过度声明、detail 优先级都在那里定。"""
+    if items and any(str(k).startswith("detail_") for k in items[0]):
+        return [normalize_item(item) for item in items]
+    return items
+
+
 def compare(local, snapshot):
+    snapshot = normalize_snapshot(snapshot)
     index = build_index(snapshot)
     matched, unmatched, diffs = [], [], []
     for model in local:
@@ -70,28 +82,25 @@ def compare(local, snapshot):
                 diffs.append(
                     {"model": name, "field": local_field, "ours": ours, "snapshot": theirs}
                 )
-        snapshot_vision = bool(item.get("vision"))
-        our_vision = "image" in (model.get("input_modalities") or [])
-        if snapshot_vision != our_vision:
-            diffs.append(
-                {
-                    "model": name,
-                    "field": "input_modalities(image)",
-                    "ours": our_vision,
-                    "snapshot": snapshot_vision,
-                }
-            )
-        snapshot_reasoning = bool(item.get("reasoning"))
-        our_reasoning = "reasoning" in (model.get("capabilities") or [])
-        if snapshot_reasoning != our_reasoning:
-            diffs.append(
-                {
-                    "model": name,
-                    "field": "capabilities(reasoning)",
-                    "ours": our_reasoning,
-                    "snapshot": snapshot_reasoning,
-                }
-            )
+
+        low_confidence = {
+            "input_modalities": item.get("input_source") in ("type", "type+vision"),
+            "output_modalities": item.get("output_source") == "type",
+            "capabilities": item.get("capabilities_source") == "tokens",
+        }
+        for field in SET_FIELDS:
+            theirs = set(item.get(field) or [])
+            ours = set(model.get(field) or [])
+            if theirs != ours:
+                diffs.append(
+                    {
+                        "model": name,
+                        "field": field,
+                        "ours": sorted(ours),
+                        "snapshot": sorted(theirs),
+                        "low": low_confidence.get(field, False),
+                    }
+                )
     return matched, unmatched, diffs
 
 
@@ -105,9 +114,13 @@ def render_markdown(matched, unmatched, diffs, snapshot_path):
     if diffs:
         lines += ["| 模型 | 字段 | 本目录 | 快照 |", "|:---|:---|:---|:---|"]
         for diff in diffs:
-            lines.append(
-                f"| `{diff['model']}` | {diff['field']} | {diff['ours']} | {diff['snapshot']} |"
-            )
+            field = diff["field"] + ("（弱证据）" if diff.get("low") else "")
+            ours = diff["ours"]
+            theirs = diff["snapshot"]
+            if isinstance(ours, list):
+                ours = ", ".join(map(str, ours)) or "—"
+                theirs = ", ".join(map(str, theirs)) or "—"
+            lines.append(f"| `{diff['model']}` | {field} | {ours} | {theirs} |")
     if unmatched:
         lines += ["", "## 快照里没有的本地模型", "",
                   "、".join(f"`{name}`" for name in unmatched)]
