@@ -13,7 +13,9 @@
       "capabilities": [
         "reasoning",
         "tools",
-        "structured_output"
+        "structured_output",
+        "web_search",
+        "cache_explicit"
       ],
       "input_modalities": [
         "text",
@@ -74,7 +76,9 @@
       "capabilities": [
         "reasoning",
         "tools",
-        "structured_output"
+        "structured_output",
+        "web_search",
+        "cache_explicit"
       ],
       "input_modalities": [
         "text",
@@ -103,7 +107,9 @@
       "capabilities": [
         "reasoning",
         "tools",
-        "structured_output"
+        "structured_output",
+        "web_search",
+        "cache_explicit"
       ],
       "input_modalities": [
         "text",
@@ -164,7 +170,9 @@
       "capabilities": [
         "reasoning",
         "tools",
-        "structured_output"
+        "structured_output",
+        "web_search",
+        "cache_explicit"
       ],
       "input_modalities": [
         "text",
@@ -193,7 +201,9 @@
       "capabilities": [
         "reasoning",
         "tools",
-        "structured_output"
+        "structured_output",
+        "web_search",
+        "cache_explicit"
       ],
       "input_modalities": [
         "text",
@@ -222,7 +232,9 @@
       "capabilities": [
         "reasoning",
         "tools",
-        "structured_output"
+        "structured_output",
+        "web_search",
+        "cache_explicit"
       ],
       "input_modalities": [
         "text",
@@ -251,7 +263,9 @@
       "capabilities": [
         "reasoning",
         "tools",
-        "structured_output"
+        "structured_output",
+        "web_search",
+        "cache_explicit"
       ],
       "input_modalities": [
         "text",
@@ -457,7 +471,7 @@
     {
       "model_name": "deepseek-v4.1-flash",
       "vendor_name": "DeepSeek",
-      "description": "deepseek-v4.1-flash",
+      "description": "DeepSeek V4.1 Flash 高性价比模型",
       "icon": "DeepSeek.Color",
       "name_rule": 0,
       "status": 1,
@@ -554,7 +568,8 @@
         "structured_output",
         "web_search",
         "cache_implicit",
-        "cache_explicit"
+        "cache_explicit",
+        "image_generation"
       ],
       "input_modalities": [
         "text",
@@ -585,7 +600,8 @@
         "structured_output",
         "web_search",
         "cache_implicit",
-        "cache_explicit"
+        "cache_explicit",
+        "image_generation"
       ],
       "input_modalities": [
         "text",
@@ -614,11 +630,14 @@
       "capabilities": [
         "reasoning",
         "structured_output",
-        "web_search"
+        "web_search",
+        "image_generation"
       ],
       "input_modalities": [
         "text",
-        "image"
+        "image",
+        "video",
+        "file"
       ],
       "output_modalities": [
         "text",
@@ -643,11 +662,13 @@
       "capabilities": [
         "reasoning",
         "structured_output",
-        "web_search"
+        "web_search",
+        "image_generation"
       ],
       "input_modalities": [
         "text",
-        "image"
+        "image",
+        "file"
       ],
       "output_modalities": [
         "text",
@@ -664,7 +685,7 @@
     {
       "model_name": "gemini-3.8-flash",
       "vendor_name": "Google",
-      "description": "gemini-3.8-flash",
+      "description": "Google Gemini 3.8 Flash 快速文本模型",
       "icon": "Gemini.Color",
       "name_rule": 0,
       "status": 1,
@@ -698,7 +719,7 @@
     {
       "model_name": "gemini-3.8-flash-tiered",
       "vendor_name": "Google",
-      "description": "gemini-3.8-flash-tiered",
+      "description": "Google Gemini 3.8 Flash（阶梯计价）",
       "icon": "Gemini.Color",
       "name_rule": 0,
       "status": 1,
@@ -943,7 +964,7 @@
     {
       "model_name": "kimi-k3.1-pro",
       "vendor_name": "Moonshot AI",
-      "description": "kimi-k3.1-pro",
+      "description": "Moonshot Kimi K3.1 Pro 长上下文模型",
       "icon": "Moonshot",
       "name_rule": 0,
       "status": 1,
@@ -1622,7 +1643,7 @@
     {
       "model_name": "glm-5.3",
       "vendor_name": "Z.AI",
-      "description": "glm-5.3",
+      "description": "智谱 GLM-5.3 通用模型",
       "icon": "ZAI",
       "name_rule": 0,
       "status": 1,
@@ -1650,7 +1671,7 @@
     {
       "model_name": "glm-5.3-flash",
       "vendor_name": "Z.AI",
-      "description": "glm-5.3-flash",
+      "description": "智谱 GLM-5.3 Flash 轻量模型",
       "icon": "ZAI",
       "name_rule": 0,
       "status": 1,
@@ -1680,7 +1701,7 @@
     {
       "model_name": "grok-4.5",
       "vendor_name": "xAI",
-      "description": "grok-4.5",
+      "description": "xAI Grok 4.5 文本模型",
       "icon": "Grok",
       "name_rule": 0,
       "status": 1,
@@ -1711,7 +1732,7 @@
     {
       "model_name": "grok-4.6",
       "vendor_name": "xAI",
-      "description": "grok-4.6",
+      "description": "xAI Grok 4.6 文本模型",
       "icon": "Grok",
       "name_rule": 0,
       "status": 1,
@@ -1773,7 +1794,7 @@
     {
       "model_name": "gpt-image-2",
       "vendor_name": "OpenAI",
-      "description": "gpt-image-2",
+      "description": "OpenAI 图像生成模型，支持文生图与图片编辑",
       "icon": "OpenAI",
       "name_rule": 0,
       "status": 1,
@@ -1800,7 +1821,7 @@
     {
       "model_name": "gpt-image-2.5",
       "vendor_name": "OpenAI",
-      "description": "gpt-image-2.5",
+      "description": "OpenAI 图像生成模型，画质与指令遵循提升版",
       "icon": "OpenAI",
       "name_rule": 0,
       "status": 1,
@@ -1827,7 +1848,7 @@
     {
       "model_name": "gpt-image-2.5-flare",
       "vendor_name": "OpenAI",
-      "description": "gpt-image-2.5-flare",
+      "description": "OpenAI 图像生成模型，偏风格化与快速出图",
       "icon": "OpenAI",
       "name_rule": 0,
       "status": 1,
@@ -1854,7 +1875,7 @@
     {
       "model_name": "gpt-image-medium",
       "vendor_name": "OpenAI",
-      "description": "gpt-image-medium",
+      "description": "OpenAI 中等画质图像生成模型，成本更低",
       "icon": "OpenAI",
       "name_rule": 0,
       "status": 1,
@@ -1881,7 +1902,7 @@
     {
       "model_name": "grok-imagine-image",
       "vendor_name": "xAI",
-      "description": "grok-imagine-image",
+      "description": "xAI 图像生成模型",
       "icon": "Grok",
       "name_rule": 0,
       "status": 1,
@@ -1907,7 +1928,7 @@
     {
       "model_name": "grok-imagine-image-2.0",
       "vendor_name": "xAI",
-      "description": "grok-imagine-image-2.0",
+      "description": "xAI 图像生成模型 2.0",
       "icon": "Grok",
       "name_rule": 0,
       "status": 1,
@@ -1933,7 +1954,7 @@
     {
       "model_name": "grok-imagine-image-quality",
       "vendor_name": "xAI",
-      "description": "grok-imagine-image-quality",
+      "description": "xAI 图像生成模型，高画质档",
       "icon": "Grok",
       "name_rule": 0,
       "status": 1,
@@ -1959,7 +1980,7 @@
     {
       "model_name": "gemini-nano-banana-2.1",
       "vendor_name": "Google",
-      "description": "gemini-nano-banana-2.1",
+      "description": "Google Gemini 图像生成与编辑模型（Nano Banana）",
       "icon": "Gemini.Color",
       "name_rule": 0,
       "status": 1,
