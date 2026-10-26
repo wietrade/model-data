@@ -39,15 +39,6 @@ META = ROOT / "api"
 INPUT_MODALITIES = {"text", "image", "audio", "video", "file"}
 OUTPUT_MODALITIES = {"text", "image", "audio", "video"}
 PRICE_KINDS = {"vendor_official", "aggregator_reference", "free", "unpriced"}
-# new-api 的倍率字段（由价格字段确定性算出，供「同步价格」直接导入）
-NEWAPI_RATIO_FIELDS = (
-    "quota_type",
-    "model_ratio",
-    "completion_ratio",
-    "cache_ratio",
-    "create_cache_ratio",
-    "model_price",
-)
 LIFECYCLES = {"", "ga", "preview", "legacy", "deprecated", "retired"}
 
 
@@ -302,16 +293,6 @@ def check_pricing(models, pricing, official, context_by_name, report: Report):
             if ctx and threshold >= ctx:
                 report.info(
                     f"{name}: 阶梯阈值 {threshold} 高于输入上限 {ctx}（该档不可达，保留以对齐官方价目表）"
-                )
-
-        # new-api「同步价格」直接吃这几个字段，必须与价格字段一致。
-        stripped = {k: v for k, v in row.items() if k not in NEWAPI_RATIO_FIELDS}
-        expected_ratios = merge_mod.attach_newapi_ratios(stripped)
-        for field in NEWAPI_RATIO_FIELDS:
-            if expected_ratios.get(field) != row.get(field):
-                report.error(
-                    f"{name}: {field} 与价格字段不一致"
-                    f"（按价格应为 {expected_ratios.get(field)}，文件是 {row.get(field)}）"
                 )
 
         if kind == "free" and any((row.get(k) or 0) > 0 for k in ("input", "output")):

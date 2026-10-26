@@ -497,7 +497,7 @@ def free_price_row(record):
         "output": 0.0,
         "cache_read": 0.0,
     }
-    return attach_newapi_ratios(row)
+    return row
 
 
 def unpriced_row(record):
@@ -511,52 +511,6 @@ def unpriced_row(record):
         "vendor_name": record.get("vendor_name") or "",
         "price_kind": "unpriced",
     }
-
-
-NEWAPI_RATIO_KEYS = (
-    "quota_type",
-    "model_ratio",
-    "model_price",
-    "completion_ratio",
-    "cache_ratio",
-    "create_cache_ratio",
-    "image_ratio",
-    "audio_ratio",
-    "audio_completion_ratio",
-)
-
-
-def attach_newapi_ratios(row):
-    """Add the ratio fields new-api「同步价格」can import (type2 格式)。
-
-    new-api 的模型价格只有一套：``ModelRatio = 官方输入价($/1M) / 2``
-    （``common.QuotaPerUnit = 500000`` 即 ratio 1 = $2/1M），输出价、缓存价
-    都是相对输入价的倍数。按张模型走 ``quota_type=1`` + ``model_price``。
-
-    这些值全部由价格字段确定性算出，不含任何我方信息；导入后 new-api 的
-    「同步价格」里就能直接看到官方价。计费表达式不写进来（它不属于价格表）。
-    """
-    row = {k: v for k, v in row.items() if k not in NEWAPI_RATIO_KEYS}
-    per_image = row.get("per_image")
-    has_tokens = row.get("input") is not None
-    if per_image is not None and not has_tokens:
-        row["quota_type"] = 1
-        row["model_price"] = per_image
-        return row
-    if not has_tokens:
-        return row
-
-    base = row["input"]
-    row["quota_type"] = 0
-    row["model_ratio"] = round(base / 2, 6)
-    if base:
-        if row.get("output") is not None:
-            row["completion_ratio"] = round(row["output"] / base, 6)
-        if row.get("cache_read") is not None:
-            row["cache_ratio"] = round(row["cache_read"] / base, 6)
-        if row.get("cache_write") is not None:
-            row["create_cache_ratio"] = round(row["cache_write"] / base, 6)
-    return row
 
 
 def official_price_row(record, official, fx=None):
@@ -584,7 +538,7 @@ def official_price_row(record, official, fx=None):
         value = official.get(field)
         if value is not None:
             row[field] = value
-    return attach_newapi_ratios(convert_to_usd(row, fx))
+    return convert_to_usd(row, fx)
 
 
 def load_fx(path=None):

@@ -219,11 +219,10 @@ def image_meter_expr(row):
     return f'tier("image", fixed({number(default["price"])})) * image_count', skipped
 
 
-# 价格分两层维护：
-#   官方价  api/newapi/pricing.json（公开，厂商官方页抄录）
-#   自己的价 billing_basis（私有，只写「与官方不同」的字段）
-# 合并规则是**字段级覆盖**：自己的价写了某个字段就覆盖，没写就继承官方。
-OVERRIDE_FIELDS = (
+# Fields ``billing_basis`` may override. A reseller buys below (or above) the
+# vendor list price, so the engine must bill the settlement numbers while the
+# vendor list price stays in the row for audit and margin comparison.
+BASIS_FIELDS = (
     "input",
     "output",
     "output_text",
@@ -238,52 +237,24 @@ OVERRIDE_FIELDS = (
     "meters",
     "per_image",
 )
-# 计价形态：自己的价一旦改成按张 / 按次，官方的 token 价整套都不再适用。
-SHAPE_FIELDS = ("per_image", "meters")
-# 官方档位是按官方基础价算的；我们只改基础价时若继承档位，超阈值就会按官方原价收。
-TIER_FIELDS = ("tiers", "time_tiers")
-TOKEN_PRICE_FIELDS = (
-    "input",
-    "output",
-    "output_text",
-    "output_image",
-    "cache_read",
-    "cache_read_image",
-    "cache_write",
-    "cache_write_1h",
-    "cache_write_12h",
-    "input_image",
-)
 
 
 def apply_billing_basis(row):
-    """Overlay ``billing_basis``（自己的价）onto the official price row.
+    """Overlay ``billing_basis`` onto the price fields the engine bills with.
 
-    字段级覆盖：自己的价里写了哪个字段就覆盖哪个，没写的继承官方价。
-    两个例外：
-
-    * 计价形态变了（自己的价是按张 / meters）：官方的 token 价与档位整体不适用；
-    * 只改了基础价、没给自己的档位：不继承官方档位（档位基于官方基础价，
-      混用会在阈值以上按官方原价收费）。
-
-    没有 ``billing_basis`` 的行原样返回，即纯官方价。
+    Rows without a basis are returned unchanged, so vendor-official pricing keeps
+    its existing behaviour.
     """
-    own = row.get("billing_basis")
-    if not isinstance(own, dict):
+    basis = row.get("billing_basis")
+    if not isinstance(basis, dict):
         return row
-
-    merged = dict(row)
-    if any(own.get(field) is not None for field in SHAPE_FIELDS):
-        for field in OVERRIDE_FIELDS + TIER_FIELDS:
-            merged.pop(field, None)
-    elif any(own.get(field) is not None for field in TOKEN_PRICE_FIELDS):
-        for field in TIER_FIELDS:
-            if own.get(field) is None:
-                merged.pop(field, None)
-
-    for field in OVERRIDE_FIELDS:
-        if own.get(field) is not None:
-            merged[field] = own[field]
+    # 结算价一旦存在，表达式就必须只由它决定：公开牌价里多出来的字段
+    # （聚合源的 cache_write、token 价出现在按张模型上等）不能漏进表达式，
+    # 否则导出的价格会与线上不一致。
+    merged = {key: value for key, value in row.items() if key not in BASIS_FIELDS}
+    for field in BASIS_FIELDS:
+        if basis.get(field) is not None:
+            merged[field] = basis[field]
     return merged
 
 

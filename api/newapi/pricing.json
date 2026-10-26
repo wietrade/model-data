@@ -36,11 +36,7 @@
           "cache_write": null,
           "cache_write_1h": null
         }
-      ],
-      "quota_type": 0,
-      "model_ratio": 0.15,
-      "completion_ratio": 4.0,
-      "cache_ratio": 0.2
+      ]
     },
     {
       "model_name": "chatgpt-image-latest",
@@ -143,11 +139,7 @@
             "size": "1536x1024"
           }
         }
-      ],
-      "quota_type": 0,
-      "model_ratio": 2.5,
-      "completion_ratio": 6.4,
-      "cache_ratio": 0.25
+      ]
     },
     {
       "model_name": "claude-fable-5",
@@ -165,12 +157,7 @@
       "output": 50.0,
       "cache_read": 1.0,
       "cache_write": 12.5,
-      "cache_write_1h": 20.0,
-      "quota_type": 0,
-      "model_ratio": 5.0,
-      "completion_ratio": 5.0,
-      "cache_ratio": 0.1,
-      "create_cache_ratio": 1.25
+      "cache_write_1h": 20.0
     },
     {
       "model_name": "claude-fable-5-1",
@@ -188,12 +175,7 @@
       "output": 50.0,
       "cache_read": 0.25,
       "cache_write": 12.5,
-      "cache_write_1h": 20.0,
-      "quota_type": 0,
-      "model_ratio": 5.0,
-      "completion_ratio": 5.0,
-      "cache_ratio": 0.025,
-      "create_cache_ratio": 1.25
+      "cache_write_1h": 20.0
     },
     {
       "model_name": "claude-haiku-4-5",
@@ -211,12 +193,7 @@
       "output": 5.0,
       "cache_read": 0.1,
       "cache_write": 1.25,
-      "cache_write_1h": 2.0,
-      "quota_type": 0,
-      "model_ratio": 0.5,
-      "completion_ratio": 5.0,
-      "cache_ratio": 0.1,
-      "create_cache_ratio": 1.25
+      "cache_write_1h": 2.0
     },
     {
       "model_name": "claude-haiku-4-5-20251001",
@@ -234,12 +211,7 @@
       "output": 5.0,
       "cache_read": 0.1,
       "cache_write": 1.25,
-      "cache_write_1h": 2.0,
-      "quota_type": 0,
-      "model_ratio": 0.5,
-      "completion_ratio": 5.0,
-      "cache_ratio": 0.1,
-      "create_cache_ratio": 1.25
+      "cache_write_1h": 2.0
     },
     {
       "model_name": "claude-haiku-5-5",
@@ -269,12 +241,7 @@
           "cache_write": 0.625,
           "cache_write_1h": 1.0
         }
-      ],
-      "quota_type": 0,
-      "model_ratio": 0.05,
-      "completion_ratio": 5.0,
-      "cache_ratio": 0.1,
-      "create_cache_ratio": 1.25
+      ]
     },
     {
       "model_name": "claude-opus-4-8",
@@ -292,12 +259,7 @@
       "output": 25.0,
       "cache_read": 0.5,
       "cache_write": 6.25,
-      "cache_write_1h": 10.0,
-      "quota_type": 0,
-      "model_ratio": 2.5,
-      "completion_ratio": 5.0,
-      "cache_ratio": 0.1,
-      "create_cache_ratio": 1.25
+      "cache_write_1h": 10.0
     },
     {
       "model_name": "claude-opus-4.5",
@@ -315,12 +277,7 @@
       "output": 25.0,
       "cache_read": 0.5,
       "cache_write": 6.25,
-      "cache_write_1h": 10.0,
-      "quota_type": 0,
-      "model_ratio": 2.5,
-      "completion_ratio": 5.0,
-      "cache_ratio": 0.1,
-      "create_cache_ratio": 1.25
+      "cache_write_1h": 10.0
     },
     {
       "model_name": "claude-opus-4.6",
@@ -338,12 +295,7 @@
       "output": 25.0,
       "cache_read": 0.5,
       "cache_write": 6.25,
-      "cache_write_1h": 10.0,
-      "quota_type": 0,
-      "model_ratio": 2.5,
-      "completion_ratio": 5.0,
-      "cache_ratio": 0.1,
-      "create_cache_ratio": 1.25
+      "cache_write_1h": 10.0
     },
     {
       "model_name": "claude-opus-4.7",
@@ -361,12 +313,7 @@
       "output": 25.0,
       "cache_read": 0.5,
       "cache_write": 6.25,
-      "cache_write_1h": 10.0,
-      "quota_type": 0,
-      "model_ratio": 2.5,
-      "completion_ratio": 5.0,
-      "cache_ratio": 0.1,
-      "create_cache_ratio": 1.25
+      "cache_write_1h": 10.0
     },
     {
       "model_name": "claude-opus-5",
@@ -384,12 +331,7 @@
       "output": 25.0,
       "cache_read": 0.5,
       "cache_write": 6.25,
-      "cache_write_1h": 10.0,
-      "quota_type": 0,
-      "model_ratio": 2.5,
-      "completion_ratio": 5.0,
-      "cache_ratio": 0.1,
-      "create_cache_ratio": 1.25
+      "cache_write_1h": 10.0
     },
     {
       "model_name": "claude-opus-5-5",
@@ -407,12 +349,7 @@
       "output": 20.0,
       "cache_read": 0.2,
       "cache_write": 5.0,
-      "cache_write_1h": 8.0,
-      "quota_type": 0,
-      "model_ratio": 2.0,
-      "completion_ratio": 5.0,
-      "cache_ratio": 0.05,
-      "create_cache_ratio": 1.25
+      "cache_write_1h": 8.0
     },
     {
       "model_name": "claude-sonnet-5",
@@ -430,12 +367,7 @@
       "output": 10.0,
       "cache_read": 0.2,
       "cache_write": 2.5,
-      "cache_write_1h": 4.0,
-      "quota_type": 0,
-      "model_ratio": 1.0,
-      "completion_ratio": 5.0,
-      "cache_ratio": 0.1,
-      "create_cache_ratio": 1.25
+      "cache_write_1h": 4.0
     },
     {
       "model_name": "claude-sonnet-5-5",
@@ -453,12 +385,7 @@
       "output": 10.0,
       "cache_read": 0.1,
       "cache_write": 2.5,
-      "cache_write_1h": 4.0,
-      "quota_type": 0,
-      "model_ratio": 1.0,
-      "completion_ratio": 5.0,
-      "cache_ratio": 0.05,
-      "create_cache_ratio": 1.25
+      "cache_write_1h": 4.0
     },
     {
       "model_name": "deepseek-flash",
@@ -483,11 +410,7 @@
           "cache_read": 0.006
         },
         "off_peak_multiplier": 0.5
-      },
-      "quota_type": 0,
-      "model_ratio": 0.14975,
-      "completion_ratio": 4.000334,
-      "cache_ratio": 0.020033
+      }
     },
     {
       "model_name": "deepseek-v4-pro",
@@ -512,11 +435,7 @@
           "cache_read": 0.0449
         },
         "off_peak_multiplier": 0.5
-      },
-      "quota_type": 0,
-      "model_ratio": 0.6739,
-      "completion_ratio": 3.000074,
-      "cache_ratio": 0.033314
+      }
     },
     {
       "model_name": "deepseek-v4.1-flash",
@@ -541,11 +460,7 @@
           "cache_read": 0.006
         },
         "off_peak_multiplier": 0.5
-      },
-      "quota_type": 0,
-      "model_ratio": 0.14975,
-      "completion_ratio": 4.000334,
-      "cache_ratio": 0.020033
+      }
     },
     {
       "model_name": "deepseek-v4.1-flash-1017",
@@ -570,11 +485,7 @@
           "cache_read": 0.006
         },
         "off_peak_multiplier": 0.5
-      },
-      "quota_type": 0,
-      "model_ratio": 0.14975,
-      "completion_ratio": 4.000334,
-      "cache_ratio": 0.020033
+      }
     },
     {
       "model_name": "dots-3-note-preview:free",
@@ -586,9 +497,7 @@
       "unit": "per_1m_tokens",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "quota_type": 0,
-      "model_ratio": 0.0
+      "cache_read": 0.0
     },
     {
       "model_name": "gemini-3-pro-image",
@@ -642,11 +551,7 @@
             "resolution": "4K"
           }
         }
-      ],
-      "quota_type": 0,
-      "model_ratio": 1.0,
-      "completion_ratio": 60.0,
-      "cache_ratio": 0.1
+      ]
     },
     {
       "model_name": "gemini-3-pro-image-preview",
@@ -700,11 +605,7 @@
             "resolution": "4K"
           }
         }
-      ],
-      "quota_type": 0,
-      "model_ratio": 1.0,
-      "completion_ratio": 60.0,
-      "cache_ratio": 0.1
+      ]
     },
     {
       "model_name": "gemini-3.1-flash-image",
@@ -757,11 +658,7 @@
             "resolution": "4K"
           }
         }
-      ],
-      "quota_type": 0,
-      "model_ratio": 0.25,
-      "completion_ratio": 120.0,
-      "cache_ratio": 0.1
+      ]
     },
     {
       "model_name": "gemini-3.1-flash-image-preview",
@@ -814,11 +711,7 @@
             "resolution": "4K"
           }
         }
-      ],
-      "quota_type": 0,
-      "model_ratio": 0.25,
-      "completion_ratio": 120.0,
-      "cache_ratio": 0.1
+      ]
     },
     {
       "model_name": "gemini-3.8-flash",
@@ -846,11 +739,7 @@
           "cache_read": 0.15,
           "cache_write": null
         }
-      ],
-      "quota_type": 0,
-      "model_ratio": 0.375,
-      "completion_ratio": 5.0,
-      "cache_ratio": 0.1
+      ]
     },
     {
       "model_name": "gemini-3.8-flash-tiered",
@@ -883,11 +772,7 @@
           "cache_read": 0.2,
           "cache_write": null
         }
-      ],
-      "quota_type": 0,
-      "model_ratio": 1.0,
-      "completion_ratio": 5.0,
-      "cache_ratio": 0.05
+      ]
     },
     {
       "model_name": "gemini-nano-banana-2.1",
@@ -905,11 +790,7 @@
       "output": 30.0,
       "output_text": 7.5,
       "output_image": 30.0,
-      "cache_read": 0.15,
-      "quota_type": 0,
-      "model_ratio": 0.75,
-      "completion_ratio": 20.0,
-      "cache_ratio": 0.1
+      "cache_read": 0.15
     },
     {
       "model_name": "gemma-4-26b-a4b-it:free",
@@ -925,9 +806,7 @@
       "confidence": "medium",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "quota_type": 0,
-      "model_ratio": 0.0
+      "cache_read": 0.0
     },
     {
       "model_name": "gemma-4-31b-it:free",
@@ -943,9 +822,7 @@
       "confidence": "medium",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "quota_type": 0,
-      "model_ratio": 0.0
+      "cache_read": 0.0
     },
     {
       "model_name": "glm-5",
@@ -961,11 +838,7 @@
       "confidence": "high",
       "input": 1.0,
       "output": 3.2,
-      "cache_read": 0.2,
-      "quota_type": 0,
-      "model_ratio": 0.5,
-      "completion_ratio": 3.2,
-      "cache_ratio": 0.2
+      "cache_read": 0.2
     },
     {
       "model_name": "glm-5.3",
@@ -981,11 +854,7 @@
       "confidence": "high",
       "input": 1.4,
       "output": 4.4,
-      "cache_read": 0.26,
-      "quota_type": 0,
-      "model_ratio": 0.7,
-      "completion_ratio": 3.142857,
-      "cache_ratio": 0.185714
+      "cache_read": 0.26
     },
     {
       "model_name": "glm-5.3-flash",
@@ -1001,11 +870,7 @@
       "confidence": "high",
       "input": 0.15,
       "output": 0.5,
-      "cache_read": 0.03,
-      "quota_type": 0,
-      "model_ratio": 0.075,
-      "completion_ratio": 3.333333,
-      "cache_ratio": 0.2
+      "cache_read": 0.03
     },
     {
       "model_name": "gpt-5.4",
@@ -1033,11 +898,7 @@
           "cache_write": null,
           "cache_write_1h": null
         }
-      ],
-      "quota_type": 0,
-      "model_ratio": 1.25,
-      "completion_ratio": 6.0,
-      "cache_ratio": 0.1
+      ]
     },
     {
       "model_name": "gpt-5.5",
@@ -1065,11 +926,7 @@
           "cache_write": null,
           "cache_write_1h": null
         }
-      ],
-      "quota_type": 0,
-      "model_ratio": 2.5,
-      "completion_ratio": 6.0,
-      "cache_ratio": 0.1
+      ]
     },
     {
       "model_name": "gpt-5.6-luna",
@@ -1100,12 +957,7 @@
           "cache_write_1h": null,
           "cache_write_12h": 1.0
         }
-      ],
-      "quota_type": 0,
-      "model_ratio": 0.1,
-      "completion_ratio": 6.0,
-      "cache_ratio": 0.1,
-      "create_cache_ratio": 1.25
+      ]
     },
     {
       "model_name": "gpt-5.6-sol",
@@ -1136,12 +988,7 @@
           "cache_write_1h": null,
           "cache_write_12h": 20.0
         }
-      ],
-      "quota_type": 0,
-      "model_ratio": 2.0,
-      "completion_ratio": 5.0,
-      "cache_ratio": 0.1,
-      "create_cache_ratio": 1.25
+      ]
     },
     {
       "model_name": "gpt-5.6-terra",
@@ -1172,12 +1019,7 @@
           "cache_write_1h": null,
           "cache_write_12h": 10.0
         }
-      ],
-      "quota_type": 0,
-      "model_ratio": 1.0,
-      "completion_ratio": 6.0,
-      "cache_ratio": 0.1,
-      "create_cache_ratio": 1.25
+      ]
     },
     {
       "model_name": "gpt-6-astra",
@@ -1208,12 +1050,7 @@
           "cache_write_1h": null,
           "cache_write_12h": 50.0
         }
-      ],
-      "quota_type": 0,
-      "model_ratio": 5.0,
-      "completion_ratio": 5.0,
-      "cache_ratio": 0.1,
-      "create_cache_ratio": 1.25
+      ]
     },
     {
       "model_name": "gpt-6-luna",
@@ -1244,12 +1081,7 @@
           "cache_write_1h": null,
           "cache_write_12h": 0.5
         }
-      ],
-      "quota_type": 0,
-      "model_ratio": 0.05,
-      "completion_ratio": 5.0,
-      "cache_ratio": 0.1,
-      "create_cache_ratio": 1.25
+      ]
     },
     {
       "model_name": "gpt-6-sol",
@@ -1280,12 +1112,7 @@
           "cache_write_1h": null,
           "cache_write_12h": 10.0
         }
-      ],
-      "quota_type": 0,
-      "model_ratio": 1.0,
-      "completion_ratio": 5.0,
-      "cache_ratio": 0.1,
-      "create_cache_ratio": 1.25
+      ]
     },
     {
       "model_name": "gpt-6.1-sol",
@@ -1316,12 +1143,7 @@
           "cache_write_1h": null,
           "cache_write_12h": 10.0
         }
-      ],
-      "quota_type": 0,
-      "model_ratio": 1.0,
-      "completion_ratio": 5.0,
-      "cache_ratio": 0.05,
-      "create_cache_ratio": 1.25
+      ]
     },
     {
       "model_name": "gpt-image-2",
@@ -1355,11 +1177,7 @@
       "output_image": 30.0,
       "input_image": 8.0,
       "cache_read": 1.25,
-      "cache_read_image": 2.0,
-      "quota_type": 0,
-      "model_ratio": 2.5,
-      "completion_ratio": 6.0,
-      "cache_ratio": 0.25
+      "cache_read_image": 2.0
     },
     {
       "model_name": "gpt-image-2.5-sunburst-2026-09-08",
@@ -1378,11 +1196,7 @@
       "output_image": 30.0,
       "input_image": 8.0,
       "cache_read": 1.25,
-      "cache_read_image": 2.0,
-      "quota_type": 0,
-      "model_ratio": 2.5,
-      "completion_ratio": 6.0,
-      "cache_ratio": 0.25
+      "cache_read_image": 2.0
     },
     {
       "model_name": "gpt-image-medium",
@@ -1420,11 +1234,7 @@
           "cache_write": null,
           "cache_write_1h": null
         }
-      ],
-      "quota_type": 0,
-      "model_ratio": 1.0,
-      "completion_ratio": 3.0,
-      "cache_ratio": 0.15
+      ]
     },
     {
       "model_name": "grok-4.6",
@@ -1452,11 +1262,7 @@
           "cache_write": null,
           "cache_write_1h": null
         }
-      ],
-      "quota_type": 0,
-      "model_ratio": 1.0,
-      "completion_ratio": 3.0,
-      "cache_ratio": 0.25
+      ]
     },
     {
       "model_name": "grok-4.7",
@@ -1472,11 +1278,7 @@
       "confidence": "high",
       "input": 2.0,
       "output": 6.0,
-      "cache_read": 0.5,
-      "quota_type": 0,
-      "model_ratio": 1.0,
-      "completion_ratio": 3.0,
-      "cache_ratio": 0.25
+      "cache_read": 0.5
     },
     {
       "model_name": "grok-imagine-image",
@@ -1503,9 +1305,7 @@
       "unit": "per_1m_tokens",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "quota_type": 0,
-      "model_ratio": 0.0
+      "cache_read": 0.0
     },
     {
       "model_name": "inkling:free",
@@ -1517,9 +1317,7 @@
       "unit": "per_1m_tokens",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "quota_type": 0,
-      "model_ratio": 0.0
+      "cache_read": 0.0
     },
     {
       "model_name": "kimi-k3",
@@ -1537,12 +1335,7 @@
       "output": 15.0,
       "cache_read": 0.3,
       "cache_write": 3.0,
-      "cache_write_1h": 6.0,
-      "quota_type": 0,
-      "model_ratio": 1.5,
-      "completion_ratio": 5.0,
-      "cache_ratio": 0.1,
-      "create_cache_ratio": 1.0
+      "cache_write_1h": 6.0
     },
     {
       "model_name": "kimi-k3.1-pro",
@@ -1559,9 +1352,7 @@
       "unit": "per_1m_tokens",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "quota_type": 0,
-      "model_ratio": 0.0
+      "cache_read": 0.0
     },
     {
       "model_name": "laguna-xs-2.1:free",
@@ -1573,9 +1364,7 @@
       "unit": "per_1m_tokens",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "quota_type": 0,
-      "model_ratio": 0.0
+      "cache_read": 0.0
     },
     {
       "model_name": "lfm-2.5-2.6b:free",
@@ -1587,9 +1376,7 @@
       "unit": "per_1m_tokens",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "quota_type": 0,
-      "model_ratio": 0.0
+      "cache_read": 0.0
     },
     {
       "model_name": "minimax-m3.1-flash",
@@ -1605,11 +1392,7 @@
       "confidence": "high",
       "input": 0.15,
       "output": 0.6,
-      "cache_read": 0.015,
-      "quota_type": 0,
-      "model_ratio": 0.075,
-      "completion_ratio": 4.0,
-      "cache_ratio": 0.1
+      "cache_read": 0.015
     },
     {
       "model_name": "nemotron-3.5-content-safety:free",
@@ -1621,9 +1404,7 @@
       "unit": "per_1m_tokens",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "quota_type": 0,
-      "model_ratio": 0.0
+      "cache_read": 0.0
     },
     {
       "model_name": "nemotron-3.5-lightning:free",
@@ -1635,9 +1416,7 @@
       "unit": "per_1m_tokens",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "quota_type": 0,
-      "model_ratio": 0.0
+      "cache_read": 0.0
     },
     {
       "model_name": "nemotron-3.5-super-vl:free",
@@ -1649,9 +1428,7 @@
       "unit": "per_1m_tokens",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "quota_type": 0,
-      "model_ratio": 0.0
+      "cache_read": 0.0
     },
     {
       "model_name": "qwen3.8-flash",
@@ -1666,10 +1443,7 @@
       "retrieved_at": "2026-10-23T22:40:00+08:00",
       "confidence": "high",
       "input": 0.15,
-      "output": 0.47,
-      "quota_type": 0,
-      "model_ratio": 0.075,
-      "completion_ratio": 3.133333
+      "output": 0.47
     },
     {
       "model_name": "xing4.0-29b-a4b:free",
@@ -1681,9 +1455,7 @@
       "unit": "per_1m_tokens",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "quota_type": 0,
-      "model_ratio": 0.0
+      "cache_read": 0.0
     }
   ]
 }
