@@ -21,8 +21,7 @@
 用法::
 
     python -m tools.ops.normalize_snapshot --report          # 只看冗余/冲突统计
-    python -m tools.ops.normalize_snapshot -o raw/ci-normalized.json
-"""
+    python -m tools.ops.normalize_snapshot -o /tmp/ci-normalized.json"""
 
 from __future__ import annotations
 
@@ -34,9 +33,8 @@ from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_IN = ROOT / "raw" / "cheaperinference-20261023-full.json"
-# DEPRECATED：DEFAULT_IN 不再使用。命令行不传 -i 时会自动取 raw/ 下最新一期快照，
-# 避免写死的日期随快照更新而过期（旧版本曾指向 10-23 的 full 快照）。
+# 不写死快照路径：不传 -i 时由 latest_snapshot() 取 raw/ 下最新一期，
+# 否则每次换新快照都要改代码（旧版本曾硬编码 10-23 的 full 快照）。
 
 INPUT_MAP = {"text": "text", "image": "image", "pdf": "file", "file": "file", "audio": "audio", "video": "video"}
 OUTPUT_MAP = {"text": "text", "image": "image", "audio": "audio", "video": "video"}

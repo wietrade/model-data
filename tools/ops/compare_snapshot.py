@@ -6,7 +6,7 @@
 
 用法::
 
-    python -m tools.ops.compare_snapshot raw/cheaperinference-20261023-full.json
+    python -m tools.ops.compare_snapshot raw/cheaperinference-20261026.json
     python -m tools.ops.compare_snapshot raw/... --format json -o /tmp/diff.json
 """
 

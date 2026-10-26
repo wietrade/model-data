@@ -11,9 +11,7 @@ api/newapi/billing_basis.json
 
 # 每天生成的官方快照（可复现，需要留档时 git add -f）
 raw/official-metadata-*.json
-# 由 raw 快照重算的清洗产物
-raw/cheaperinference-normalized.json
-raw/cheaperinference-clean.json
+# raw/ 下只放原始快照；中间产物请写 /tmp，不要落到这里
 
 # 密钥（本地私有目录才是正确位置，这里只是双保险）
 .env

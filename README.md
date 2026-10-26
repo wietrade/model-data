@@ -534,11 +534,10 @@ python -m tools.model_sync.validate \
 
 `raw/` 存放**未合并**的第三方抓取快照，供人工比对后决定是否并入 `api/newapi/models.json`。
 命名统一为 `cheaperinference-<YYYYMMDD>[-限定词].json`；L3 用 `<YYYYMMDD>.verified.json` 后缀。
+**每期只保留最新一份**（历史在 git 里），目录自身说明见 `raw/README.md`。
 
 | 文件 | 来源 | 内容 |
 |:---|:---|:---|
-| `cheaperinference-20261023-partial.json` | `platform.cheaperinference.com/markets`（2026-10-23，**376 条**） | 首轮试抓，模型事实字段（上下文、最大输出、模态、能力标记），**已剔除全部价格字段** |
-| `cheaperinference-20261023-full.json` | 同上（同日全量重抓，**505 条**；2026-10-26 补抓） | 同上，另含 `detail_*` 原文（端点数、上下文/输出/类型/推理/视觉/编辑原文、支持参数），价格字段同样已剔除。**清洗版会合并掉 7 个重复字段** |
 | `cheaperinference-20261026.json` | 同一个站点，**527 条**，由 `tools/ops/fetch_site.py` 直接抓取（市场页 + 每个模型详情页） | 汇总字段 + 13 个 `detail_*`（多了 `detail_Provider` = **卖方/上游**，不是模型厂商）；价格字段已剔除；`fetch` 块记录抓取耗时与失败页 |
 | `cheaperinference-20261026.verified.json` | 上一条 + `corrections/20261026/corrections.json` | 应用了有官方出处的修正（157 处字段 + 11 处路由，上下文/最大输出/能力标签/厂商）；`detail_*` 与 L1 逐字节相同，`max>context` 已归零 |
 | `official-metadata-<YYYYMMDD>.json` | `tools/ops/harvest_official.py --fetch`（**默认 gitignore**） | 官方逐模型页的核对快照，每跑一次覆盖一次；需要留档时 `git add -f` |
@@ -568,7 +567,7 @@ L3  raw/cheaperinference-<date>.verified.json   L1 + L2，给下游用
 不能直接并入目录。用下面的脚本生成差异清单，再对照官方文档决定改哪边：
 
 ```bash
-python -m tools.ops.compare_snapshot raw/cheaperinference-20261023-full.json
+python -m tools.ops.compare_snapshot raw/cheaperinference-20261026.json
 ```
 
 比对四个维度：`context_length`、`max_output_tokens`、`input_modalities`、`output_modalities`、`capabilities`。
