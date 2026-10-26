@@ -174,22 +174,45 @@ class ValueCleaningTest(unittest.TestCase):
 class BoolValueTest(unittest.TestCase):
     def test_supported_becomes_true_and_not_supported_false(self):
         record, changes = cs.clean_item(item())
-        cs.clean_bool_details(record, changes)
+        cs.normalize_detail_values(record, changes)
         self.assertIs(record["detail_Streaming"], True)
         self.assertIs(record["detail_VideoInput"], False)
         self.assertIn("Not supported -> false", [c["reason"] for c in changes])
 
+    def test_not_reported_becomes_null(self):
+        record, changes = cs.clean_item(
+            item(detail_Input="Not reported", detail_Output="Not reported", detail_SupportedParameters="Not reported")
+        )
+        cs.normalize_detail_values(record, changes)
+        self.assertIsNone(record["detail_Input"])
+        self.assertIsNone(record["detail_Output"])
+        self.assertIsNone(record["detail_SupportedParameters"])
+        self.assertIn("Not reported -> null", [c["reason"] for c in changes])
+
+    def test_empty_endpoint_sentence_becomes_null(self):
+        record, changes = cs.clean_item(item(detail_Endpoints="None has passed a live request yet"))
+        cs.normalize_detail_values(record, changes)
+        self.assertIsNone(record["detail_Endpoints"])
+
     def test_null_is_kept_as_unknown(self):
         record, changes = cs.clean_item(item(detail_VideoInput=None, detail_Streaming=None))
-        cs.clean_bool_details(record, changes)
+        cs.normalize_detail_values(record, changes)
         self.assertIsNone(record["detail_VideoInput"])
         self.assertIsNone(record["detail_Streaming"])
 
-    def test_modality_lists_are_left_alone(self):
-        record, changes = cs.clean_item(item(detail_Input="image, pdf, text", detail_Output="Not reported"))
-        cs.clean_bool_details(record, changes)
+    def test_modality_and_endpoint_lists_are_left_alone(self):
+        record, changes = cs.clean_item(
+            item(
+                detail_Input="image, pdf, text",
+                detail_Endpoints="/v1/embeddings",
+                detail_VideoInput=None,
+                detail_Streaming=None,
+            )
+        )
+        cs.normalize_detail_values(record, changes)
         self.assertEqual(record["detail_Input"], "image, pdf, text")
-        self.assertEqual(record["detail_Output"], "Not reported")
+        self.assertEqual(record["detail_Endpoints"], "/v1/embeddings")
+        self.assertEqual([c for c in changes if "->" in c["reason"]], [])
 
 
 if __name__ == "__main__":

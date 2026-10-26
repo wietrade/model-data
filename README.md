@@ -429,7 +429,7 @@ python -m tools.ops.compare_snapshot raw/cheaperinference-20261023-full.json
 | `detail_VisionInput` / `vision` | 503 条一致、**0 处冲突**；2 条原文为空 | **合并**：只留 `vision`（bool） |
 | `detail_ImageEditing` / `imageEdit` | 503 条一致、**0 处冲突**；2 条原文为空 | **合并**：只留 `imageEdit`（bool） |
 | `label` / `id` | **505/505 完全相同**（`label` 就是 `id` 的拷贝） | **合并**：只留 `id` |
-| `detail_VideoInput` / `detail_Streaming` 的 `Supported` / `Not supported` | 同一字段里字符串与 `null` 混用 | **转成 `true` / `false`**；`null`（原文没报）保留，不当作 false |
+| `Supported` / `Not supported` / `Not reported` 字面值 | 505 条里共 1439 处站点词汇，与 `null` 混用 | **转成 JSON 原生值**：`true` / `false` / `null`（未知不当 false）；`"None has passed a live request yet"`（4 条）同样转 `null` |
 | `detail_Input` 只写 `text`，但 `detail_VisionInput = Supported` | 13 条（多模态模型，**文本和截图都能输**） | 补上 `image`，来源记 `detail+vision` |
 | `reasoning` 同理 | token 过度声明 27 条 | 同上 |
 | `detail_Input` vs 输入 token | 65 处矛盾 | 以 `detail_Input` 为准；`Not reported` = 未知，不当 false |
@@ -445,7 +445,7 @@ python -m tools.ops.normalize_snapshot -o raw/cheaperinference-normalized.json
 >
 > | 工具 | 干什么 | 产出 |
 > |:---|:---|:---|
-> | `tools/ops/clean_snapshot.py` | **只动有问题的值 + 合并重复字段 + 值类型归一**：删 `context-*` 冗余 token、删被两个字段同时否定的 token、`contextLength`/`maxOutputTokens` 空则从 `detail_*` 回填；把 6 个与对应字段重复的 `detail_*` 和与 `id` 完全相同的 `label` 整键删除；`detail_VideoInput`/`detail_Streaming` 的 `Supported`/`Not supported` 转布尔。其余键名与顺序逐条不变（27 → 20 键）。遗留矛盾（`maxOutputTokens > contextLength`、`kind/group` 与 `type` 不同等）只在 `--report` 里统计 | `raw/cheaperinference-clean.json` |
+> | `tools/ops/clean_snapshot.py` | **只动有问题的值 + 合并重复字段 + 值类型归一**：删 `context-*` 冗余 token、删被两个字段同时否定的 token、`contextLength`/`maxOutputTokens` 空则从 `detail_*` 回填；把 6 个与对应字段重复的 `detail_*` 和与 `id` 完全相同的 `label` 整键删除；`detail_*` 里的 `Supported`/`Not supported`/`Not reported` 转 `true`/`false`/`null`。其余键名与顺序逐条不变（27 → 20 键）。遗留矛盾（`maxOutputTokens > contextLength`、`kind/group` 与 `type` 不同等）只在 `--report` 里统计 | `raw/cheaperinference-clean.json` |
 > | `tools/ops/normalize_snapshot.py` | **仅为与我们目录比对**做的适配：把站点值映射到本仓库词表、补计费维度、标 `*_source`（会改结构） | `raw/cheaperinference-normalized.json` |
 >
 > 只想拿到「干净的原始数据」→ 用前者；要和 `api/newapi/models.json` 对账 → 用后者（`compare_snapshot` 会自动调它）。
