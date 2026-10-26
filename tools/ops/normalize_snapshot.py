@@ -53,6 +53,39 @@ PARAM_CAPS = {
 _UNKNOWN = {"", "not reported", "n/a"}
 
 
+# 端点 -> 计费维度（快照只给「按什么收」，单价在 pricing.json / 私有 basis）
+BILLING_RULES = (
+    (("/v1/images/",), "image"),  # 按张
+    (("/v1/videos/",), "video"),  # 按视频（或按视频秒）
+    (("/v1/audio/speech",), "audio_character"),  # TTS 按字符
+    (("/v1/audio/transcriptions",), "audio_second"),  # ASR 按音频秒
+    (("/v1/realtime",), "audio_second"),
+    (
+        ("/v1/chat", "/v1/responses", "/v1/messages", "/v1/embeddings", "/v1/decisions"),
+        "tokens",
+    ),
+)
+BILLING_BY_TYPE = {
+    "image": "image",
+    "video": "video",
+    "speech": "audio_character",
+    "transcription": "audio_second",
+    "realtime": "audio_second",
+    "text": "tokens",
+    "embedding": "tokens",
+    "decision": "tokens",
+}
+
+
+def billing_dimension(endpoints, kind):
+    """按端点判计费维度；端点没报时用 ``type`` 兜底。"""
+    joined = " ".join(endpoints)
+    for prefixes, dimension in BILLING_RULES:
+        if any(prefix in joined for prefix in prefixes):
+            return dimension
+    return BILLING_BY_TYPE.get(kind)
+
+
 def _split(value):
     text = (value or "").strip()
     if text.lower() in _UNKNOWN:
@@ -178,7 +211,10 @@ def normalize_item(item) -> dict:
         "output_modalities": sorted(set(outputs)),
         "capabilities": sorted(caps),
         "image_edit": bool(item.get("imageEdit")),
-        "endpoints": _split(item.get("detail_Endpoints")),
+        "endpoints": [ep for ep in _split(item.get("detail_Endpoints")) if ep.startswith("/")],
+        "billing_dimension": billing_dimension(
+            [ep for ep in _split(item.get("detail_Endpoints")) if ep.startswith("/")], kind
+        ),
         "input_source": input_source,
         "output_source": output_source,
         "context_source": context_source,

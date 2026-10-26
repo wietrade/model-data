@@ -134,6 +134,31 @@ class NormalizeTest(unittest.TestCase):
         self.assertIsNone(ns._number("Not reported"))
 
 
+class BillingDimensionTest(unittest.TestCase):
+    def test_endpoint_decides(self):
+        cases = {
+            "/v1/images/generations": "image",
+            "/v1/images/edits": "image",
+            "/v1/videos/generations": "video",
+            "/v1/audio/speech": "audio_character",
+            "/v1/audio/transcriptions": "audio_second",
+            "/v1/realtime": "audio_second",
+            "/v1/chat/completions": "tokens",
+            "/v1/embeddings": "tokens",
+        }
+        for endpoint, expected in cases.items():
+            self.assertEqual(ns.billing_dimension([endpoint], "text"), expected, endpoint)
+
+    def test_type_fallback_when_endpoints_missing(self):
+        self.assertEqual(ns.billing_dimension([], "video"), "video")
+        self.assertEqual(ns.billing_dimension([], "speech"), "audio_character")
+
+    def test_junk_endpoints_are_dropped(self):
+        record = ns.normalize_item(item(detail_Endpoints="None has passed a live request yet"))
+        self.assertEqual(record["endpoints"], [])
+        self.assertEqual(record["billing_dimension"], "tokens")
+
+
 class TypeDerivationTest(unittest.TestCase):
     def test_speech_and_transcription(self):
         self.assertEqual(ns.model_type({"input_modalities": ["text"], "output_modalities": ["audio"]}), "speech")

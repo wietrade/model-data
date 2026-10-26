@@ -328,6 +328,10 @@ LLM 的 token 价继续用上面的标量字段；**按张 / 按秒 / 按次 / �
 | `free` | 免费额度（前 N 张 / 前 N 秒），可选 |
 | `note` | 补充说明，可选 |
 
+> **词表缺口（待补）**：第三方快照里有 45 个视频模型（按视频 / 按视频秒）和 14 个 TTS 模型（按字符），
+> 我们的 `dim` 还没有 `output_video` / `output_character`，`unit` 也没有 `video` / `character`。
+> 将来引入这类模型（或对它们定价）时需要先扩词表，并确认计费引擎能否按这些维度结算。
+
 规则：
 
 - `output_image` 计量的 `meters[]` 会生成 `tier("image", fixed(price)) * image_count`；
@@ -439,6 +443,7 @@ input_modalities / output_modalities / capabilities / image_edit / endpoints`，
 | `output_source` | `detail`（原文给的）/ `type`（原文没报，按 `type` 推的） |
 | `context_source` / `max_output_source` | `numeric`（原始数字字段）/ `detail`（从 `"128,000 tokens"` 这类文本解析）/ `none`（两边都没有） |
 | `capabilities_source` | `params`（据 `detail_SupportedParameters`）/ `tokens`（参数表没公布时的弱证据） |
+| `billing_dimension` | 计费维度：`tokens` / `image`（按张）/ `video`（按视频）/ `audio_character`（TTS 按字符）/ `audio_second`（ASR 按秒）。由端点判定，端点没报时按 `type` 兜底 |
 | `conflicts[]` | 数值字段与原文不一致时的原始值（不猜，只留证） |
 | `unknown[]` | 该站没报、也没有可靠推导依据的维度 |
 
