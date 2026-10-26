@@ -35,6 +35,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_IN = ROOT / "raw" / "cheaperinference-20261023-full.json"
+# DEPRECATED：DEFAULT_IN 不再使用。命令行不传 -i 时会自动取 raw/ 下最新一期快照，
+# 避免写死的日期随快照更新而过期（旧版本曾指向 10-23 的 full 快照）。
 
 INPUT_MAP = {"text": "text", "image": "image", "pdf": "file", "file": "file", "audio": "audio", "video": "video"}
 OUTPUT_MAP = {"text": "text", "image": "image", "audio": "audio", "video": "video"}
@@ -330,9 +332,20 @@ def render(stats):
     return "\n".join(lines)
 
 
+def latest_snapshot() -> Path:
+    """raw/ 下最新的 cheaperinference-<YYYYMMDD>.json（排除 .verified 派生物）。"""
+    raw = ROOT / "raw"
+    found = sorted(
+        p for p in raw.glob("cheaperinference-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9].json")
+    ) if raw.exists() else []
+    if not found:
+        raise SystemExit("raw/ 下找不到 cheaperinference-<YYYYMMDD>.json，请用 -i 指定")
+    return found[-1]
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("-i", "--input", default=str(DEFAULT_IN))
+    parser.add_argument("-i", "--input", default=None, help="默认取 raw/ 下最新一期")
     parser.add_argument("-o", "--out", help="输出规范化 JSON")
     parser.add_argument("--report", action="store_true", help="打印冗余/冲突统计")
     parser.add_argument(
@@ -343,7 +356,7 @@ def main(argv=None) -> int:
     parser.add_argument("--limit", type=int, help="只处理前 N 条（调试用）")
     args = parser.parse_args(argv)
 
-    payload = json.loads(Path(args.input).read_text(encoding="utf-8"))
+    payload = json.loads(Path(args.input or latest_snapshot()).read_text(encoding="utf-8"))
     items = payload["models"]
     if args.limit:
         items = items[: args.limit]

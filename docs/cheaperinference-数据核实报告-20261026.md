@@ -350,8 +350,8 @@ embedding 不存在"输出 token"，输出是向量 → `maxOutputTokens` 一律
 - [ ] **B2** 抓取成功后做 schema 漂移检测（新增/消失字段立刻告警）
 - [ ] **B3** L1 → L1 快照 diff 工具（现在只能靠人工比对，站点一直在变）
 - [ ] **B4** 确定抓取节奏基线（多久抓一次、变更率多少算异常）
-- [ ] **B5** `compare_snapshot` 默认路径还指向 10-23 的旧快照
-- [ ] **B6** `clean_snapshot` 默认路径同上
+- [x] **B5** ~~`compare_snapshot` 默认路径还指向 10-23 的旧快照~~ → `normalize_snapshot` 改为自动取 `raw/` 下最新一期（2026-10-26）
+- [x] **B6** ~~`clean_snapshot` 默认路径同上~~ → 该工具已移除，职责由 `fetch_site`（产出 L1 时归一）+ `apply_corrections`（同步 `context-*` 标签）承担
 - [ ] **B7** `normalize_snapshot` 不认识 `detail_Provider` / `costPlus: null`
 
 ### 6.3 发布决策

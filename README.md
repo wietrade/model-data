@@ -466,14 +466,16 @@ python -m tools.ops.normalize_snapshot --report                              # �
 python -m tools.ops.normalize_snapshot -o raw/cheaperinference-normalized.json
 ```
 
-> 两个工具分工（别混用）：
+> 工具分工：
 >
 > | 工具 | 干什么 | 产出 |
 > |:---|:---|:---|
-> | `tools/ops/clean_snapshot.py` | **只动有问题的值 + 合并重复字段 + 值类型归一**：删 `context-*` 冗余 token、删被两个字段同时否定的 token、`contextLength`/`maxOutputTokens` 空则从 `detail_*` 回填；把 6 个与对应字段重复的 `detail_*` 和与 `id` 完全相同的 `label` 整键删除；`detail_*` 里的 `Supported`/`Not supported`/`Not reported` 转 `true`/`false`/`null`。其余键名与顺序逐条不变（27 → 20 键）。遗留矛盾（`maxOutputTokens > contextLength`、`kind/group` 与 `type` 不同等）只在 `--report` 里统计 | `raw/cheaperinference-clean.json` |
-> | `tools/ops/normalize_snapshot.py` | **仅为与我们目录比对**做的适配：把站点值映射到本仓库词表、补计费维度、标 `*_source`（会改结构） | `raw/cheaperinference-normalized.json` |
+> | `tools/ops/normalize_snapshot.py` | **仅为我们目录比对**做的适配：把站点值映射到本仓库词表、补计费维度、标 `*_source`（会改结构）。不传 `-i` 时自动取 `raw/` 下最新一期 | `raw/cheaperinference-normalized.json`（默认 gitignore） |
 >
-> 只想拿到「干净的原始数据」→ 用前者；要和 `api/newapi/models.json` 对账 → 用后者（`compare_snapshot` 会自动调它）。
+> 要和 `api/newapi/models.json` 对账 → 用 `compare_snapshot`（内部会调 `normalize_snapshot`）。
+>
+> > **已移除**：`tools/ops/clean_snapshot.py`（2026-10-26）。它的职责（删 `context-*` 冗余 token、合并与字段重复的 `detail_*`、`Supported`/`Not reported` 转布尔）已经在
+> > `fetch_site.py` 产出 L1 时完成，`apply_corrections.py` 又会做 `context-*` 标签同步，留着反而会和现行 29 键结构冲突。
 
 产物每条只留一组事实：`id / provider / type / context_length / max_output_tokens /
 input_modalities / output_modalities / capabilities / image_edit / endpoints`，另外两个溯源字段：
