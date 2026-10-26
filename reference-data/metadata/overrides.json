@@ -244,6 +244,20 @@
       }
     },
     {
+      "model_name": "glm-5.3",
+      "note": "2026-10-26 官方核实钉住 max_output_tokens：z.ai API 参考写 \"GLM-5.3 series / GLM-5.3-Flash series supports a maximum output length of 128K；schema range 1–131072\"。聚合源给的 943,718 / 943,717 是思考预算，不是输出上限。",
+      "fields": {
+        "max_output_tokens": 131072
+      }
+    },
+    {
+      "model_name": "glm-5.3-flash",
+      "note": "2026-10-26 官方核实钉住 max_output_tokens：z.ai API 参考写 \"GLM-5.3 series / GLM-5.3-Flash series supports a maximum output length of 128K；schema range 1–131072\"。聚合源给的 943,718 / 943,717 是思考预算，不是输出上限。",
+      "fields": {
+        "max_output_tokens": 131072
+      }
+    },
+    {
       "model_name": "gpt-5.4",
       "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-5.4.md，2026-10-25 复核）。",
       "fields": {
@@ -369,10 +383,11 @@
     },
     {
       "model_name": "kimi-k3",
-      "note": "第二轮官方核实（https://platform.kimi.com/docs/changelog/index.md，2026-10-25 复核）。",
+      "note": "第二轮官方核实（https://platform.kimi.com/docs/changelog/index.md，2026-10-25 复核）。 2026-10-26 补钉 max_output_tokens：官方 \"max_completion_tokens 默认 131072，最大可设置为 1048576\"；聚合源给的 943,718 是思考预算，不是输出上限。",
       "fields": {
         "lifecycle": "ga",
-        "context_length": 1048576
+        "context_length": 1048576,
+        "max_output_tokens": 1048576
       }
     },
     {

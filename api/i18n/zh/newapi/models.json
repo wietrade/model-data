@@ -954,7 +954,7 @@
         "text"
       ],
       "context_length": 1048576,
-      "max_output_tokens": 943718,
+      "max_output_tokens": 1048576,
       "is_free": false,
       "endpoints": null,
       "lifecycle": "ga",
@@ -1661,7 +1661,7 @@
         "text"
       ],
       "context_length": 1048576,
-      "max_output_tokens": 943718,
+      "max_output_tokens": 131072,
       "is_free": false,
       "endpoints": null,
       "lifecycle": "",
@@ -1691,7 +1691,7 @@
         "text"
       ],
       "context_length": 1048576,
-      "max_output_tokens": 943717,
+      "max_output_tokens": 131072,
       "is_free": false,
       "endpoints": null,
       "lifecycle": "",
