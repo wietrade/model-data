@@ -47,16 +47,16 @@ tools/ops/            官方页抓取核对、快照比对、upcoming 价格转�
 ```bash
 python -m unittest discover -s tools/model_sync/tests -t .   # 单测
 python -m tools.model_sync.validate                          # 元数据 + 价格自洽性
-python -m tools.model_sync.export_billing -o /tmp/billing.json   # 仅按牌价导出（预览用）
+python -m tools.model_sync.export_billing -o /opt/model-data-private/billing.json   # 仅按官方价导出（预览用）
 python -m tools.model_sync.export_billing \
-    --basis /opt/model-data-private/billing_basis.json -o /tmp/billing.json   # 正式导出（含结算价）
+    --basis /opt/model-data-private/billing_basis.json -o /opt/model-data-private/billing.json   # 正式导出（含结算价）
 ```
 
 计费表达式落库（在 new-api 主机上）：
 
 ```bash
-python scripts/ops/apply_billing.py -i /tmp/billing.json --dry-run
-python scripts/ops/apply_billing.py -i /tmp/billing.json
+python scripts/ops/apply_billing.py -i /opt/model-data-private/billing.json --dry-run
+python scripts/ops/apply_billing.py -i /opt/model-data-private/billing.json
 systemctl restart new-api
 ```
 
@@ -261,6 +261,29 @@ overrides.json  >  官方逐模型页 / 官方 API（official:*，需官方内�
 | `corrections/`、`raw/` | 快照原件与逐字段改动台账 | 审计用，给人看；`changelog.csv` 是派生品 |
 | `tools/` | 生成上述文件的脚本 | 想自己重算再去 fork |
 
+### new-api 的两个同步按钮，分别读什么
+
+后台「模型」页只有两个按钮，它们读的**不是同一套东西**：
+
+| 按钮 | 后端 | 读什么 | 写什么 |
+|:---|:---|:---|:---|
+| 同步资料 | `controller/model_sync.go` | `{SYNC_UPSTREAM_BASE}/api/newapi/{models,vendors}.json`（+ i18n 变体） | `models` / `vendors` 表 |
+| 同步价格 | `controller/ratio_sync.go`（UpstreamRatioSync） | **上游渠道**的 `{base}/api/pricing`、`/api/ratio_config`、`/v1/models`；以及两个内置预设 `basellm.github.io/llm-metadata/.../ratio_config-v1-base.json`、`models.dev/api.json` | options 里的 `model_ratio` / `completion_ratio` / `cache_ratio` / `create_cache_ratio` / `image_ratio` / `audio_ratio` / `audio_completion_ratio` / `model_price` / `billing_mode` / `billing_expr` |
+
+「同步价格」只认上面 **10 个字段**，**不读我们的 `pricing.json`**（格式不通）。
+
+实测（2026-10-26）：我们 20 个渠道全部指向 `https://znbcode.com`，而该域名
+`/api/pricing`、`/api/ratio_config` 都是 **404**（只开放 `/v1/models`，需 API key），
+所以「同步价格」对这些渠道**拉不到任何数据**。
+
+— 这就是为什么「我们的价格」必须自己维护，且单独放一个文件：
+
+```
+私有  /opt/model-data-private/billing_basis.json   我们拿到的价（人民币 + 汇率），唯一真源
+私有  /opt/model-data-private/billing.json         export 产物（billing_mode + billing_expr），apply 用
+公开  api/newapi/pricing.json                      只放厂商官方价，仅作参考与计算输入
+```
+
 ### 原则：判断发生在构建期，不发生在读取期
 
 `overrides.json` 里确实有我们的口径（哪些模型按 `legacy` 算、哪些不发布），但这些判断在**生成
@@ -446,14 +469,14 @@ python -m unittest discover -s tools/model_sync/tests -t .
 
 # 2. 在部署机上导出（--basis 指向私有结算价文件）
 python -m tools.model_sync.export_billing \
-    --basis /opt/model-data-private/billing_basis.json -o /tmp/billing.json
+    --basis /opt/model-data-private/billing_basis.json -o /opt/model-data-private/billing.json
 ```
 
 然后到 new-api 仓库落库：
 
 ```bash
-python scripts/ops/apply_billing.py -i /tmp/billing.json --dry-run   # 先看变更
-python scripts/ops/apply_billing.py -i /tmp/billing.json
+python scripts/ops/apply_billing.py -i /opt/model-data-private/billing.json --dry-run   # 先看变更
+python scripts/ops/apply_billing.py -i /opt/model-data-private/billing.json
 systemctl restart new-api                                            # options 只在启动时读
 ```
 
