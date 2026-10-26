@@ -671,7 +671,7 @@
       "output": 120.0,
       "output_text": 12.0,
       "output_image": 120.0,
-      "cache_read": null,
+      "cache_read": 0.2,
       "cache_write": null,
       "cache_write_1h": null,
       "per_image": 0.134,
@@ -692,7 +692,7 @@
       "upcoming": null,
       "confidence": "high",
       "quote": "输入 $2.00（≤20万token）/ $4.00（>20万）；输出文本 $12.00（≤20万）/ $18.00（>20万）；图像输出 $120.00 固定。文本部分沿用 Gemini 3.1 Pro 的 200K 两档。",
-      "notes": "Standard 档：输入 $2.00(text/image)；文本与思考输出 $12.00、图像输出 $120.00/1M tokens；按图折算 1K/2K $0.134、4K $0.24；图像输入 $0.0011/张；Batch 档输入 $1.00、图像输出 $60.00（即 Standard 的 50%）；不支持 Caching；无免费档。 文本部分沿用 Gemini 3.1 Pro 的 200K 两档（12→18）；图像输出固定 120。 高档缓存价官方未明确（该图像模型不支持 Caching，cache_read 恒为 null）。\n官方模型页（ai.google.dev/.../models/gemini-3-pro-image，2026-09-08 更新）：输入 token 上限 65,536、输出 32,768。官方价格表按“文本部分沿用 Gemini 3.1 Pro 的 200K 两档”列出 >200K 价，但本模型达不到该阈值，故 long 档仅在表达式中保留对齐、实际不可达。",
+      "notes": "Standard 档：输入 $2.00(text/image)；文本与思考输出 $12.00、图像输出 $120.00/1M tokens；按图折算 1K/2K $0.134、4K $0.24；图像输入 $0.0011/张；Batch 档输入 $1.00、图像输出 $60.00（即 Standard 的 50%）；不支持 Caching；无免费档。 文本部分沿用 Gemini 3.1 Pro 的 200K 两档（12→18）；图像输出固定 120。 高档缓存价官方未明确（该图像模型不支持 Caching，cache_read 恒为 null）。\n官方模型页（ai.google.dev/.../models/gemini-3-pro-image，2026-09-08 更新）：输入 token 上限 65,536、输出 32,768。官方价格表按“文本部分沿用 Gemini 3.1 Pro 的 200K 两档”列出 >200K 价，但本模型达不到该阈值，故 long 档仅在表达式中保留对齐、实际不可达。 缓存命中 $0.2/1M（GCP 定价页 2026-10-26）。",
       "meters": [
         {
           "dim": "input_image",
@@ -730,7 +730,7 @@
       "output": 120.0,
       "output_text": 12.0,
       "output_image": 120.0,
-      "cache_read": null,
+      "cache_read": 0.2,
       "cache_write": null,
       "cache_write_1h": null,
       "per_image": 0.134,
@@ -751,7 +751,7 @@
       "upcoming": null,
       "confidence": "medium",
       "quote": "输入 $2.00（≤20万token）/ $4.00（>20万）；输出文本 $12.00（≤20万）/ $18.00（>20万）；图像输出 $120.00 固定。文本部分沿用 Gemini 3.1 Pro 的 200K 两档。",
-      "notes": "官方已不收录该别名（单模型页 404），按同款稳定版 gemini-3-pro-image Standard 档对齐：输入 $2.00；文本/思考 $12.00、图像 $120.00；1K/2K $0.134、4K $0.24/张；Batch 5 折。 文本部分沿用 Gemini 3.1 Pro 的 200K 两档（12→18）；图像输出固定 120。 高档缓存价官方未明确（该图像模型不支持 Caching，cache_read 恒为 null）。\n官方模型页（ai.google.dev/.../models/gemini-3-pro-image，2026-09-08 更新）：输入 token 上限 65,536、输出 32,768。官方价格表按“文本部分沿用 Gemini 3.1 Pro 的 200K 两档”列出 >200K 价，但本模型达不到该阈值，故 long 档仅在表达式中保留对齐、实际不可达。",
+      "notes": "官方已不收录该别名（单模型页 404），按同款稳定版 gemini-3-pro-image Standard 档对齐：输入 $2.00；文本/思考 $12.00、图像 $120.00；1K/2K $0.134、4K $0.24/张；Batch 5 折。 文本部分沿用 Gemini 3.1 Pro 的 200K 两档（12→18）；图像输出固定 120。 高档缓存价官方未明确（该图像模型不支持 Caching，cache_read 恒为 null）。\n官方模型页（ai.google.dev/.../models/gemini-3-pro-image，2026-09-08 更新）：输入 token 上限 65,536、输出 32,768。官方价格表按“文本部分沿用 Gemini 3.1 Pro 的 200K 两档”列出 >200K 价，但本模型达不到该阈值，故 long 档仅在表达式中保留对齐、实际不可达。 缓存命中 $0.2/1M（GCP 定价页 2026-10-26）。",
       "meters": [
         {
           "dim": "input_image",
@@ -789,7 +789,7 @@
       "output": 60.0,
       "output_text": 3.0,
       "output_image": 60.0,
-      "cache_read": null,
+      "cache_read": 0.05,
       "cache_write": null,
       "cache_write_1h": null,
       "per_image": 0.067,
@@ -799,7 +799,7 @@
       "upcoming": null,
       "confidence": "high",
       "quote": "输入 $0.50（文本/图片）；输出 $3.00（文本和思考）/ $60.00（图片）。",
-      "notes": "Standard 档：输入 $0.50(text/image)；文本与思考输出 $3.00、图像输出 $60.00/1M tokens；按图折算 0.5K $0.045、1K $0.067、2K $0.101、4K $0.151；Batch 档输入 $0.25、图像输出 $30.00（5 折）；不支持 Caching；无免费档。",
+      "notes": "Standard 档：输入 $0.50(text/image)；文本与思考输出 $3.00、图像输出 $60.00/1M tokens；按图折算 0.5K $0.045、1K $0.067、2K $0.101、4K $0.151；Batch 档输入 $0.25、图像输出 $30.00（5 折）；不支持 Caching；无免费档。 缓存命中 $0.05/1M（GCP 定价页 2026-10-26）。",
       "meters": [
         {
           "dim": "output_image",
@@ -848,7 +848,7 @@
       "output": 60.0,
       "output_text": 3.0,
       "output_image": 60.0,
-      "cache_read": null,
+      "cache_read": 0.05,
       "cache_write": null,
       "cache_write_1h": null,
       "per_image": 0.067,
@@ -858,7 +858,7 @@
       "upcoming": null,
       "confidence": "medium",
       "quote": "输入 $0.50（文本/图片）；输出 $3.00（文本和思考）/ $60.00（图片）。",
-      "notes": "官方已不收录该别名（单模型页 404），按同款稳定版 gemini-3.1-flash-image Standard 档对齐：输入 $0.50；文本/思考 $3.00、图像 $60.00；1K $0.067/张。",
+      "notes": "官方已不收录该别名（单模型页 404），按同款稳定版 gemini-3.1-flash-image Standard 档对齐：输入 $0.50；文本/思考 $3.00、图像 $60.00；1K $0.067/张。 缓存命中 $0.05/1M（GCP 定价页 2026-10-26）。",
       "meters": [
         {
           "dim": "output_image",
@@ -895,6 +895,41 @@
       ]
     },
     {
+      "model_name": "gemini-3.8-flash",
+      "vendor_name": "Google",
+      "price_kind": "vendor_official",
+      "source_kind": "official_doc",
+      "source_url": "https://cloud.google.com/gemini-enterprise-agent-platform/generative-ai/pricing",
+      "retrieved_at": "2026-10-26T17:40:00+08:00",
+      "currency": "USD",
+      "unit": "per_1m_tokens",
+      "input": 0.75,
+      "output": 3.75,
+      "output_text": null,
+      "output_image": null,
+      "cache_read": 0.075,
+      "cache_write": null,
+      "cache_write_1h": null,
+      "per_image": null,
+      "tiers": null,
+      "effective_from": null,
+      "effective_to": "2026-12-31",
+      "upcoming": [
+        {
+          "effective_from": "2027-01-01",
+          "input": 1.5,
+          "output": 7.5,
+          "output_text": null,
+          "output_image": null,
+          "cache_read": 0.15,
+          "cache_write": null
+        }
+      ],
+      "confidence": "high",
+      "quote": "Gemini 3.8 Flash*through December 31, 2026：Input $0.75 / Output $3.75 / Cached $0.075；Starting January 1, 2027：Input $1.50 / Output $7.50 / Cached $0.15",
+      "notes": "促销价至 2026-12-31；2027-01-01 起翻倍，已写入 upcoming，由 promote_upcoming_pricing 在到期日提升。Non-global 为 Global × 1.1。"
+    },
+    {
       "model_name": "gemini-4-argon",
       "vendor_name": "Google",
       "price_kind": "vendor_official",
@@ -928,6 +963,31 @@
       "confidence": "high",
       "quote": "输入 2026-11-30 前 $2.00、2026-12-01 起 $4.00；输出 $10.00→$20.00；隐式缓存 $0.10→$0.20。",
       "notes": "Standard 档促销价（2026-11-30 前）：输入 $2.00、输出 $10.00（含思考 token）、隐式缓存读 $0.10；2026-12-01 起涨至 $4.00/$20.00、缓存 $0.20；仅 Implicit 缓存，无显式缓存写价；Flex 档输入 $1.00/输出 $5.00；无免费档。"
+    },
+    {
+      "model_name": "gemini-nano-banana-2.1",
+      "vendor_name": "Google",
+      "price_kind": "vendor_official",
+      "source_kind": "official_doc",
+      "source_url": "https://cloud.google.com/gemini-enterprise-agent-platform/generative-ai/pricing",
+      "retrieved_at": "2026-10-26T17:40:00+08:00",
+      "currency": "USD",
+      "unit": "per_1m_tokens",
+      "input": 1.5,
+      "output": 30.0,
+      "output_text": 7.5,
+      "output_image": 30.0,
+      "cache_read": 0.15,
+      "cache_write": null,
+      "cache_write_1h": null,
+      "per_image": null,
+      "tiers": null,
+      "effective_from": null,
+      "effective_to": null,
+      "upcoming": null,
+      "confidence": "high",
+      "quote": "Gemini Nano Banana 2.1：Input $1.5 / Cached $0.15 / Output text $7.5 / Output image $30",
+      "notes": "图像输出按 output_image 每 1M tokens 计；无 >200K 阶梯。"
     },
     {
       "model_name": "gemma-4-26b-a4b-it:free",

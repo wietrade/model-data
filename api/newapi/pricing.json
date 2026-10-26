@@ -555,6 +555,7 @@
       "output": 120.0,
       "output_text": 12.0,
       "output_image": 120.0,
+      "cache_read": 0.2,
       "per_image": 0.134,
       "tiers": [
         {
@@ -592,7 +593,7 @@
         }
       ],
       "billing_mode": "tiered_expr",
-      "billing_expr": "len <= 200000 ? tier(\"standard\", p * 2 + c * 12 + img_o * 120) : tier(\"long_context\", p * 4 + c * 18 + img_o * 120)"
+      "billing_expr": "len <= 200000 ? tier(\"standard\", p * 2 + c * 12 + img_o * 120 + cr * 0.2) : tier(\"long_context\", p * 4 + c * 18 + img_o * 120)"
     },
     {
       "model_name": "gemini-3-pro-image-preview",
@@ -610,6 +611,7 @@
       "output": 120.0,
       "output_text": 12.0,
       "output_image": 120.0,
+      "cache_read": 0.2,
       "per_image": 0.134,
       "tiers": [
         {
@@ -647,7 +649,7 @@
         }
       ],
       "billing_mode": "tiered_expr",
-      "billing_expr": "len <= 200000 ? tier(\"standard\", p * 2 + c * 12 + img_o * 120) : tier(\"long_context\", p * 4 + c * 18 + img_o * 120)"
+      "billing_expr": "len <= 200000 ? tier(\"standard\", p * 2 + c * 12 + img_o * 120 + cr * 0.2) : tier(\"long_context\", p * 4 + c * 18 + img_o * 120)"
     },
     {
       "model_name": "gemini-3.1-flash-image",
@@ -665,6 +667,7 @@
       "output": 60.0,
       "output_text": 3.0,
       "output_image": 60.0,
+      "cache_read": 0.05,
       "per_image": 0.067,
       "meters": [
         {
@@ -701,7 +704,7 @@
         }
       ],
       "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 0.5 + c * 3 + img_o * 60)"
+      "billing_expr": "tier(\"standard\", p * 0.5 + c * 3 + img_o * 60 + cr * 0.05)"
     },
     {
       "model_name": "gemini-3.1-flash-image-preview",
@@ -719,6 +722,7 @@
       "output": 60.0,
       "output_text": 3.0,
       "output_image": 60.0,
+      "cache_read": 0.05,
       "per_image": 0.067,
       "meters": [
         {
@@ -755,20 +759,35 @@
         }
       ],
       "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 0.5 + c * 3 + img_o * 60)"
+      "billing_expr": "tier(\"standard\", p * 0.5 + c * 3 + img_o * 60 + cr * 0.05)"
     },
     {
       "model_name": "gemini-3.8-flash",
       "vendor_name": "Google",
-      "price_kind": "aggregator_reference",
-      "source_kind": "aggregator",
-      "source": "models.dev",
-      "source_model_id": "google/gemini-3.8-flash",
+      "price_kind": "vendor_official",
+      "source_kind": "official_doc",
+      "source": "vendor_official",
+      "source_model_id": "gemini-3.8-flash",
       "currency": "USD",
       "unit": "per_1m_tokens",
+      "source_url": "https://cloud.google.com/gemini-enterprise-agent-platform/generative-ai/pricing",
+      "retrieved_at": "2026-10-26T17:40:00+08:00",
+      "confidence": "high",
       "input": 0.75,
       "output": 3.75,
       "cache_read": 0.075,
+      "effective_to": "2026-12-31",
+      "upcoming": [
+        {
+          "effective_from": "2027-01-01",
+          "input": 1.5,
+          "output": 7.5,
+          "output_text": null,
+          "output_image": null,
+          "cache_read": 0.15,
+          "cache_write": null
+        }
+      ],
       "billing_mode": "tiered_expr",
       "billing_expr": "tier(\"standard\", p * 0.75 + c * 3.75 + cr * 0.075)"
     },
@@ -815,16 +834,22 @@
     {
       "model_name": "gemini-nano-banana-2.1",
       "vendor_name": "Google",
-      "price_kind": "aggregator_reference",
-      "source_kind": "aggregator",
-      "source": "openrouter",
-      "source_model_id": "google/gemini-nano-banana-2.1",
+      "price_kind": "vendor_official",
+      "source_kind": "official_doc",
+      "source": "vendor_official",
+      "source_model_id": "gemini-nano-banana-2.1",
       "currency": "USD",
       "unit": "per_1m_tokens",
+      "source_url": "https://cloud.google.com/gemini-enterprise-agent-platform/generative-ai/pricing",
+      "retrieved_at": "2026-10-26T17:40:00+08:00",
+      "confidence": "high",
       "input": 1.5,
-      "output": 7.5,
+      "output": 30.0,
+      "output_text": 7.5,
+      "output_image": 30.0,
+      "cache_read": 0.15,
       "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 1.5 + c * 7.5)"
+      "billing_expr": "tier(\"standard\", p * 1.5 + c * 7.5 + img_o * 30 + cr * 0.15)"
     },
     {
       "model_name": "gemma-4-26b-a4b-it:free",
