@@ -6,7 +6,7 @@
 | 消费方 | 方式 | 落点 |
 |:---|:---|:---|
 | 运行时模型目录 | HTTP 拉取本仓库发布的 `api/**`（`SYNC_UPSTREAM_BASE`），后台「同步资料」预览 + 应用 | new-api `models` / `vendors` 表 |
-| 计费表达式 | `tools/model_sync/export_billing.py` 导出 payload → new-api 侧 `scripts/ops/apply_billing.py` 写 options → 重启 | new-api options（`billing_setting.*`） |
+| 计费表达式 | `tools/model_sync/export_billing.py` 导出 payload → `tools/ops/push_billing.py` 用**管理令牌**走 `PUT /api/option/` 写入 | new-api options（`billing_setting.*`），写后即时生效 |
 
 > 目录结构刻意与 `basellm/llm-metadata` 一致（`api/newapi/*.json`、`api/i18n/<lang>/newapi/*.json`），
 > 因此把 new-api 的 `SYNC_UPSTREAM_BASE` 指到本仓库即可，无需改代码。
@@ -52,13 +52,42 @@ python -m tools.model_sync.export_billing \
     --basis /opt/model-data-private/billing_basis.json -o /opt/model-data-private/billing.json   # 正式导出（含结算价）
 ```
 
-计费表达式落库（在 new-api 主机上）：
+计费表达式落库（在 new-api 主机上，或任何能访问管理接口的地方）：
 
 ```bash
-python scripts/ops/apply_billing.py -i /opt/model-data-private/billing.json --dry-run
-python scripts/ops/apply_billing.py -i /opt/model-data-private/billing.json
-systemctl restart new-api
+export NEWAPI_TOKEN=nap_...        # 管理令牌，见「管理令牌」一节
+python -m tools.ops.push_billing -i /opt/model-data-private/billing.json --dry-run   # 先看变更
+python -m tools.ops.push_billing -i /opt/model-data-private/billing.json --apply     # 写后即时生效
 ```
+
+### 管理令牌与落库通道
+
+**落库只走 `push_billing`（HTTP + 管理令牌）**，不再直连 SQLite。
+
+令牌放部署机的私有目录，权限 600，不进仓库：
+
+```bash
+# /opt/model-data-private/newapi.token     （一行：nap_...）
+export NEWAPI_TOKEN=$(cat /opt/model-data-private/newapi.token)
+```
+
+为什么选这条路：
+
+| | `push_billing`（HTTP） | `apply_billing.py`（直连 SQLite，已退为备用） |
+|:---|:---|:---|
+| 碰数据库文件 | 否 | 是；WAL 模式下 `copy .db` 可能只是旧快照 |
+| 重启服务 | **不需要** | 必须（`systemctl restart new-api` 有 1～2 秒中断） |
+| 校验 | 走服务端 `validateModelPricing` | 无 |
+| 权限 | 管理令牌 | 服务器 root |
+
+两个必须知道的行为：
+
+1. `PUT /api/option/` 对这个 key 是**整表替换**。`push_billing` 会先 `GET` 当前值再合并，
+   否则 payload 里没有的模型（如 `gpt-oss-120b`、已下架的 `glm-5.3-prime`）会被静默删掉。
+2. `GET /api/option/` 返回的是**内存视图**，可能比库里多几个注册默认值。合并后写回会把它们一并固化；
+   这些值本来就在生效，不改变行为。
+
+> `apply_billing.py` 仍保留在 new-api 仓库，只在管理接口不可达时兜底使用。
 
 ## 模型字段
 
@@ -325,7 +354,7 @@ overrides.json  >  官方逐模型页 / 官方 API（official:*，需官方内�
 >    由部署机 `export_billing` 在导出时从价格字段重算（再叠私有结算价）。`validate` 会报错拦住它们。
 > 2. 线上生效的 `billing_setting.billing_expr` 是**用结算价重算** 的结果，只存在于部署机，不进仓库。
 > 3. 所以 new-api **不需要也不应该**拉 `pricing.json`——它只拉 `models.json` + `vendors.json`。
->    价格走「官方价 → `export_billing --basis` → `apply_billing.py`」这条链，结 算价全程不出私域。
+>    价格走「官方价 → `export_billing --basis` → `push_billing`」这条链，结 算价全程不出私域。
 
 ### 官方价的机器核对
 
@@ -471,12 +500,12 @@ python -m tools.model_sync.export_billing \
     --basis /opt/model-data-private/billing_basis.json -o /opt/model-data-private/billing.json
 ```
 
-然后到 new-api 仓库落库：
+然后落库（走管理令牌，**不需要重启**）：
 
 ```bash
-python scripts/ops/apply_billing.py -i /opt/model-data-private/billing.json --dry-run   # 先看变更
-python scripts/ops/apply_billing.py -i /opt/model-data-private/billing.json
-systemctl restart new-api                                            # options 只在启动时读
+export NEWAPI_TOKEN=nap_...
+python -m tools.ops.push_billing -i /opt/model-data-private/billing.json --dry-run   # 先看变更
+python -m tools.ops.push_billing -i /opt/model-data-private/billing.json --apply
 ```
 
 模型的增删改名同理，见 new-api 仓库的 `scripts/ops/README.md`。每一步都可重复执行，
@@ -498,7 +527,7 @@ python -m tools.model_sync.validate \
 三份 i18n 文件是否同步。CI 会在每日同步后自动执行。
 
 > **改价红线**：任何价格变更都必须先改 `pricing.official.json` / `pricing.json`（结算成本则改私有
-> basis），再走 `export_billing --basis` + `apply_billing.py` 落库。直接调
+> basis），再走 `export_billing --basis` + `push_billing` 落库。直接调
 > `PATCH /api/option/model_pricing` 或改数据库会绕过官方原文校验，`--live` 校验会把这类漂移报成错误。
 
 ## 原始第三方快照（raw/）

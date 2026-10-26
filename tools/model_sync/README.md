@@ -5,7 +5,7 @@
 | 产物 | 用途 | 是否被 new-api 自动消费 |
 |:---|:---|:---|
 | `api/newapi/models.json`、`vendors.json`（含 `i18n/zh`、`i18n/en`） | 模型元数据（描述、能力、模态、上下文、最大输出、免费标记） | 是，走「模型元数据同步」（预览 + 字段级应用） |
-| `api/newapi/pricing.json` | 官方价（USD / 每 1M tokens）+ 出处；无官方价的模型只有一行壳（`price_kind: unpriced`） | **否**；上线由部署机 `export_billing --basis <私有结算价>` 导出后 `apply_billing.py` 落库 |
+| `api/newapi/pricing.json` | 官方价（USD / 每 1M tokens）+ 出处；无官方价的模型只有一行壳（`price_kind: unpriced`） | **否**；上线由部署机 `export_billing --basis <私有结算价>` 导出后 `push_billing` 落库 |
 | `sources/pricing.official.json` | 厂商官方定价页抄录（输入源，人工维护） | **否**，由 `pricing.json` 消费 |
 
 价格优先级：`pricing.official.json` > 目录 `is_free`。**聚合站报价与结算价都不进发布文件**：
