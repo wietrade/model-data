@@ -60,9 +60,16 @@ def _split(value):
     return [part.strip() for part in text.split(",") if part.strip()]
 
 
+_SCALE = {"k": 1_000, "m": 1_000_000, "b": 1_000_000_000}
+
+
 def _number(value):
-    match = re.search(r"([0-9][0-9,]*)", str(value or ""))
-    return int(match.group(1).replace(",", "")) if match else None
+    """``'1,048,576 tokens'`` / ``'1M'`` / ``'512 tokens'`` -> int。"""
+    match = re.search(r"([0-9]+(?:\.[0-9]+)?)\s*([kKmMbB])?", str(value or "").replace(",", ""))
+    if not match:
+        return None
+    number = float(match.group(1))
+    return int(number * _SCALE.get((match.group(2) or "").lower(), 1))
 
 
 def model_type(record) -> str:
@@ -141,12 +148,25 @@ def normalize_item(item) -> dict:
     if kind == "embedding" or any(token.startswith("embedding") for token in tokens):
         caps.add("embedding")
 
-    context_length = item.get("contextLength")
-    if not context_length:
-        context_length = _number(item.get("detail_ContextWindow"))
-    max_output = item.get("maxOutputTokens")
-    if not max_output:
-        max_output = _number(item.get("detail_MaximumOutput"))
+    # 上下文 / 最大输出：**三个字段只留一个数字**。
+    # `context-128k` / `context-1m` 是累积阈值标签，与数字重复，直接丢；
+    # `detail_*` 与数值字段实测 0 处不一致，只用来回填缺失（以及万一未来冲突时留证）。
+    conflicts = []
+    context_length = item.get("contextLength") or None
+    context_source = "numeric" if context_length else "none"
+    detail_context = _number(item.get("detail_ContextWindow"))
+    if context_length and detail_context and detail_context != context_length:
+        conflicts.append({"field": "context_length", "numeric": context_length, "detail": detail_context})
+    elif not context_length and detail_context:
+        context_length, context_source = detail_context, "detail"
+
+    max_output = item.get("maxOutputTokens") or None
+    max_output_source = "numeric" if max_output else "none"
+    detail_max = _number(item.get("detail_MaximumOutput"))
+    if max_output and detail_max and detail_max != max_output:
+        conflicts.append({"field": "max_output_tokens", "numeric": max_output, "detail": detail_max})
+    elif not max_output and detail_max:
+        max_output, max_output_source = detail_max, "detail"
 
     record = {
         "id": item.get("id"),
@@ -161,7 +181,10 @@ def normalize_item(item) -> dict:
         "endpoints": _split(item.get("detail_Endpoints")),
         "input_source": input_source,
         "output_source": output_source,
+        "context_source": context_source,
+        "max_output_source": max_output_source,
         "capabilities_source": capabilities_source,
+        "conflicts": conflicts,
         "unknown": unknown,
     }
     if context_length is None:

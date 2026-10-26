@@ -104,6 +104,34 @@ class NormalizeTest(unittest.TestCase):
         record = ns.normalize_item(item(contextLength=None, maxOutputTokens=None))
         self.assertEqual(record["context_length"], 128000)
         self.assertEqual(record["max_output_tokens"], 32768)
+        self.assertEqual(record["context_source"], "detail")
+        self.assertEqual(record["max_output_source"], "detail")
+
+    def test_only_one_context_number_is_kept(self):
+        """context-128k / context-1m 与 contextLength 重复，产出的数字只能有一个来源。"""
+        record = ns.normalize_item(
+            item(
+                capabilities=["context-128k", "context-1m"],
+                contextLength=1048576,
+                detail_ContextWindow="1,048,576 tokens",
+            )
+        )
+        self.assertEqual(record["context_length"], 1048576)
+        self.assertEqual(record["context_source"], "numeric")
+        self.assertEqual(record["conflicts"], [])
+        self.assertNotIn("context-1m", record["capabilities"])
+
+    def test_context_conflict_is_recorded_not_guessed(self):
+        record = ns.normalize_item(item(contextLength=128000, detail_ContextWindow="200,000 tokens"))
+        self.assertEqual(record["context_length"], 128000)
+        self.assertEqual(record["conflicts"][0]["field"], "context_length")
+        self.assertEqual(record["conflicts"][0]["detail"], 200000)
+
+    def test_number_parser_handles_suffixes(self):
+        self.assertEqual(ns._number("1M tokens"), 1000000)
+        self.assertEqual(ns._number("128K"), 128000)
+        self.assertEqual(ns._number("1,048,576 tokens"), 1048576)
+        self.assertIsNone(ns._number("Not reported"))
 
 
 class TypeDerivationTest(unittest.TestCase):

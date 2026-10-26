@@ -417,7 +417,7 @@ python -m tools.ops.compare_snapshot raw/cheaperinference-20261023-full.json
 | 冗余 / 冲突 | 现象 | 处理 |
 |:---|:---|:---|
 | `capabilities` 里的 `context-128k` / `context-1m` | 126 条**同时带两个**（是「≥阈值」累积标签），201 条一个都没带 | 与 `contextLength` 重复，丢弃 |
-| `detail_ContextWindow` / `detail_MaximumOutput` | 与数值字段 2 处 / 0 处不一致 | 只用于校验与回填缺失值 |
+| `detail_ContextWindow` / `contextLength` | 两边都有时 **0 处不一致**；152 条缺数字（其中 2 条从原文回填，150 条两边都没有） | 只输出一个 `context_length`，并附 `context_source` |
 | `vision` vs `image-input` token vs `detail_VisionInput` | token 过度声明 21 条（bool 与原文都说没有） | 以 bool + 原文为准，token 降为旁证 |
 | `detail_Input` 只写 `text`，但 `detail_VisionInput = Supported` | 13 条（多模态模型，**文本和截图都能输**） | 补上 `image`，来源记 `detail+vision` |
 | `reasoning` 同理 | token 过度声明 27 条 | 同上 |
@@ -437,7 +437,9 @@ input_modalities / output_modalities / capabilities / image_edit / endpoints`，
 |:---|:---|
 | `input_source` | `detail` / `detail+vision`（原文只写 text，但视觉支持，补了 image）/ `type` / `type+vision` |
 | `output_source` | `detail`（原文给的）/ `type`（原文没报，按 `type` 推的） |
+| `context_source` / `max_output_source` | `numeric`（原始数字字段）/ `detail`（从 `"128,000 tokens"` 这类文本解析）/ `none`（两边都没有） |
 | `capabilities_source` | `params`（据 `detail_SupportedParameters`）/ `tokens`（参数表没公布时的弱证据） |
+| `conflicts[]` | 数值字段与原文不一致时的原始值（不猜，只留证） |
 | `unknown[]` | 该站没报、也没有可靠推导依据的维度 |
 
 `type` 是该站的 8 类用途分类（`text` / `embedding` / `video` / `image` / `transcription` / `speech` /
