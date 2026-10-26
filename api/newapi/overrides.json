@@ -245,9 +245,8 @@
     },
     {
       "model_name": "glm-5.3-prime",
-      "note": "第三轮核实：智谱官方模型概览无 glm-5.3-prime（官方加速变体为 GLM-5.3-FlashX）→ 判定为平台/转售命名，lifecycle 等字段永久留空，不再进入核实队列。",
-      "fields": {},
-      "platform_only": true
+      "platform_only": true,
+      "note": "平台命名模型：Z.AI 官方价目表（docs.z.ai/guides/overview/pricing）只有 GLM-5.3 / 5.3-Flash / 5.3-FlashX，没有 Prime；我们的上游按 GLM-5.3 的加速变体提供（描述称 1.5–2× 输出吞吐）。按 README「平台命名」约定：保留条目、不进入核实队列、价格沿用聚合源 2.8/8.8（aggregator_reference），官方若有单列价再补。"
     },
     {
       "model_name": "gpt-5.4",
