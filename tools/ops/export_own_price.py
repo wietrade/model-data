@@ -9,8 +9,9 @@
 后台的操作顺序是固定的：**先同步官方价，再同步自己的价**。后一次会覆盖前一次
 写进 options 的对应字段，所以只改差异字段就够了。
 
-输出形如 ``{"success": true, "message": "ok", "data": [...]}``，
-每条只带 new-api 能识别的倍率字段（type2 格式），不含计费表达式：
+输出与 ``api/newapi/pricing.json`` **完全同构**（同一个 envelope、同一批字段），
+只是价格换成了自己的价、倍率跟着重算。这样后台「同步价格」里填两个自定义地址、
+走同一套解析即可：第一趟官方价，第二趟自己的价覆盖差异字段。
 
     python -m tools.ops.export_own_price \
         --basis /opt/model-data-private/billing_basis.json \
@@ -32,20 +33,6 @@ from tools.model_sync.merge import attach_newapi_ratios  # noqa: E402
 
 PUBLIC = ROOT / "api" / "newapi" / "pricing.json"
 
-# new-api type2 只认这些字段
-NEWAPI_FIELDS = (
-    "model_name",
-    "quota_type",
-    "model_ratio",
-    "model_price",
-    "completion_ratio",
-    "cache_ratio",
-    "create_cache_ratio",
-    "image_ratio",
-    "audio_ratio",
-    "audio_completion_ratio",
-)
-
 
 def load_basis(path):
     doc = json.loads(Path(path).read_text(encoding="utf-8"))
@@ -56,7 +43,11 @@ def load_basis(path):
 
 
 def build_rows(public_rows, basis):
-    """官方价 ⊕ 自己的价，输出 new-api 能吃的倍率行。"""
+    """官方价 ⊕ 自己的价，输出**与 pricing.json 完全同构**的行。
+
+    结构必须一致：两个文件填进后台的两个自定义地址，走同一套解析。
+    差异只在值上——价格字段换成自己的价，倍率字段跟着重算。
+    """
     rows = {}
     for row in public_rows:
         name = row.get("model_name")
@@ -67,23 +58,24 @@ def build_rows(public_rows, basis):
         if isinstance(entry, dict):
             merged["billing_basis"] = entry
         merged = expr.apply_billing_basis(merged)
-        if merged.get("price_kind") == "unpriced" and not isinstance(entry, dict):
-            continue
+        merged.pop("billing_basis", None)
+        if isinstance(entry, dict):
+            merged["source"] = "own_price"
         rows[name] = attach_newapi_ratios(merged)
 
     # 只在私有文件里、公开价表没有的模型（例如没有官方价的型号）也要导出
     for name, entry in basis.items():
         if name in rows or not isinstance(entry, dict):
             continue
-        rows[name] = attach_newapi_ratios({"model_name": name, "billing_basis": entry})
+        merged = {"model_name": name, "currency": "USD", "unit": "per_1m_tokens"}
+        merged.update({k: v for k, v in entry.items() if k in expr.OVERRIDE_FIELDS})
+        if merged.get("per_image") is not None:
+            merged["unit"] = "per_image"
+        merged["price_kind"] = "own_price"
+        merged["source"] = "own_price"
+        rows[name] = attach_newapi_ratios(merged)
 
-    out = []
-    for name in sorted(rows):
-        row = rows[name]
-        picked = {k: row[k] for k in NEWAPI_FIELDS if k in row}
-        if len(picked) > 1:  # 至少有一个价格字段
-            out.append(picked)
-    return out
+    return [rows[name] for name in sorted(rows)]
 
 
 def main(argv=None):
