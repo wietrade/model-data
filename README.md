@@ -11,6 +11,9 @@
 > 目录结构刻意与 `basellm/llm-metadata` 一致（`api/newapi/*.json`、`api/i18n/<lang>/newapi/*.json`），
 > 因此把 new-api 的 `SYNC_UPSTREAM_BASE` 指到本仓库即可，无需改代码。
 
+> 外部平台接入本数据，只需读下面的 [消费方契约](#消费方契约) 一节；
+> 其余目录是维护这套数据的过程记录，不是对外接口。
+
 ## 目录
 
 仓库分成**输入**和**发布物**两块：`api/` 下全部是 new-api 直接拉取的结果，`sources/` 是生成它们用的人工/半人工输入，**不发布、不被 new-api 读取**。
@@ -206,16 +209,81 @@ overrides.json  >  官方逐模型页 / 官方 API（official:*，需官方内�
 各源的具体 URL、取哪几个字段、有哪些坑（例如定价页的括号是**价格档**不是上下文）：
 见 [`docs/official-sources.md`](docs/official-sources.md)。
 
-## 发布与消费
+## 消费方契约
 
-- 发布地址（new-api 通过 `SYNC_UPSTREAM_BASE` 读取）：
-  - `https://raw.githubusercontent.com/wietrade/model-data/main`
-  - `https://cdn.jsdelivr.net/gh/wietrade/model-data@main`（约 12h 缓存）
-  也可用 GitHub Pages（`https://wietrade.github.io/model-data`），目录结构一致。
-  部署机上另有自家 nginx 镜像，raw 直连慢/需代理时用那个。
+> **外部平台只需要这一节列出的文件。** 仓库里其他目录（`sources/` `corrections/` `raw/` `tools/` `docs/`）
+> 都是我们维护这套数据的**过程记录**，不是对外接口，随时可能重构。
+
+### 要拉什么
+
+| 文件 | 必需 | 内容 |
+|:---|:---:|:---|
+| `api/newapi/models.json` | ✅ | 模型元数据（字段见上方「模型字段」） |
+| `api/newapi/vendors.json` | ✅ | 供应商字典。`models.json` 里只有 `vendor_name` 字符串，**图标 / 描述 / 展示开关只在这里**，两者必须成对拉 |
+| `api/i18n/{zh,en}/newapi/{models,vendors}.json` | 可选 | 翻译版描述，结构同上 |
+| `api/newapi/pricing.json` | 可选 | 牌价 + `billing_expr`（由牌价生成，**不含任何采购 / 结算价**） |
+
+四类文件都是 `{"success": true, "message": "ok", "data": [...]}` 信封，与 `basellm/llm-metadata` 一致
+（因此 new-api 只需把 `SYNC_UPSTREAM_BASE` 指过来，无需改代码）。
+
+### 从哪拉
+
+| 用途 | URL | 说明 |
+|:---|:---|:---|
+| 直连 | `https://raw.githubusercontent.com/wietrade/model-data/main` | 推送即生效 |
+| 加速 | `https://cdn.jsdelivr.net/gh/wietrade/model-data@main` | 约 12h 缓存，对时效敏感就别用 |
+| 内部镜像 | `https://api.nowhub.org/model-data` | 部署机 nginx，每 30 分钟 `git fetch` + `reset --hard` 跟一次 |
+
+> GitHub Pages **未启用**（`wietrade.github.io/model-data` 返回 404），别照抄旧文档里的这个地址。
+
+#### 内部镜像的同步机制
+
+部署机 `/opt/model-data` 是**只读镜像**，crontab 每 30 分钟：
+
+```
+*/30 * * * * cd /opt/model-data && { git fetch -q origin main && git reset --hard -q FETCH_HEAD; } >> /var/log/model-data-pull.log 2>&1
+```
+
+用 `reset --hard` 而不是 `pull --ff-only`：2026-10-26 曾因在服务器上手工 `chmod +x` 让工作区变脏，
+`pull` **连续 21 个 commit 静默失败**（只写进日志没人看），镜像停在旧版本，线上一直拉到删不掉的旧供应商。
+镜像目录不允许有任何本地改动——要改就改仓库、推上去、等它自己跟。
+
+### 不用拉什么
+
+| 目录 | 是什么 | 为什么不用 |
+|:---|:---|:---|
+| `sources/overrides.json` | 人工钉值 + 取舍理由 | 结果已烘焙进 `models.json`；单独读会误判（它只记「钉住了什么」，不含多源上下文） |
+| `sources/pricing.official.json` | 官方定价页抄录（原文 + `source_url` + `quote`） | 同上，结果已落进 `pricing.json` |
+| `sources/sync.config.json` | 我们的多源合并配置 | 实现细节 |
+| `corrections/`、`raw/` | 快照原件与逐字段改动台账 | 审计用，给人看；`changelog.csv` 是派生品 |
+| `tools/` | 生成上述文件的脚本 | 想自己重算再去 fork |
+
+### 原则：判断发生在构建期，不发生在读取期
+
+`overrides.json` 里确实有我们的口径（哪些模型按 `legacy` 算、哪些不发布），但这些判断在**生成
+`models.json` 时就已经落成确定值**。消费者拿到的是拍过板的数据，不需要、也不应该自己重跑一遍合并。
+
+不认同某个判断时的正确做法：fork `sources/overrides.json` 后重跑 `tools/`，而不是读完 `models.json` 再打补丁。
+
+### 两个字段是我们的展示约定
+
+`models.json` 绝大部分是厂商公开事实，只有两个字段依赖我们的前端 / 运营习惯，**外部平台应忽略或自行映射**：
+
+| 字段 | 现状 | 说明 |
+|:---|:---|:---|
+| `tags` | 中文展示标签（`推理` `工具` `多模态`…） | 与 `capabilities` 重复；`平台命名`、`开源权重` 是我们自造的运营词 |
+| `icon` | `Claude.Color` / `Grok` / `ZAI` | lobe-icons 的图标名，不是厂商公开标识 |
+
+`status` 恒为 `1`（本仓库只发布上架模型），不含隐藏判断。
+
+### 时效
+
+每日 `02:17 UTC` 由 GitHub Actions 自动同步一次；人工核实后的改动随 `push` 即时生效（走 jsDelivr 则另有缓存延迟）。
+
 - `api/newapi/pricing.json` 只是价格快照，**不参与** new-api 自动写库；后台能直接写库的仍是“上游倍率预设”与“models.dev 价格预设”两个虚拟渠道。
 - 官方 API key 只放**仓库 Secret**（`GEMINI_API_KEY` / `OPENAI_API_KEY` / `ANTHROPIC_API_KEY`）与
   本地私有目录 `model-data-private/.env.local`，**绝不写进本仓库文件**。
+
 
 ## 价格文件
 
