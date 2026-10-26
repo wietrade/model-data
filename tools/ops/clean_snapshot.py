@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
-"""按原始快照的结构清洗：**字段一个不加、一个不减，只改有问题的值**。
+"""按原始快照结构清洗，只保留一组事实。
 
-输入输出结构完全一致（顶层 7 个键、每条 27 个键）。只做三类改动：
+除下面三类值改动外，**键名与顺序一律沿用原文件**：
 
 1. `capabilities` 去掉与 `contextLength` 重复的 `context-128k` / `context-1m`；
 2. `capabilities` 去掉被**两个字段同时否定**的 token（如 `image-input` 而 `vision=false`
    且 `detail_VisionInput = Not supported`）；
 3. `contextLength` / `maxOutputTokens` 为空时，从对应的 `detail_*` 文本回填。
+
+**合并重复字段**：`detail_ContextWindow` / `detail_MaximumOutput` 只是数值字段的原文写法
+（实测「两边都有」0 处不一致、「只有原文」0 条），回填完成后整键删除，
+同一事实只留 `contextLength` / `maxOutputTokens` 一个字段。
 
 其他值一律原样保留：`detail_Input` 漏写某个模态、`maxOutputTokens > contextLength`
 这类「有争议但不该擅自改」的情况，只在 `--report` 里统计，不写进文件。
@@ -30,6 +34,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_IN = ROOT / "raw" / "cheaperinference-20261023-full.json"
 CONTEXT_TOKENS = {"context-128k", "context-1m"}
+# 原文写法 -> 数值字段：完全重复，回填后整键删除
+MERGED_DUPLICATES = (
+    ("detail_ContextWindow", "contextLength"),
+    ("detail_MaximumOutput", "maxOutputTokens"),
+)
 _SCALE = {"k": 1_000, "m": 1_000_000, "b": 1_000_000_000}
 
 
@@ -84,6 +93,17 @@ def clean_item(item):
                 {"field": "maxOutputTokens", "value": filled, "reason": "从 detail_MaximumOutput 回填"}
             )
 
+    # 合并：原文写法只是数值字段的另一种表示，回填完成后整键删除
+    for detail_key, numeric_key in MERGED_DUPLICATES:
+        if detail_key not in out:
+            continue
+        raw = out.get(detail_key)
+        if _number(raw) is not None and out.get(numeric_key) is None:
+            continue  # 数值回填失败，保留原文，别丢信息
+        changes.append(
+            {"field": detail_key, "value": out.pop(detail_key), "reason": "merged_into_%s" % numeric_key}
+        )
+
     return out, changes
 
 
@@ -123,7 +143,7 @@ def main(argv=None) -> int:
 
     if args.report:
         by_reason = Counter(c["reason"] for c in all_changes)
-        print("# 清洗统计（结构与原文件一致）")
+        print("# 清洗统计（键：27 -> 25，仅少两个已合并的 detail_*）")
         print(f"- 记录数：{len(cleaned)}")
         for reason, count in by_reason.most_common():
             print(f"- {reason}：{count} 处")
@@ -137,7 +157,9 @@ def main(argv=None) -> int:
         note = str(new_payload.get("note") or "")
         summary = (
             "2026-10-26 清洗：去 context-* 冗余 token、删自相矛盾 token、"
-            "contextLength/maxOutputTokens 空则从 detail_* 回填；结构未变。"
+            "contextLength/maxOutputTokens 空则从 detail_* 回填；"
+            "detail_ContextWindow/detail_MaximumOutput 与数值字段完全重复，已合并删除，"
+            "同一事实只留 contextLength/maxOutputTokens 一个字段。"
         )
         new_payload["note"] = (note + " " + summary).strip() if note else summary
         out = Path(args.out)

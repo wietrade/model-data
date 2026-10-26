@@ -1,4 +1,4 @@
-"""清洗的回归测试：结构与原文件完全一致，只改有问题的值。"""
+"""清洗的回归测试：只保留一组事实，其余字段原样保留。"""
 
 from __future__ import annotations
 
@@ -46,9 +46,10 @@ def item(**overrides):
 
 
 class StructureTest(unittest.TestCase):
-    def test_keys_and_order_are_untouched(self):
+    def test_only_the_merged_detail_keys_are_dropped(self):
         record, _ = cs.clean_item(item())
-        self.assertEqual(list(record), list(item()))
+        expected = [k for k in item() if k not in {"detail_ContextWindow", "detail_MaximumOutput"}]
+        self.assertEqual(list(record), expected)
 
     def test_no_extra_fields(self):
         record, _ = cs.clean_item(item(capabilities=["context-128k"]))
@@ -61,13 +62,14 @@ class StructureTest(unittest.TestCase):
         original = item(capabilities=["context-128k"])
         cs.clean_item(original)
         self.assertIn("context-128k", original["capabilities"])
+        self.assertIn("detail_ContextWindow", original)
 
 
 class ValueCleaningTest(unittest.TestCase):
     def test_context_token_removed(self):
         record, changes = cs.clean_item(item(capabilities=["reasoning", "context-128k", "context-1m"]))
         self.assertEqual(record["capabilities"], ["reasoning"])
-        self.assertEqual(len(changes), 2)
+        self.assertEqual(sum(1 for c in changes if c["reason"] == "duplicate_of_contextLength"), 2)
 
     def test_site_vocabulary_preserved(self):
         record, _ = cs.clean_item(item(capabilities=["tool-use"], detail_Input="image, pdf, text"))
@@ -79,7 +81,7 @@ class ValueCleaningTest(unittest.TestCase):
             item(detail_Input="text", vision=True, detail_VisionInput="Supported", capabilities=["image-input"])
         )
         self.assertIn("image-input", record["capabilities"])
-        self.assertEqual(changes, [])
+        self.assertEqual([c for c in changes if c["field"] == "capabilities"], [])
 
     def test_image_input_removed_on_double_contradiction(self):
         record, changes = cs.clean_item(
@@ -98,14 +100,32 @@ class ValueCleaningTest(unittest.TestCase):
         record, changes = cs.clean_item(item(contextLength=None, maxOutputTokens=None))
         self.assertEqual(record["contextLength"], 128000)
         self.assertEqual(record["maxOutputTokens"], 32768)
-        self.assertEqual(len(changes), 2)
+        reasons = [c["reason"] for c in changes]
+        self.assertEqual(reasons.count("从 detail_ContextWindow 回填"), 1)
+        self.assertEqual(reasons.count("从 detail_MaximumOutput 回填"), 1)
 
     def test_backfill_does_not_override_existing_values(self):
         record, changes = cs.clean_item(
             item(contextLength=100000, maxOutputTokens=32768, detail_ContextWindow="200,000 tokens")
         )
         self.assertEqual(record["contextLength"], 100000)
-        self.assertEqual(changes, [])
+        self.assertEqual([c["reason"] for c in changes], ["merged_into_contextLength", "merged_into_maxOutputTokens"])
+
+    def test_merge_is_lossless(self):
+        record, _ = cs.clean_item(item())
+        self.assertNotIn("detail_ContextWindow", record)
+        self.assertNotIn("detail_MaximumOutput", record)
+        self.assertEqual(record["contextLength"], 128000)
+        self.assertEqual(record["maxOutputTokens"], 32768)
+
+    def test_detail_without_number_is_dropped_as_well(self):
+        # "Not reported" 解析不出数字、数值字段也是空 -> 删掉不丢信息
+        record, changes = cs.clean_item(
+            item(contextLength=None, detail_ContextWindow="Not reported", detail_MaximumOutput="Not reported")
+        )
+        self.assertIsNone(record["contextLength"])
+        self.assertNotIn("detail_ContextWindow", record)
+        self.assertEqual(changes[-1]["reason"], "merged_into_maxOutputTokens")
 
 
 if __name__ == "__main__":
