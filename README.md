@@ -17,10 +17,10 @@
 api/newapi/           models.json / vendors.json / pricing.json / pricing.official.json
                       overrides.json / sync.config.json
 api/i18n/{zh,en}/     语言包（模型与供应商描述）
-raw/                  未合并的第三方抓取快照
-docs/                 official-sources.md（官方数据源速查）
-tools/model_sync/     同步、表达式生成、校验（纯 Python，无三方依赖）
-tools/ops/            价格维护辅助脚本（一次性脚本、upcoming 价格转正）
+raw/                  第三方快照（cheaperinference）+ 每日官方快照（后者默认 gitignore）
+docs/                 official-sources.md（官方数据源与优先级速查）
+tools/model_sync/     多源合并、表达式生成、校验（纯 Python，无三方依赖）
+tools/ops/            官方页抓取核对、快照比对、upcoming 价格转正
 .github/workflows/    每日自动同步
 ```
 
@@ -44,31 +44,6 @@ python scripts/ops/apply_billing.py -i /tmp/billing.json --dry-run
 python scripts/ops/apply_billing.py -i /tmp/billing.json
 systemctl restart new-api
 ```
-
-## 历史
-
-本仓库内容原先位于 `new-api/metadata` 与 `new-api/scripts/model_sync`（2026-10-26 拆分）。
-完整提交历史仍保留在 new-api 仓库的对应路径下，可用 `git log -- metadata` 追溯。
-
----
-
-供 new-api 的「模型元数据同步」使用。目录结构必须与上游一致：
-
-```
-/api/newapi/models.json
-/api/newapi/vendors.json
-/api/i18n/<zh|en>/newapi/models.json
-/api/i18n/<zh|en>/newapi/vendors.json
-```
-
-## 在 new-api 中启用
-
-```
-SYNC_UPSTREAM_BASE=https://raw.githubusercontent.com/wietrade/model-data/main
-```
-
-（raw 直连需要代理、较慢，故 `SYNC_HTTP_TIMEOUT_SECONDS=30`；
-jsDelivr 备选 `https://cdn.jsdelivr.net/gh/wietrade/model-data@main`，但有约 12h 缓存）
 
 ## 模型字段
 
@@ -99,7 +74,7 @@ jsDelivr 备选 `https://cdn.jsdelivr.net/gh/wietrade/model-data@main`，但有�
 1. 官方没写就留空（`""` / `null` / `0`），**不要**按同系列比例或历史習慣推断；
 2. 每条事实都应能对应到 `pricing.official.json` 的 `quote` 或 `overrides.json` 的 `note`（含来源链接与核对日期）；
 3. 聚合源（models.dev / OpenRouter）只能当旁证，不得覆盖官方值，且 `confidence` 最多 `medium`；
-4. 拿不准的项写进 `docs/doubao-verification-round2.md` 交外部核实，不要先猜一个填上。
+4. 拿不准的项先留空，并在 `TODO.md` 记一条待核实，不要先猜一个填上。
 
 ### `lifecycle` 取值映射
 
@@ -175,35 +150,65 @@ jsDelivr 备选 `https://cdn.jsdelivr.net/gh/wietrade/model-data@main`，但有�
 
 ## 注意
 
-- 同步只覆盖 `sync_official=1` 的模型；手工改过的（`sync_official=0`）不会被覆盖
-- 同步按字段比对：预览里 upstream 为空/0 的字段不要勾选，否则会把本地值清空
+- 同步只刷新事实字段；`description` / `icon` / `tags` / `endpoints` / `name_rule` / `status` 属于本地字段，永远不会被源覆盖
+- 源里为空 / 0 的值不写入，避免把本地值清空
 - `tags` 不再承载上下文长度或能力；能力写 `capabilities`，类型写 `modalities`
 - `max_output_tokens` 必须 ≤ `context_length`（双方都非 0 时校验）
-- 新增能力 / 模态词需三处同步：本文件、`model/model_metadata_sync.go`、`web/src/features/pricing/constants.ts`
+- 新增能力 / 模态词需与**消费方**同步（new-api 的词表与前端筛选器 `web/src/features/pricing/constants.ts`），否则会被丢弃或无法筛选
 
-## 本仓库即元数据与价格的唯一事实源
+## 多源合并
 
 ```
-厂商官方 API（可选 key）┐
-models.dev              ├─► tools/model_sync ─► overrides.json ─► api/newapi/*.json ─► GitHub ─► new-api 同步
-openrouter（tie-break）  ┘
+厂商逐模型页（.md / HTML） / 官方 models.list / models.dev / openrouter
+        │
+        │  tools/model_sync 合并（冲突时按下方优先级）
+        ▼
+api/newapi/models.json + i18n   api/newapi/pricing.json   api/newapi/overrides.json
+        │
+        │  git push
+        ▼
+GitHub ──► new-api「同步资料」（SYNC_UPSTREAM_BASE）
 ```
 
-- 事实字段（上下文 / 最大输出 / 模态 / 能力 / 免费标记）由多源合并：**官方逐模型页 > 官方 API >
-  聚合源**。官方源之间互相矛盾时不猜，回落到 `api/newapi/sync.config.json` 的 `tie_break`（当前 `openrouter`），
-  裁决结果会打印在同步日志里。
-- 人工核对过的值写入 `api/newapi/overrides.json`，优先级最高（请附官方文档链接与核对日期）。
-  官方页与 `models.list` 打架的模型靠它**钉住页面值**，否则下次同步会被 API 改回。
+| 源 | 提供 | 凭证 | 入口 |
+|:---|:---|:---|:---|
+| OpenAI / Anthropic 逐模型 `.md` | 上下文、最大输出 | 无 | `tools/ops/harvest_official.py` |
+| Google 逐模型页（HTML）+ `models.list` | 上下文、最大输出 | `GEMINI_API_KEY` | 同上 |
+| 三家 `models.list` | 模型 id、部分上限 | 各自 key | `sync_models --official` |
+| models.dev | 上下文、最大输出、模态、能力、参考价 | 无 | `sync_models` |
+| openrouter | 同上 + `max_completion_tokens` | 无 | `sync_models` |
+| 人工核对 | 任意字段 | — | `overrides.json` |
+
+**优先级（冲突时）：**
+
+```
+overrides.json  >  官方逐模型页 / 官方 API（official:*，需官方内部一致）
+                >  聚合源（tie_break = 当前 openrouter）
+                >  未解决（写进日志，不猜）
+```
+
+- **官方 vs 聚合源**：官方赢。`context_length` / `max_output_tokens` 由厂商真正强制，
+  聚合站经常混入 0.9× 折算值（如 58,982）、思考预算（如 943,718）或 `max_completion_tokens`。
+- **官方内部矛盾**（页面说 65,536、`models.list` 说 131,072）：不猜，回落到 `tie_break`；
+  若该模型已有 override，则 override 说了算。
+- **override 钉住**：`harvest_official --apply` 会把「页面与 API 冲突」的字段写进 `overrides.json`，
+  否则官方 API 会在下次同步把页面值改回去（当前有四个 Gemini 图像模型属于这种）。
+- 每日 02:17 UTC 的 workflow：`harvest_official --fetch --apply` → `sync_models` → `validate` → 开 PR；
+  合并前重点看 `overrides.json` 的改动、新增模型与价格涨跌。
+
+各源的具体 URL、取哪几个字段、有哪些坑（例如定价页的括号是**价格档**不是上下文）：
+见 [`docs/official-sources.md`](docs/official-sources.md)。
+
+## 发布与消费
+
 - 发布地址（new-api 通过 `SYNC_UPSTREAM_BASE` 读取）：
   - `https://raw.githubusercontent.com/wietrade/model-data/main`
   - `https://cdn.jsdelivr.net/gh/wietrade/model-data@main`（约 12h 缓存）
   也可用 GitHub Pages（`https://wietrade.github.io/model-data`），目录结构一致。
+  部署机上另有自家 nginx 镜像，raw 直连慢/需代理时用那个。
 - `api/newapi/pricing.json` 只是价格快照，**不参与** new-api 自动写库；后台能直接写库的仍是“上游倍率预设”与“models.dev 价格预设”两个虚拟渠道。
-- 每日 02:17 UTC 的 GitHub Actions 会：按厂商逐模型页对齐元数据（写 overrides.json）→ 多源同步 →
-  校验 → 开 PR。合并前请重点看 `overrides.json` 的改动、新增模型与价格涨跌。
 - 官方 API key 只放**仓库 Secret**（`GEMINI_API_KEY` / `OPENAI_API_KEY` / `ANTHROPIC_API_KEY`）与
-  本地私有目录 `model-data-private/.env.local`，**绝不写进本仓库文件**。细节见
-  [`docs/official-sources.md`](docs/official-sources.md)。
+  本地私有目录 `model-data-private/.env.local`，**绝不写进本仓库文件**。
 
 ## 价格文件
 
@@ -410,3 +415,8 @@ python -m tools.ops.compare_snapshot raw/cheaperinference-20261023-full.json
 - `context-128k` / `context-1m` 只是尺寸提示，`image-edit` 我方词表暂无对应项，三者都不写入目录
 
 合并前先跑一次对比，确认差异是针对模型事实（context / modalities / capabilities），价格一律不采用。
+
+## 历史
+
+本仓库内容原先位于 `new-api/metadata` 与 `new-api/scripts/model_sync`（2026-10-26 拆分）；
+`new-api` 侧只保留落库脚本 `scripts/ops/`。更早的历史可在本次拆分前的 new-api 仓库追溯。
