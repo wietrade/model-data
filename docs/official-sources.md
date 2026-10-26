@@ -125,7 +125,8 @@ python -m tools.ops.harvest_official --fetch --apply
 | Gemini 的价格页没有 `.md` | `ai.google.dev` 与 `cloud.google.com` 两个域名的 `.md` 都返回 200 但内容是 HTML（后缀被忽略），`llms.txt` 404。**但 `cloud.google.com` 那页的表格很规整**，标准库 `HTMLParser` 就能抽成行（需处理合并单元格：空单元格表示同上） |
 | Gemini 定价有三个我们**不建档**的维度 | ① 区域：`Non-global` 比 `Global` 贵 10%——我们只记 Global；② 服务档：`Priority` ≈1.8×、`Batch` = 0.5×——**请求级参数，不另建档位**（同 `service_tier` 的既有约定）；③ 非 token 计费：Grounding $14/1000 次、Computer Use 按 token |
 | Gemini 4 的超长请求计费规则（2026-11-13 起） | “completions 超过 32K token 时，即使请求最终因客户端/服务端超时失败，仍按 retrievable token usage 收费” |
-| Google 那页**同时列了合作伙伴模型** | 160 个模型里 ≈35 个非 Google：Claude 11、Qwen 8、Llama 7、DeepSeek 5、Mistral 4。可用作 **Anthropic / DeepSeek / Qwen 的旁证**（低于厂商自有页，高于 models.dev / openrouter）。2026-10-26 交叉核对：能对上的 17 个中 14 个完全一致（含全部 12 条 Claude）| 
+| Google 那页**同时列了合作伙伴模型** | 2026-10-26 逐表核过：合作方共 **33 个**有标准价 —— Grok 7 / DeepSeek 5 / Qwen 4 / GLM 3 / Llama 3 / Mistral 4 / gpt-oss 2 / MiniMax 1 / Kimi 1 / Gemini Flash 3。可作 **旁证**（低于厂商自有页，高于 models.dev / openrouter）。交叉核对：`grok-4.7` 2.0/6.0、`glm-5` 1.0/3.2、`gemini-3.8-flash` 0.75/3.75 与我们目录**完全一致** |
+| 该页**不列**的模型（别再白找） | `Grok 4.5`、`GLM-5.3` / `5.3-Prime`、`Qwen 3 4B/8B/14B/32B`、`Llama 3.1 8B / 3.2 1B / 3.2 3B / Llama 4 Scout 17B 16E`。这些只能回各厂商自己的定价页 |
 | 合作方模型的**区域价为 Global × 1.1** | 2026-10-26 用豆包从该页抽的 14 个 Claude 模型做严校验：`US-Multi` / `EU-Multi` / `us-east5` / `europe-west1` 四个区域**全部严格 = Global × 1.1**，无例外（input / input_long / output / output_long 四个字段均如此）。所以我们只记 Global，等于记了**最低价**，方向安全 |
 | 同一页里**表头相同的表会重复多遍** | Global / Non-global（+10%）/ Priority（≈1.8×）/ Batch（0.5×）**表头完全一样**，只能靠表前小标题或出现顺序区分。按“同一模型取首次出现”取到的是 Global 基准价；拿最后一张会静默得到 +10% 的 Non-global 价 |
 | 聚合站的 `max_output` 不可信 | 常见 0.9× 折算值（如 58,982）、思考预算（943,718）、`max_completion_tokens` 混入 |
