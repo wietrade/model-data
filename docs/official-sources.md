@@ -99,6 +99,13 @@ python -m tools.ops.harvest_official --fetch --apply
 | 长上下文档不是「另一个模型」 | OpenAI 的 `Short context` / `Long context` 是同一模型的两个价格档，落到 `tiers[]`（阈值取自 `(<272K context length)`） |
 | Gemini 没有机器可读定价 | `pricing.md` 返回 HTML、`llms.txt` 404；价格只能人工抄 |
 | 聚合站的 `max_output` 不可信 | 常见 0.9× 折算值（如 58,982）、思考预算（943,718）、`max_completion_tokens` 混入 |
+| 第三方站点的值可能是**部署限额**，不是型号规格 | `gpt-oss-20b` 在某站点写 32,768，OpenAI 官方是 131,072——32,768 是某个云部署的上限。**与官方差一个量级时，先怀疑是部署配置** |
+| 上游退役转发：id 还活着，背后已换了模型 | xAI `grok-4` 于 2026-05-15 退役，请求转发到 `grok-4.3`。数值仍按**原型号规格**记，另加 `servedAs` / `retiredAt` 标注，不要按新模型回填 |
+| embedding 的「最大输出」其实是**最大输入** | 站点把输入上限填进了 `max_output_tokens`（如 `bge-m3` 两字段都是 8,192）。embedding 输出是向量、无输出 token，该字段应为 0/空 |
+| 站点能力/端点会随时间拨动 | 同一站点相隔 20 分钟两次抓取有 9 处不同（`capabilities` 6、`detail_Endpoints` 3）——它们按近期真实流量计算。跨快照比对时这两项差异不算错误 |
+
+> 「模型规格」与「站点实际服务」不是同一个数，口径定义与 `servedAs` / `retiredAt` 的写法见
+> [`../corrections/README.md`](../corrections/README.md)。
 
 ## 四、一次典型的更新流程
 
