@@ -222,6 +222,51 @@ python -m tools.ops.classify_scope -o /tmp/scope.json # 需要时才落盘
 
 ## 4. 口径定义
 
+### 4.0 数据源优先级：官方是权威，聚合站最低
+
+任何字段冲突都按下面这条链裁决，**不存在"两边都记录一下"的中间态**：
+
+```
+人工钉值（overrides）
+    ↓ 高于
+厂商官方逐模型页 / 官方 API
+    ↓ 高于
+厂商官方定价页 / 官方托管页（如 Google Cloud）
+    ↓ 高于
+聚合站（models.dev、openrouter 等）—— 最低优先，只补缺口
+```
+
+- **聚合站只能在官方没有数据时补位**，不得覆盖任何官方值；
+  标 `price_kind: aggregator_reference` / `confidence: medium`，不能进 `high`。
+- 官方源之间互相矛盾时**不猜**，回落到既定的次选口径，并把分歧记进备注。
+- 聚合站给出的数一旦与官方冲突，**以官方为准，并把差异记下来**——差异本身就是情报。
+
+#### 各厂商的官方源
+
+| 厂商 | 元数据（上下文 / 最大输出 / 模态） | 价格 |
+|:---|:---|:---|
+| OpenAI | `developers.openai.com/api/docs/models/<id>.md` | `developers.openai.com/api/docs/pricing.md` |
+| Anthropic | `platform.claude.com/docs/en/models/<slug>/overview.md` | `platform.claude.com/docs/en/about-claude/pricing.md` |
+| **Google** | `ai.google.dev/gemini-api/docs/models/<id>` + `models.list` | **`cloud.google.com/gemini-enterprise-agent-platform/generative-ai/pricing`**（主）<br>`ai.google.dev/gemini-api/docs/pricing`（旁证） |
+| xAI | `docs.x.ai/developers/models/<id>.md` | 同左（`.md` 内含完整 Pricing 表） |
+| DeepSeek | `api-docs.deepseek.com/zh-cn/quick_start/pricing` | 同左（人民币计价，峰谷两档） |
+
+> **Google Cloud 那页为什么是主源**：它把 Gemini 与**合作方模型**（Claude / Qwen / Llama / DeepSeek / Mistral / gpt-oss / Grok）放在同一张表里，
+> 且提供 `Global` / `Non-global` 两个地区列（后者严格 = 前者 × 1.1）、`Standard` / `Priority` / `Flex·Batch` 三档服务等级，
+> 还标出促销期与生效日期。`ai.google.dev` 只有 Global 单列、无服务等级，所以只作旁证。
+
+#### 聚合站错得最典型的一类：944K / 943,718
+
+聚合站反复把**思考预算**当成 `max_output_tokens` 写进目录，实例：
+
+| 模型 | 聚合站给的 max | 官方实际 |
+|:---|---:|---:|
+| `gemini-3.8-flash-tiered` | 943,718 | 该模型并不存在（Google 3.8 Flash 平价，无分档版） |
+| `deepseek-v4.1-flash` | 943,718 | 384,000（官方"输出最大 384K"） |
+
+判断方法：**看到 943,718 / 0.9× 折算值（如 58,982）/ `max_completion_tokens` 这类数字，先当聚合站伪值处理**，
+回官方页确认后再落盘。
+
 ### 4.1 token 字段 = 模型自身规格
 
 同一个数字在三个地方可能不一样，我们只记**官方规格**：
@@ -353,6 +398,8 @@ python -m unittest discover -s tools/model_sync/tests -t .
 5. 不得自造枚举值（`"embedding"`、`"Realtime (speech-to-speech)"` 这类站点没出现过的字符串）
 6. `providerLabel` 必须是模型开发方，不是转售方
 7. 拿不准的一律进 `pending`，不允许用 `low` 置信度硬写盘
+8. **聚合站的值不得覆盖任何官方值**；若两者冲突，以官方为准并在备注里记下差异
+9. **不得出现 943,718 / 0.9× 折算值 / `max_completion_tokens` 这类聚合站伪值**（见 §4.0）
 
 > 这套闸门在第一轮已经拦下过一批问题：518 处 `detail_*` 被覆盖、`maxOutputTokens > contextLength` 新增、
 > 靠"多数投票"删掉官方确认支持的能力、以及 449 条 `costPlus: false` 的凭空猜测。
