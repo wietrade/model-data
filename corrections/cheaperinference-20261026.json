@@ -9,9 +9,9 @@
     "medium": 3
   },
   "origins": {
-    "ours": 82,
     "override": 8,
-    "?": 41
+    "ours": 107,
+    "claude": 41
   },
   "corrections": [
     {
@@ -198,7 +198,8 @@
       "quote": "Context window: 200K tokens · Max output: 64K tokens",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "claude-sonnet-4.5",
@@ -208,7 +209,8 @@
       "quote": "Context window: 200K tokens · Max output: 64K tokens",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "clip-vit-b-32",
@@ -350,7 +352,8 @@
       "quote": "flux-2-max 的开发方为 Black Forest Labs；站点写的是转售方",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（third-party）"
+      "reason": "Claude 核实（third-party）",
+      "origin": "claude"
     },
     {
       "id": "flux-2-pro",
@@ -360,7 +363,8 @@
       "quote": "flux-2-pro 的开发方为 Black Forest Labs；站点写的是转售方",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（third-party）"
+      "reason": "Claude 核实（third-party）",
+      "origin": "claude"
     },
     {
       "id": "flux-kontext-max",
@@ -392,7 +396,8 @@
       "quote": "flux-pro-1.1 的开发方为 Black Forest Labs；站点写的是转售方",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（third-party）"
+      "reason": "Claude 核实（third-party）",
+      "origin": "claude"
     },
     {
       "id": "gemini-2.5-flash",
@@ -402,7 +407,8 @@
       "quote": "Gemini 2.5 output limit 65,536；评审已认可",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（third-party）"
+      "reason": "Claude 核实（third-party）",
+      "origin": "claude"
     },
     {
       "id": "gemini-2.5-flash-lite",
@@ -412,7 +418,8 @@
       "quote": "Gemini 2.5 output limit 65,536；评审已认可",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（third-party）"
+      "reason": "Claude 核实（third-party）",
+      "origin": "claude"
     },
     {
       "id": "gemini-2.5-pro",
@@ -422,7 +429,8 @@
       "quote": "Gemini 2.5 output limit 65,536；评审已认可",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（third-party）"
+      "reason": "Claude 核实（third-party）",
+      "origin": "claude"
     },
     {
       "id": "gemini-3-flash",
@@ -432,7 +440,8 @@
       "quote": "supports a 1M token context window；评审已认可",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（third-party）"
+      "reason": "Claude 核实（third-party）",
+      "origin": "claude"
     },
     {
       "id": "gemini-embedding-001",
@@ -442,7 +451,8 @@
       "quote": "max input 2,048 tokens",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "gemini-omni-flash-preview",
@@ -498,7 +508,8 @@
       "quote": "non-reasoning model",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "gpt-4.1",
@@ -508,7 +519,8 @@
       "quote": "Smartest non-reasoning model / low latency without a reasoning step",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "gpt-4.1-mini",
@@ -519,7 +531,8 @@
       "quote": "non-reasoning model",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "gpt-4.1-mini",
@@ -529,7 +542,8 @@
       "quote": "Smartest non-reasoning model / low latency without a reasoning step",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "gpt-5.2",
@@ -539,7 +553,8 @@
       "quote": "400,000 context window, 128,000 max output",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "gpt-image-2",
@@ -562,7 +577,8 @@
       "quote": "accepts text input only",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "gpt-oss-120b",
@@ -594,7 +610,8 @@
       "quote": "Supports reasoning tokens; reasoning effort low/medium/high",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "gpt-oss-20b",
@@ -626,7 +643,8 @@
       "quote": "Supports reasoning tokens; reasoning effort low/medium/high",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "grok-4",
@@ -636,7 +654,8 @@
       "quote": "OpenRouter: 256K context (xAI grok-4-0709)；评审已认可",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（third-party）"
+      "reason": "Claude 核实（third-party）",
+      "origin": "claude"
     },
     {
       "id": "grok-build-0.1",
@@ -646,7 +665,8 @@
       "quote": "Reasoning is always active on Grok Build 0.1",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（third-party）"
+      "reason": "Claude 核实（third-party）",
+      "origin": "claude"
     },
     {
       "id": "gte-base",
@@ -700,7 +720,8 @@
       "quote": "hunyuan-image-v3 的开发方为 Tencent；站点写的是转售方",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（third-party）"
+      "reason": "Claude 核实（third-party）",
+      "origin": "claude"
     },
     {
       "id": "inkling",
@@ -710,7 +731,8 @@
       "quote": "controllable inference effort / reasoning_effort parameter",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（third-party）"
+      "reason": "Claude 核实（third-party）",
+      "origin": "claude"
     },
     {
       "id": "kimi-k2.5",
@@ -864,7 +886,8 @@
       "quote": "max input 8,192 tokens",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（third-party）"
+      "reason": "Claude 核实（third-party）",
+      "origin": "claude"
     },
     {
       "id": "multi-qa-mpnet-base-dot-v1",
@@ -1109,7 +1132,8 @@
       "quote": "parakeet-asr 的开发方为 NVIDIA；站点写的是转售方",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "paraphrase-minilm-l6-v2",
@@ -1185,7 +1209,8 @@
       "quote": "recraft-v4 的开发方为 Recraft；站点写的是转售方",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "recraft-v4-pro",
@@ -1195,7 +1220,8 @@
       "quote": "recraft-v4-pro 的开发方为 Recraft；站点写的是转售方",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "seed-2.1-turbo",
@@ -1228,7 +1254,8 @@
       "quote": "seedance-2.0-fast 的开发方为 ByteDance；站点写的是转售方",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（third-party）"
+      "reason": "Claude 核实（third-party）",
+      "origin": "claude"
     },
     {
       "id": "seedream-4.0",
@@ -1238,7 +1265,8 @@
       "quote": "seedream-4.0 的开发方为 ByteDance；站点写的是转售方",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（third-party）"
+      "reason": "Claude 核实（third-party）",
+      "origin": "claude"
     },
     {
       "id": "text-embedding-3-large",
@@ -1248,7 +1276,8 @@
       "quote": "embedding 输出为向量，无最大输出 token",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（third-party）"
+      "reason": "Claude 核实（third-party）",
+      "origin": "claude"
     },
     {
       "id": "text-embedding-3-small",
@@ -1258,7 +1287,8 @@
       "quote": "max input 8,191 tokens",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（third-party）"
+      "reason": "Claude 核实（third-party）",
+      "origin": "claude"
     },
     {
       "id": "text-embedding-ada-002",
@@ -1268,7 +1298,8 @@
       "quote": "max input 8,191 tokens",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（third-party）"
+      "reason": "Claude 核实（third-party）",
+      "origin": "claude"
     },
     {
       "id": "text2vec-base-chinese",
@@ -1300,7 +1331,8 @@
       "quote": "max input 8,192 tokens",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "tts-1",
@@ -1310,7 +1342,8 @@
       "quote": "tts-1 的开发方为 OpenAI；站点写的是转售方",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "voyage-3-large",
@@ -1320,7 +1353,8 @@
       "quote": "max input 32,000 tokens",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "voyage-3.5",
@@ -1330,7 +1364,8 @@
       "quote": "max input 32,000 tokens",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "voyage-3.5-lite",
@@ -1340,7 +1375,8 @@
       "quote": "max input 32,000 tokens",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "voyage-code-3",
@@ -1350,7 +1386,8 @@
       "quote": "max input 32,000 tokens",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "voyage-finance-2",
@@ -1360,7 +1397,8 @@
       "quote": "max input 32,000 tokens",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "voyage-law-2",
@@ -1370,7 +1408,8 @@
       "quote": "max input 16,000 tokens",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "wan-2.6",
@@ -1416,7 +1455,8 @@
       "quote": "whisper-1 的开发方为 OpenAI；站点写的是转售方",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "whisper-large-v3",
@@ -1426,7 +1466,8 @@
       "quote": "whisper-large-v3 的开发方为 OpenAI；站点写的是转售方",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "Claude 核实（official）"
+      "reason": "Claude 核实（official）",
+      "origin": "claude"
     },
     {
       "id": "deepseek-v3.1",
@@ -1439,7 +1480,8 @@
       "quote": "before outputting the final answer, the model will first output a chain-of-thought reasoning；enabled/disabled，默认 enabled",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持"
+      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持",
+      "origin": "ours"
     },
     {
       "id": "gemma-4-26b-a4b-it",
@@ -1452,7 +1494,8 @@
       "quote": "Gemma 4 26B A4B IT supports enabling reasoning tokens using enable_thinking: true",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持"
+      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持",
+      "origin": "ours"
     },
     {
       "id": "glm-4.7-flash",
@@ -1465,7 +1508,8 @@
       "quote": "thinking={\"type\": \"enabled\"} 启用深度思考模式，流式返回 reasoning_content",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持"
+      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持",
+      "origin": "ours"
     },
     {
       "id": "gpt-oss-safeguard-120b",
@@ -1478,7 +1522,8 @@
       "quote": "open-weight safety reasoning models；Configurable reasoning effort: low, medium, high",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持"
+      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持",
+      "origin": "ours"
     },
     {
       "id": "gpt-oss-safeguard-20b",
@@ -1491,7 +1536,8 @@
       "quote": "Gain complete access to the model's reasoning process；Configurable reasoning effort",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持"
+      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持",
+      "origin": "ours"
     },
     {
       "id": "minimax-m2",
@@ -1504,7 +1550,8 @@
       "quote": "For M2.x models, thinking cannot be disabled",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持"
+      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持",
+      "origin": "ours"
     },
     {
       "id": "minimax-m2.7-highspeed",
@@ -1517,7 +1564,8 @@
       "quote": "对于 M2.x 模型，thinking 无法关闭",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持"
+      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持",
+      "origin": "ours"
     },
     {
       "id": "nemotron-3-nano-30b-a3b",
@@ -1530,7 +1578,8 @@
       "quote": "By default, enable_thinking is set to be True",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持"
+      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持",
+      "origin": "ours"
     },
     {
       "id": "nemotron-3-super-120b-a12b",
@@ -1543,7 +1592,8 @@
       "quote": "By default, reasoning is enabled；enable_thinking: false 可关",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持"
+      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持",
+      "origin": "ours"
     },
     {
       "id": "nemotron-nano-9b-v2",
@@ -1556,7 +1606,8 @@
       "quote": "first generating a reasoning trace and then concluding；max_thinking_tokens 可调",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持"
+      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持",
+      "origin": "ours"
     },
     {
       "id": "qwen3-30b-a3b",
@@ -1569,7 +1620,8 @@
       "quote": "Qwen3 models introduce a hybrid approach: Thinking Mode / Non-Thinking Mode",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持"
+      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持",
+      "origin": "ours"
     },
     {
       "id": "qwen3-32b",
@@ -1582,7 +1634,8 @@
       "quote": "Hybrid thinking mode",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持"
+      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持",
+      "origin": "ours"
     },
     {
       "id": "qwen3-vl-235b-a22b-thinking",
@@ -1595,7 +1648,8 @@
       "quote": "多模态思考能力；最大思维链长度 81920",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持"
+      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持",
+      "origin": "ours"
     },
     {
       "id": "qwen3-vl-30b-a3b-thinking",
@@ -1608,7 +1662,8 @@
       "quote": "The Thinking model is specially optimized for STEM and math reasoning",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持"
+      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持",
+      "origin": "ours"
     },
     {
       "id": "qwen3.5-flash",
@@ -1621,7 +1676,8 @@
       "quote": "Hybrid: toggle thinking on or off per request with enable_thinking",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持"
+      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持",
+      "origin": "ours"
     },
     {
       "id": "qwen3.5-plus",
@@ -1634,7 +1690,8 @@
       "quote": "Qwen3.5 Plus/Flash 支持 thinking",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持"
+      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持",
+      "origin": "ours"
     },
     {
       "id": "qwen3.7-plus",
@@ -1647,7 +1704,8 @@
       "quote": "qwen3.7-plus is a hybrid thinking model with thinking mode enabled by default",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持"
+      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持",
+      "origin": "ours"
     },
     {
       "id": "claude-opus-4.8-fast",
@@ -1660,7 +1718,8 @@
       "quote": "With adaptive thinking enabled, Claude Opus 4.8 triggers reasoning only when it determines the turn needs it",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持"
+      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持",
+      "origin": "ours"
     },
     {
       "id": "nano-banana-2",
@@ -1673,7 +1732,8 @@
       "quote": "Gemini 3 image models are thinking models…enabled by default and cannot be disabled",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持"
+      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持",
+      "origin": "ours"
     },
     {
       "id": "gemini-2.5-flash",
@@ -1686,7 +1746,8 @@
       "quote": "2.5 Flash | Dynamic thinking | thinkingBudget=0 关闭 | -1 动态",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持"
+      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持",
+      "origin": "ours"
     },
     {
       "id": "gemini-3.1-flash-lite",
@@ -1699,7 +1760,8 @@
       "quote": "minimal … Gemini 3.1 Flash-Lite Supported (Default)；low/medium/high 均 Supported",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持"
+      "reason": "站点 Reasoning 列系统性写成 Not supported，官方文档明确支持",
+      "origin": "ours"
     },
     {
       "id": "bge-m3",
@@ -1709,7 +1771,8 @@
       "quote": "模型卡：输出为 dense/sparse/colbert 向量，不存在输出 token",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "向量模型没有输出 token 概念"
+      "reason": "向量模型没有输出 token 概念",
+      "origin": "ours"
     },
     {
       "id": "qwen3-embedding-0.6b",
@@ -1719,7 +1782,8 @@
       "quote": "模型卡：输出为 embedding 向量",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "向量模型没有输出 token 概念"
+      "reason": "向量模型没有输出 token 概念",
+      "origin": "ours"
     },
     {
       "id": "qwen3-embedding-4b",
@@ -1729,7 +1793,8 @@
       "quote": "模型卡：输出为 embedding 向量",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "向量模型没有输出 token 概念"
+      "reason": "向量模型没有输出 token 概念",
+      "origin": "ours"
     },
     {
       "id": "qwen3-embedding-8b",
@@ -1739,7 +1804,8 @@
       "quote": "模型卡：输出为 embedding 向量",
       "confidence": "high",
       "verified_at": "2026-10-26",
-      "reason": "向量模型没有输出 token 概念"
+      "reason": "向量模型没有输出 token 概念",
+      "origin": "ours"
     }
   ]
 }
