@@ -33,6 +33,7 @@ import os
 import re
 import sys
 import tempfile
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -114,10 +115,11 @@ def name_variants(name: str) -> list[str]:
 
 
 class Fetcher:
-    def __init__(self, cache_dir: Path, refresh: bool, timeout: int = 45):
+    def __init__(self, cache_dir: Path, refresh: bool, timeout: int = 45, retries: int = 3):
         self.cache_dir = cache_dir
         self.refresh = refresh
         self.timeout = timeout
+        self.retries = max(retries, 1)
         cache_dir.mkdir(parents=True, exist_ok=True)
 
     def _path(self, url: str) -> Path:
@@ -128,20 +130,31 @@ class Fetcher:
 
     def get(self, url: str, headers=None):
         path = self._path(url)
-        status = 200
         if path.exists() and not self.refresh:
             raw = path.read_text(encoding="utf-8")
-            return raw.split("\n", 1)[0].removeprefix("STATUS "), raw.split("\n", 1)[-1]
-        request = urllib.request.Request(url, headers={"user-agent": "Mozilla/5.0", **(headers or {})})
-        try:
-            with urllib.request.urlopen(request, timeout=self.timeout) as response:
-                status = str(response.status)
-                body = response.read().decode("utf-8", "replace")
-        except urllib.error.HTTPError as exc:
-            status, body = str(exc.code), ""
-        except Exception as exc:  # noqa: BLE001 - 网络异常同一处理
-            status, body = "ERR", "%s: %s" % (type(exc).__name__, exc)
-        path.write_text("STATUS %s\n%s" % (status, body), encoding="utf-8", newline="\n")
+            cached_status = raw.split("\n", 1)[0].removeprefix("STATUS ")
+            # 瞬时网络错误不能当结论缓存：否则一次抖动会让该模型永久显示「官方没页面」
+            if cached_status != "ERR":
+                return cached_status, raw.split("\n", 1)[-1]
+        body = ""
+        status = "ERR"
+        for attempt in range(1, self.retries + 1):
+            request = urllib.request.Request(url, headers={"user-agent": "Mozilla/5.0", **(headers or {})})
+            try:
+                with urllib.request.urlopen(request, timeout=self.timeout) as response:
+                    # file:// 的 response.status 是 None，按成功处理（测试与本地快照会用到）
+                    status = str(getattr(response, "status", None) or 200)
+                    body = response.read().decode("utf-8", "replace")
+            except urllib.error.HTTPError as exc:
+                status, body = str(exc.code), ""
+            except Exception as exc:  # noqa: BLE001 - 网络异常同一处理
+                status, body = "ERR", "%s: %s" % (type(exc).__name__, exc)
+            if status != "ERR":
+                break
+            if attempt < self.retries:
+                time.sleep(1.5 * attempt)
+        if status != "ERR":
+            path.write_text("STATUS %s\n%s" % (status, body), encoding="utf-8", newline="\n")
         return status, body
 
 

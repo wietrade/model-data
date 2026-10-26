@@ -73,3 +73,36 @@ class PageUrlTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FetcherCacheTest(unittest.TestCase):
+    """瞬时网络错误不能被当成结论缓存下来。"""
+
+    def test_transient_error_is_not_cached(self):
+        import tempfile
+        from pathlib import Path
+
+        from tools.ops.harvest_official import Fetcher
+
+        with tempfile.TemporaryDirectory() as tmp:
+            fetcher = Fetcher(Path(tmp), refresh=True, retries=1)
+            # 不存在的本地文件 → urllib 立刻抛错，走 ERR 分支
+            status, _ = fetcher.get("file:///nonexistent-for-test/model.md")
+            self.assertEqual(status, "ERR")
+            self.assertEqual(list(Path(tmp).iterdir()), [], "ERR 不应写缓存文件")
+
+    def test_http_status_is_cached(self):
+        import tempfile
+        from pathlib import Path
+
+        from tools.ops.harvest_official import Fetcher
+
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "page.md"
+            target.write_text("hello", encoding="utf-8")
+            cache = Path(tmp) / "cache"
+            fetcher = Fetcher(cache, refresh=True, retries=1)
+            status, body = fetcher.get(target.as_uri())
+            self.assertEqual(status, "200")
+            self.assertEqual(body, "hello")
+            self.assertEqual(len(list(cache.iterdir())), 1, "200 应写缓存")
