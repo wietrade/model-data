@@ -26,7 +26,7 @@ L1  raw/cheaperinference-20261026.json             站点原话，detail_* 一�
         │  ↑ 抓取自服务端渲染页面（RSC payload），527 条 × 29 键
         │
 L2  corrections/20261026/corrections.json          162 条官方核实值（带 source_url / 原文引用）
-    corrections/20261026/routing.json              5 条上游路由（servedAs / retiredAt）
+    corrections/20261026/routing.json              7 条上游路由（servedAs / retiredAt）
         │
 L3  raw/cheaperinference-20261026.verified.json    L1 + L2，供下游消费
 ```
@@ -46,9 +46,9 @@ L3  raw/cheaperinference-20261026.verified.json    L1 + L2，供下游消费
 |:---|:---|---:|
 | `raw/...20261026.json` | L1 站点原文 | 527 |
 | `corrections/20261026/corrections.json` | L2 核实值（**不可再生**） | 162 |
-| `corrections/20261026/routing.json` | 上游路由（人工查证） | 5 |
+| `corrections/20261026/routing.json` | 上游路由（人工查证） | 7 |
 | `corrections/20261026/legacy.json` | 老代不核实清单（派生） | 101 |
-| `corrections/20261026/changelog.csv` | 变更表（派生） | 166 |
+| `corrections/20261026/changelog.csv` | 变更表（派生） | 168 |
 | `corrections/README.md` | 口径文档 | — |
 | `raw/...20261026.verified.json` | L3 成品 | 527 |
 | `tools/ops/fetch_site.py` | L1 生产者（带自检） | — |
@@ -75,7 +75,7 @@ L3  raw/cheaperinference-20261026.verified.json    L1 + L2，供下游消费
         flux-kontext-max / flux-kontext-pro 上下文 512
         nemotron-3.5-super-vl 最大输出 16,384
 
-共写入 L3：157 行字段变更 + 9 行路由标注
+共写入 L3：157 行字段变更 + 11 行路由标注
 ```
 
 **硬性检查全部通过**：
