@@ -111,6 +111,8 @@ python -m tools.ops.harvest_official --fetch --apply
 | Gemini 的价格页没有 `.md` | `ai.google.dev` 与 `cloud.google.com` 两个域名的 `.md` 都返回 200 但内容是 HTML（后缀被忽略），`llms.txt` 404。**但 `cloud.google.com` 那页的表格很规整**，标准库 `HTMLParser` 就能抽成行（需处理合并单元格：空单元格表示同上） |
 | Gemini 定价有三个我们**不建档**的维度 | ① 区域：`Non-global` 比 `Global` 贵 10%——我们只记 Global；② 服务档：`Priority` ≈1.8×、`Batch` = 0.5×——**请求级参数，不另建档位**（同 `service_tier` 的既有约定）；③ 非 token 计费：Grounding $14/1000 次、Computer Use 按 token |
 | Gemini 4 的超长请求计费规则（2026-11-13 起） | “completions 超过 32K token 时，即使请求最终因客户端/服务端超时失败，仍按 retrievable token usage 收费” |
+| Google 那页**同时列了合作伙伴模型** | 160 个模型里 ≈35 个非 Google：Claude 11、Qwen 8、Llama 7、DeepSeek 5、Mistral 4。可用作 **Anthropic / DeepSeek / Qwen 的旁证**（低于厂商自有页，高于 models.dev / openrouter）。2026-10-26 交叉核对：能对上的 17 个中 14 个完全一致（含全部 12 条 Claude）| 
+| 同一页里**表头相同的表会重复多遍** | Global / Non-global（+10%）/ Priority（≈1.8×）/ Batch（0.5×）**表头完全一样**，只能靠表前小标题或出现顺序区分。按“同一模型取首次出现”取到的是 Global 基准价；拿最后一张会静默得到 +10% 的 Non-global 价 |
 | 聚合站的 `max_output` 不可信 | 常见 0.9× 折算值（如 58,982）、思考预算（943,718）、`max_completion_tokens` 混入 |
 | 第三方站点的值可能是**部署限额**，不是型号规格 | `gpt-oss-20b` 在某站点写 32,768，OpenAI 官方是 131,072——32,768 是某个云部署的上限。**与官方差一个量级时，先怀疑是部署配置** |
 | 上游退役转发：id 还活着，背后已换了模型 | xAI `grok-4` 于 2026-05-15 退役，请求转发到 `grok-4.3`。数值仍按**原型号规格**记，另加 `servedAs` / `retiredAt` 标注，不要按新模型回填 |
