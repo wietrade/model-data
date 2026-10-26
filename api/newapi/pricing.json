@@ -427,22 +427,22 @@
       "currency": "USD",
       "unit": "per_1m_tokens",
       "source_url": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
-      "retrieved_at": "2026-10-25T10:00:00+08:00",
+      "retrieved_at": "2026-10-26T17:30:00+08:00",
       "confidence": "high",
-      "input": 0.3,
-      "output": 1.2,
+      "input": 0.2995,
+      "output": 1.1981,
       "cache_read": 0.006,
       "time_tiers": {
         "rule": "deepseek_peak",
         "peak": {
-          "input": 0.3,
-          "output": 1.2,
+          "input": 0.2995,
+          "output": 1.1981,
           "cache_read": 0.006
         },
         "off_peak_multiplier": 0.5
       },
       "billing_mode": "tiered_expr",
-      "billing_expr": "weekday(\"Asia/Shanghai\") >= 1 && weekday(\"Asia/Shanghai\") <= 5 && ((hour(\"Asia/Shanghai\") >= 9 && hour(\"Asia/Shanghai\") < 12) || (hour(\"Asia/Shanghai\") >= 14 && hour(\"Asia/Shanghai\") < 18)) ? tier(\"peak\", p * 0.3 + c * 1.2 + cr * 0.006) : tier(\"off_peak\", p * 0.15 + c * 0.6 + cr * 0.003)"
+      "billing_expr": "weekday(\"Asia/Shanghai\") >= 1 && weekday(\"Asia/Shanghai\") <= 5 && ((hour(\"Asia/Shanghai\") >= 9 && hour(\"Asia/Shanghai\") < 12) || (hour(\"Asia/Shanghai\") >= 14 && hour(\"Asia/Shanghai\") < 18)) ? tier(\"peak\", p * 0.2995 + c * 1.1981 + cr * 0.006) : tier(\"off_peak\", p * 0.14975 + c * 0.59905 + cr * 0.003)"
     },
     {
       "model_name": "deepseek-v4-pro",
@@ -454,22 +454,22 @@
       "currency": "USD",
       "unit": "per_1m_tokens",
       "source_url": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
-      "retrieved_at": "2026-10-25T10:00:00+08:00",
+      "retrieved_at": "2026-10-26T17:30:00+08:00",
       "confidence": "high",
-      "input": 1.32,
-      "output": 3.96,
-      "cache_read": 0.044,
+      "input": 1.3478,
+      "output": 4.0435,
+      "cache_read": 0.0449,
       "time_tiers": {
         "rule": "deepseek_peak",
         "peak": {
-          "input": 1.32,
-          "output": 3.96,
-          "cache_read": 0.044
+          "input": 1.3478,
+          "output": 4.0435,
+          "cache_read": 0.0449
         },
         "off_peak_multiplier": 0.5
       },
       "billing_mode": "tiered_expr",
-      "billing_expr": "weekday(\"Asia/Shanghai\") >= 1 && weekday(\"Asia/Shanghai\") <= 5 && ((hour(\"Asia/Shanghai\") >= 9 && hour(\"Asia/Shanghai\") < 12) || (hour(\"Asia/Shanghai\") >= 14 && hour(\"Asia/Shanghai\") < 18)) ? tier(\"peak\", p * 1.32 + c * 3.96 + cr * 0.044) : tier(\"off_peak\", p * 0.66 + c * 1.98 + cr * 0.022)"
+      "billing_expr": "weekday(\"Asia/Shanghai\") >= 1 && weekday(\"Asia/Shanghai\") <= 5 && ((hour(\"Asia/Shanghai\") >= 9 && hour(\"Asia/Shanghai\") < 12) || (hour(\"Asia/Shanghai\") >= 14 && hour(\"Asia/Shanghai\") < 18)) ? tier(\"peak\", p * 1.3478 + c * 4.0435 + cr * 0.0449) : tier(\"off_peak\", p * 0.6739 + c * 2.02175 + cr * 0.02245)"
     },
     {
       "model_name": "deepseek-v4.1-flash",
@@ -481,22 +481,22 @@
       "currency": "USD",
       "unit": "per_1m_tokens",
       "source_url": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
-      "retrieved_at": "2026-10-26T17:10:00+08:00",
+      "retrieved_at": "2026-10-26T17:30:00+08:00",
       "confidence": "high",
-      "input": 0.3,
-      "output": 1.2,
+      "input": 0.2995,
+      "output": 1.1981,
       "cache_read": 0.006,
       "time_tiers": {
         "rule": "deepseek_peak",
         "peak": {
-          "input": 0.3,
-          "output": 1.2,
+          "input": 0.2995,
+          "output": 1.1981,
           "cache_read": 0.006
         },
         "off_peak_multiplier": 0.5
       },
       "billing_mode": "tiered_expr",
-      "billing_expr": "weekday(\"Asia/Shanghai\") >= 1 && weekday(\"Asia/Shanghai\") <= 5 && ((hour(\"Asia/Shanghai\") >= 9 && hour(\"Asia/Shanghai\") < 12) || (hour(\"Asia/Shanghai\") >= 14 && hour(\"Asia/Shanghai\") < 18)) ? tier(\"peak\", p * 0.3 + c * 1.2 + cr * 0.006) : tier(\"off_peak\", p * 0.15 + c * 0.6 + cr * 0.003)"
+      "billing_expr": "weekday(\"Asia/Shanghai\") >= 1 && weekday(\"Asia/Shanghai\") <= 5 && ((hour(\"Asia/Shanghai\") >= 9 && hour(\"Asia/Shanghai\") < 12) || (hour(\"Asia/Shanghai\") >= 14 && hour(\"Asia/Shanghai\") < 18)) ? tier(\"peak\", p * 0.2995 + c * 1.1981 + cr * 0.006) : tier(\"off_peak\", p * 0.14975 + c * 0.59905 + cr * 0.003)"
     },
     {
       "model_name": "deepseek-v4.1-flash-1017",
@@ -508,22 +508,22 @@
       "currency": "USD",
       "unit": "per_1m_tokens",
       "source_url": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
-      "retrieved_at": "2026-10-23T18:59:09+08:00",
+      "retrieved_at": "2026-10-26T17:30:00+08:00",
       "confidence": "high",
-      "input": 0.3,
-      "output": 1.2,
+      "input": 0.2995,
+      "output": 1.1981,
       "cache_read": 0.006,
       "time_tiers": {
         "rule": "deepseek_peak",
         "peak": {
-          "input": 0.3,
-          "output": 1.2,
+          "input": 0.2995,
+          "output": 1.1981,
           "cache_read": 0.006
         },
         "off_peak_multiplier": 0.5
       },
       "billing_mode": "tiered_expr",
-      "billing_expr": "weekday(\"Asia/Shanghai\") >= 1 && weekday(\"Asia/Shanghai\") <= 5 && ((hour(\"Asia/Shanghai\") >= 9 && hour(\"Asia/Shanghai\") < 12) || (hour(\"Asia/Shanghai\") >= 14 && hour(\"Asia/Shanghai\") < 18)) ? tier(\"peak\", p * 0.3 + c * 1.2 + cr * 0.006) : tier(\"off_peak\", p * 0.15 + c * 0.6 + cr * 0.003)"
+      "billing_expr": "weekday(\"Asia/Shanghai\") >= 1 && weekday(\"Asia/Shanghai\") <= 5 && ((hour(\"Asia/Shanghai\") >= 9 && hour(\"Asia/Shanghai\") < 12) || (hour(\"Asia/Shanghai\") >= 14 && hour(\"Asia/Shanghai\") < 18)) ? tier(\"peak\", p * 0.2995 + c * 1.1981 + cr * 0.006) : tier(\"off_peak\", p * 0.14975 + c * 0.59905 + cr * 0.003)"
     },
     {
       "model_name": "dots-3-note-preview:free",
