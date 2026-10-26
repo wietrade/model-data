@@ -47,6 +47,16 @@ DeepSeek 四条汇率统一、`gemini-3-pro-image` / `-preview` / `gemini-3.1-fl
   4. 若 models.dev 报错（例如把 `cache_write` 单位搞错）：在 `overrides.json` 写死正确值并留 note。
 - **参考**：`docs/official-sources.md`
 
+## 1b. 10 条官方价行缺 `quote`（出处只有一个 URL，没有原文）
+
+`validate` 不强制，但 review 时必看。清单（2026-10-26）：
+
+`deepseek-flash`、`deepseek-v4-pro`、`deepseek-v4.1-flash-1017`、`gemma-4-26b-a4b-it:free`、
+`gemma-4-31b-it:free`、`gpt-5.6-terra`、`gpt-6-luna`、`gpt-6.1-sol`、`grok-4.7`、`kimi-k3`
+
+补法：打开各自的 `source_url`，把表格里那一行原样抄进 `quote`。
+`glm-5` 已于 2026-10-26 修好（原先 `source_url` 指向人民币的国内站，值却是美元的）。
+
 ## 2. 核实的剩余缺口（来自 2026-10-26 那一期）
 
 ### 数据侧
