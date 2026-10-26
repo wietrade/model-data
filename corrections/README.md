@@ -108,6 +108,32 @@ L2 是**唯一**允许写入「外部知识」的地方，并且每条都必须�
 
 效果：417 条未核实里剔掉 100 条，剩 317；其中真正有 token 数值、值得核的是 **213** 条（其余 104 条两个数值都是 null，只涉及能力/厂商）。
 
+## 核实范围（scope-20261026.json）
+
+`python -m tools.ops.classify_scope -o corrections/scope-20261026.json` 给 527 条全部定档，
+每个模型一个 tier，可随时重跑：
+
+| tier | 条数 | 含义 |
+|:---|--:|:---|
+| `done` | 115 | 已有官方核实条目 |
+| `legacy` | 100 | 老代，不再核实（见上节） |
+| `main` | 210 | **主流厂商，缺数据也必须核**（其中 44 条目前有缺口） |
+| `ignore` | 48 | **非主流 + 缺数据 ⇒ 直接忽略** |
+| `review` | 40 | 非主流但信息齐全（站点数据够用，不另行核实） |
+| `media` | 14 | 非主流图像/视频/语音，信息齐全 |
+
+主流名单写在 `tools/ops/classify_scope.py` 的 `VENDOR_RULES`（第三个字段为 True）：
+OpenAI、Anthropic、Google、xAI、Meta、Mistral、Cohere、Perplexity、NVIDIA，
+以及 DeepSeek、通义（含 Wan）、Kimi、智谱、字节 Seed、腾讯混元、文心、MiniMax、零一、阶跃、小米、蚂蚁 Ling、美团 LongCat、快手可灵、FLUX、Microsoft。
+
+「缺数据」= 下列任一：
+- `text`/`realtime`/`decision` 缺 `contextLength` 或 `maxOutputTokens`；`embedding` 缺 `contextLength`
+- `detail_Input` / `detail_Output` / `detail_SupportedParameters` 三项全为 `Not reported`
+
+**视频/语音/转写/图像本来就没有上下文窗口**，站点显示 `Not reported` 属于字段不适用，不记为数值缺口。
+
+`e2ee-` / `uncensored-` / `venice-` 前缀的转售型号算非主流（基座厂商不打折）。
+
 ## 用法
 
 ```bash

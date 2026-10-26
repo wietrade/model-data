@@ -1,0 +1,3628 @@
+{
+  "snapshot": "raw\\cheaperinference-20261026.json",
+  "generated_at": "2026-10-26",
+  "policy": {
+    "mainstream_vendors": [
+      "01ai",
+      "alibaba",
+      "ant",
+      "anthropic",
+      "baidu",
+      "bfl",
+      "bytedance",
+      "cohere",
+      "deepseek",
+      "google",
+      "kuaishou",
+      "meituan",
+      "meta",
+      "microsoft",
+      "minimax",
+      "mistral",
+      "moonshot",
+      "nvidia",
+      "openai",
+      "perplexity",
+      "stepfun",
+      "tencent",
+      "xai",
+      "xiaomi",
+      "zhipu"
+    ],
+    "token_fields_by_type": {
+      "ctx+max": [
+        "decision",
+        "realtime",
+        "text"
+      ],
+      "ctx_only": [
+        "embedding"
+      ],
+      "none": [
+        "image",
+        "speech",
+        "transcription",
+        "video"
+      ]
+    },
+    "note": "视频/语音/转写/图像的 Not reported 属于字段不适用，不算缺数据"
+  },
+  "models": {
+    "aion-3.0": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "text"
+    },
+    "aion-3.0-mini": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "text"
+    },
+    "all-minilm-l12-v2": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "all-minilm-l6-v2": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "all-mpnet-base-v2": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "apex": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "arrow-2": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "arrow-2-telos": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "autoglm-phone-9b-multilingual": {
+      "vendor": "zhipu",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "text"
+    },
+    "beam": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "beam-1.0-501b-a23b": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "text"
+    },
+    "bge-base-en-v1.5": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "bge-en-icl": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "bge-large-en-v1.5": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "bge-m3": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "bge-m3-multi": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "bge-m3-multi-8k": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "claude-fable-5": {
+      "vendor": "anthropic",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "claude-fable-5.1": {
+      "vendor": "anthropic",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "claude-haiku-4.5": {
+      "tier": "legacy",
+      "why": "Claude 4.x 代已被 5.5 取代",
+      "superseded_by": "claude-*-5.5",
+      "type": "text"
+    },
+    "claude-haiku-4.5-20251001-r": {
+      "tier": "legacy",
+      "why": "Claude 4.x 代已被 5.5 取代",
+      "superseded_by": "claude-*-5.5",
+      "type": "text"
+    },
+    "claude-haiku-5.5": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "claude-opus-4.5": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "claude-opus-4.6": {
+      "tier": "legacy",
+      "why": "Claude 4.x 代已被 5.5 取代",
+      "superseded_by": "claude-*-5.5",
+      "type": "text"
+    },
+    "claude-opus-4.7": {
+      "tier": "legacy",
+      "why": "Claude 4.x 代已被 5.5 取代",
+      "superseded_by": "claude-*-5.5",
+      "type": "text"
+    },
+    "claude-opus-4.8": {
+      "tier": "legacy",
+      "why": "Claude 4.x 代已被 5.5 取代",
+      "superseded_by": "claude-*-5.5",
+      "type": "text"
+    },
+    "claude-opus-4.8-fast": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "claude-opus-5": {
+      "vendor": "anthropic",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "claude-opus-5-fast": {
+      "vendor": "anthropic",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "claude-opus-5.5": {
+      "vendor": "anthropic",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "claude-opus-5.5-fast": {
+      "vendor": "anthropic",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "claude-sonnet-4.5": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "claude-sonnet-4.6": {
+      "tier": "legacy",
+      "why": "Claude 4.x 代已被 5.5 取代",
+      "superseded_by": "claude-*-5.5",
+      "type": "text"
+    },
+    "claude-sonnet-5": {
+      "vendor": "anthropic",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "claude-sonnet-5.5": {
+      "vendor": "anthropic",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "clip-vit-b-32": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "clip-vit-b-32-multilingual-v1": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "codestral": {
+      "vendor": "mistral",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "codestral-embed": {
+      "vendor": "mistral",
+      "gaps": [
+        "contextLength"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "embedding"
+    },
+    "command-a": {
+      "vendor": "cohere",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "command-a-plus": {
+      "vendor": "cohere",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "text"
+    },
+    "cosmos-predict": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "video"
+    },
+    "d1": {
+      "vendor": "other",
+      "gaps": [
+        "maxOutputTokens"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 maxOutputTokens",
+      "type": "decision"
+    },
+    "d1-ultra": {
+      "vendor": "other",
+      "gaps": [
+        "maxOutputTokens"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 maxOutputTokens",
+      "type": "decision"
+    },
+    "deepseek-ocr-2": {
+      "vendor": "deepseek",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "text"
+    },
+    "deepseek-r1": {
+      "tier": "legacy",
+      "why": "R1 代（V3 架构的推理版）",
+      "superseded_by": "deepseek-v4 系列",
+      "type": "text"
+    },
+    "deepseek-r1-0528": {
+      "tier": "legacy",
+      "why": "R1 代（V3 架构的推理版）",
+      "superseded_by": "deepseek-v4 系列",
+      "type": "text"
+    },
+    "deepseek-r1-community": {
+      "tier": "legacy",
+      "why": "R1 代（V3 架构的推理版）",
+      "superseded_by": "deepseek-v4 系列",
+      "type": "text"
+    },
+    "deepseek-r1-turbo": {
+      "tier": "legacy",
+      "why": "R1 代（V3 架构的推理版）",
+      "superseded_by": "deepseek-v4 系列",
+      "type": "text"
+    },
+    "deepseek-v3": {
+      "tier": "legacy",
+      "why": "V3 代",
+      "superseded_by": "deepseek-v4.1-flash",
+      "type": "text"
+    },
+    "deepseek-v3.1": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "deepseek-v3.2": {
+      "tier": "legacy",
+      "why": "V3 代",
+      "superseded_by": "deepseek-v4.1-flash",
+      "type": "text"
+    },
+    "deepseek-v3.2-thinking": {
+      "tier": "legacy",
+      "why": "V3 代",
+      "superseded_by": "deepseek-v4.1-flash",
+      "type": "text"
+    },
+    "deepseek-v4-flash": {
+      "vendor": "deepseek",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "deepseek-v4-flash-0731": {
+      "vendor": "deepseek",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "deepseek-v4-flash-0731-fast": {
+      "vendor": "deepseek",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "text"
+    },
+    "deepseek-v4-flash-vision-exp": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "deepseek-v4-pro": {
+      "vendor": "deepseek",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "deepseek-v4-pro-0813": {
+      "vendor": "deepseek",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "deepseek-v4.1-flash": {
+      "vendor": "deepseek",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "deepseek-v4.1-flash-1017": {
+      "vendor": "deepseek",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "deepseek-v4.1-flash-1017-fast": {
+      "vendor": "deepseek",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "deepseek-v4.1-flash-fast": {
+      "vendor": "deepseek",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "devstral-2-123b": {
+      "vendor": "mistral",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "text"
+    },
+    "drama-3": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "media",
+      "why": "图像/视频/语音/转写，无 token 字段，信息齐全",
+      "type": "speech"
+    },
+    "e2ee-deepseek-v4-flash": {
+      "vendor": "deepseek",
+      "gaps": [
+        "模态/参数"
+      ],
+      "third_party_prefix": "e2ee",
+      "tier": "ignore",
+      "why": "非主流（deepseek）且缺 模态/参数",
+      "type": "text"
+    },
+    "e2ee-gemma-4-26b-a4b-uncensored-p": {
+      "vendor": "google",
+      "gaps": [
+        "模态/参数"
+      ],
+      "third_party_prefix": "e2ee",
+      "tier": "ignore",
+      "why": "非主流（google）且缺 模态/参数",
+      "type": "text"
+    },
+    "e2ee-glm-5.2-p": {
+      "vendor": "zhipu",
+      "gaps": [
+        "maxOutputTokens",
+        "模态/参数"
+      ],
+      "third_party_prefix": "e2ee",
+      "tier": "ignore",
+      "why": "非主流（zhipu）且缺 maxOutputTokens+模态/参数",
+      "type": "text"
+    },
+    "e2ee-gpt-oss-120b-p": {
+      "vendor": "openai",
+      "gaps": [
+        "模态/参数"
+      ],
+      "third_party_prefix": "e2ee",
+      "tier": "ignore",
+      "why": "非主流（openai）且缺 模态/参数",
+      "type": "text"
+    },
+    "e2ee-qwen-2.5-7b-p": {
+      "vendor": "alibaba",
+      "gaps": [
+        "maxOutputTokens",
+        "模态/参数"
+      ],
+      "third_party_prefix": "e2ee",
+      "tier": "ignore",
+      "why": "非主流（alibaba）且缺 maxOutputTokens+模态/参数",
+      "type": "text"
+    },
+    "e2ee-qwen3.6-35b-a3b": {
+      "vendor": "alibaba",
+      "gaps": [
+        "maxOutputTokens",
+        "模态/参数"
+      ],
+      "third_party_prefix": "e2ee",
+      "tier": "ignore",
+      "why": "非主流（alibaba）且缺 maxOutputTokens+模态/参数",
+      "type": "text"
+    },
+    "e2ee-qwen3.6-35b-a3b-uncensored-p": {
+      "vendor": "alibaba",
+      "gaps": [
+        "maxOutputTokens",
+        "模态/参数"
+      ],
+      "third_party_prefix": "e2ee",
+      "tier": "ignore",
+      "why": "非主流（alibaba）且缺 maxOutputTokens+模态/参数",
+      "type": "text"
+    },
+    "e5-base-v2": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "e5-large-v2": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "elephant-1": {
+      "vendor": "other",
+      "gaps": [
+        "maxOutputTokens"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 maxOutputTokens",
+      "type": "decision"
+    },
+    "elevenlabs-scribe-v2": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "transcription"
+    },
+    "embed-v4.0": {
+      "vendor": "cohere",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "embedding"
+    },
+    "embed-v5.0-fast": {
+      "vendor": "cohere",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "embedding"
+    },
+    "embed-v5.0-pro": {
+      "vendor": "cohere",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "embedding"
+    },
+    "embeddinggemma-2": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "embeddinggemma-300m": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "ember-1": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "flux-1.1": {
+      "tier": "legacy",
+      "why": "FLUX 1.x/2 代",
+      "superseded_by": "flux-3-image / flux-3-video",
+      "type": "image"
+    },
+    "flux-2-flex": {
+      "tier": "legacy",
+      "why": "FLUX 1.x/2 代",
+      "superseded_by": "flux-3-image / flux-3-video",
+      "type": "image"
+    },
+    "flux-2-klein-4b": {
+      "tier": "legacy",
+      "why": "FLUX 1.x/2 代",
+      "superseded_by": "flux-3-image / flux-3-video",
+      "type": "image"
+    },
+    "flux-2-klein-9b": {
+      "tier": "legacy",
+      "why": "FLUX 1.x/2 代",
+      "superseded_by": "flux-3-image / flux-3-video",
+      "type": "image"
+    },
+    "flux-2-max": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "image"
+    },
+    "flux-2-pro": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "image"
+    },
+    "flux-3-image": {
+      "vendor": "bfl",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "image"
+    },
+    "flux-3-image-klein": {
+      "vendor": "bfl",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "image"
+    },
+    "flux-3-video": {
+      "vendor": "bfl",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "video"
+    },
+    "flux-kontext-max": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "image"
+    },
+    "flux-kontext-pro": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "image"
+    },
+    "flux-pro-1.0-fill": {
+      "tier": "legacy",
+      "why": "FLUX 1.x pro 代",
+      "superseded_by": "flux-3-*",
+      "type": "image"
+    },
+    "flux-pro-1.1": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "image"
+    },
+    "flux-pro-1.1-ultra": {
+      "tier": "legacy",
+      "why": "FLUX 1.x pro 代",
+      "superseded_by": "flux-3-*",
+      "type": "image"
+    },
+    "fugu-max": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "fugu-ultra": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "fugu-ultra-v2": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "gemini-2.5-flash": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "gemini-2.5-flash-lite": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "gemini-2.5-pro": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "gemini-2.5-pro-preview-06-05": {
+      "tier": "legacy",
+      "why": "Gemini 2.5 代",
+      "superseded_by": "gemini-4-argon / 3.8 系列",
+      "type": "text"
+    },
+    "gemini-3-flash": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "gemini-3.1-flash-lite": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "gemini-3.1-flash-lite-image": {
+      "vendor": "google",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "image"
+    },
+    "gemini-3.1-pro-preview": {
+      "tier": "legacy",
+      "why": "Gemini 3.1 代，落后 3 个次版本",
+      "superseded_by": "gemini-4-argon / 3.8 系列",
+      "type": "text"
+    },
+    "gemini-3.5-flash": {
+      "vendor": "google",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gemini-3.5-flash-lite": {
+      "vendor": "google",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gemini-3.5-transcribe": {
+      "vendor": "google",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "transcription"
+    },
+    "gemini-3.5-transcribe-live": {
+      "vendor": "google",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "transcription"
+    },
+    "gemini-3.6-flash": {
+      "vendor": "google",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gemini-3.7-flash": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "gemini-3.8-flash": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "gemini-3.8-flash-lite-tts": {
+      "vendor": "google",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "speech"
+    },
+    "gemini-3.8-flash-tts": {
+      "vendor": "google",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "speech"
+    },
+    "gemini-3.8-live": {
+      "vendor": "google",
+      "gaps": [
+        "contextLength",
+        "maxOutputTokens"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "realtime"
+    },
+    "gemini-3.8-live-extended-thinking": {
+      "vendor": "google",
+      "gaps": [
+        "contextLength",
+        "maxOutputTokens"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "realtime"
+    },
+    "gemini-4-argon": {
+      "vendor": "google",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gemini-embedding-001": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "gemini-embedding-2": {
+      "vendor": "google",
+      "gaps": [
+        "contextLength"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "embedding"
+    },
+    "gemini-nano-banana-2.1": {
+      "vendor": "google",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "image"
+    },
+    "gemini-omni-flash-preview": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "gemma-3-12b-it": {
+      "tier": "legacy",
+      "why": "Gemma 3 代已被 Gemma 4 取代",
+      "superseded_by": "gemma-4-31b-it",
+      "type": "text"
+    },
+    "gemma-3-27b-it": {
+      "tier": "legacy",
+      "why": "Gemma 3 代已被 Gemma 4 取代",
+      "superseded_by": "gemma-4-31b-it",
+      "type": "text"
+    },
+    "gemma-3-4b-it": {
+      "tier": "legacy",
+      "why": "Gemma 3 代已被 Gemma 4 取代",
+      "superseded_by": "gemma-4-31b-it",
+      "type": "text"
+    },
+    "gemma-4-26b-a4b-it": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "gemma-4-31b-it": {
+      "vendor": "google",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "glimpse": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "glm-4.5": {
+      "tier": "legacy",
+      "why": "GLM 4.x 代已被 5.3 取代",
+      "superseded_by": "glm-5.3",
+      "type": "text"
+    },
+    "glm-4.5-air": {
+      "tier": "legacy",
+      "why": "GLM 4.x 代已被 5.3 取代",
+      "superseded_by": "glm-5.3",
+      "type": "text"
+    },
+    "glm-4.5v": {
+      "vendor": "zhipu",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "glm-4.6": {
+      "tier": "legacy",
+      "why": "GLM 4.x 代已被 5.3 取代",
+      "superseded_by": "glm-5.3",
+      "type": "text"
+    },
+    "glm-4.6v": {
+      "vendor": "zhipu",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "text"
+    },
+    "glm-4.7": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "glm-4.7-flash": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "glm-4.7-flash-heretic": {
+      "tier": "legacy",
+      "why": "GLM 4.x 代已被 5.3 取代",
+      "superseded_by": "glm-5.3",
+      "type": "text"
+    },
+    "glm-4.7-flashx": {
+      "tier": "legacy",
+      "why": "GLM 4.x 代已被 5.3 取代",
+      "superseded_by": "glm-5.3",
+      "type": "text"
+    },
+    "glm-5": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "glm-5-turbo": {
+      "vendor": "zhipu",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "glm-5.1": {
+      "vendor": "zhipu",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "glm-5.2": {
+      "vendor": "zhipu",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "glm-5.2-fast": {
+      "vendor": "zhipu",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "glm-5.3": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "glm-5.3-fast": {
+      "vendor": "zhipu",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "glm-5.3-flash": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "glm-5.3-flashx": {
+      "vendor": "zhipu",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "glm-5v-turbo": {
+      "vendor": "zhipu",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "glyph-cluster": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "gpt-4.1": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "gpt-4.1-fast": {
+      "tier": "legacy",
+      "why": "GPT-4.1 代已落后 4 个大版本",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-4.1-mini": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "gpt-4.1-mini-fast": {
+      "tier": "legacy",
+      "why": "GPT-4.1 代已落后 4 个大版本",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-4.1-nano": {
+      "tier": "legacy",
+      "why": "GPT-4.1 代已落后 4 个大版本",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-4o": {
+      "tier": "legacy",
+      "why": "GPT-4o 代已落后 4 个大版本",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-4o-fast": {
+      "tier": "legacy",
+      "why": "GPT-4o 代已落后 4 个大版本",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-4o-mini": {
+      "tier": "legacy",
+      "why": "GPT-4o 代已落后 4 个大版本",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-4o-mini-fast": {
+      "tier": "legacy",
+      "why": "GPT-4o 代已落后 4 个大版本",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-4o-mini-transcribe": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "transcription"
+    },
+    "gpt-4o-transcribe": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "transcription"
+    },
+    "gpt-5": {
+      "tier": "legacy",
+      "why": "GPT-5 首代",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-5-codex": {
+      "tier": "legacy",
+      "why": "GPT-5 首代",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-5-fast": {
+      "tier": "legacy",
+      "why": "GPT-5 首代",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-5-mini": {
+      "tier": "legacy",
+      "why": "GPT-5 首代",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-5-mini-fast": {
+      "tier": "legacy",
+      "why": "GPT-5 首代",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-5-nano": {
+      "tier": "legacy",
+      "why": "GPT-5 首代",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-5-pro": {
+      "tier": "legacy",
+      "why": "GPT-5 首代",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-5.1": {
+      "tier": "legacy",
+      "why": "落后 3 代",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-5.1-codex": {
+      "tier": "legacy",
+      "why": "落后 3 代",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-5.1-codex-max": {
+      "tier": "legacy",
+      "why": "落后 3 代",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-5.1-codex-mini": {
+      "tier": "legacy",
+      "why": "落后 3 代",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-5.1-thinking": {
+      "tier": "legacy",
+      "why": "落后 3 代",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-5.1-thinking-fast": {
+      "tier": "legacy",
+      "why": "落后 3 代",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-5.2": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "gpt-5.2-codex": {
+      "tier": "legacy",
+      "why": "落后 2 代",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-5.2-fast": {
+      "tier": "legacy",
+      "why": "落后 2 代",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-5.2-pro": {
+      "tier": "legacy",
+      "why": "落后 2 代",
+      "superseded_by": "gpt-6.1 系列",
+      "type": "text"
+    },
+    "gpt-5.3-codex": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-5.3-codex-fast": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-5.4": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-5.4-fast": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-5.4-mini": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-5.4-mini-fast": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-5.4-nano": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-5.4-pro": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-5.5": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-5.5-fast": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-5.5-pro": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-5.6-luna": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-5.6-luna-fast": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-5.6-sol": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-5.6-sol-fast": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-5.6-terra": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-5.6-terra-fast": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-6-astra": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-6-astra-fast": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-6-luna": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-6-luna-decisions": {
+      "vendor": "openai",
+      "gaps": [
+        "maxOutputTokens"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "decision"
+    },
+    "gpt-6-luna-fast": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-6-luna-pro": {
+      "vendor": "openai",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "text"
+    },
+    "gpt-6-sol": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-6-sol-fast": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-6-sol-pro": {
+      "vendor": "openai",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "text"
+    },
+    "gpt-6.1-sol": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-6.1-sol-fast": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "gpt-6.1-sol-pro": {
+      "vendor": "openai",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "text"
+    },
+    "gpt-image-1-mini": {
+      "tier": "legacy",
+      "why": "图像模型上游已有 2.5",
+      "superseded_by": "gpt-image-2.5 系列",
+      "type": "image"
+    },
+    "gpt-image-1.5": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "image"
+    },
+    "gpt-image-2": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "image"
+    },
+    "gpt-image-2.5-flare": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "image"
+    },
+    "gpt-image-2.5-sunburst": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "image"
+    },
+    "gpt-live-1": {
+      "vendor": "openai",
+      "gaps": [
+        "contextLength",
+        "maxOutputTokens"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "realtime"
+    },
+    "gpt-oss-120b": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "gpt-oss-20b": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "gpt-oss-safeguard-120b": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "gpt-oss-safeguard-20b": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "gpt-realtime-1.5": {
+      "vendor": "openai",
+      "gaps": [
+        "contextLength",
+        "maxOutputTokens"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "realtime"
+    },
+    "gpt-realtime-2": {
+      "vendor": "openai",
+      "gaps": [
+        "contextLength",
+        "maxOutputTokens"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "realtime"
+    },
+    "gpt-realtime-2.1": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "realtime"
+    },
+    "gpt-realtime-mini": {
+      "vendor": "openai",
+      "gaps": [
+        "contextLength",
+        "maxOutputTokens"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "realtime"
+    },
+    "gpt-realtime-whisper": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "transcription"
+    },
+    "grok-4": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "grok-4.1-fast-non-reasoning": {
+      "tier": "legacy",
+      "why": "落后 6 个次版本",
+      "superseded_by": "grok-4.7",
+      "type": "text"
+    },
+    "grok-4.1-fast-reasoning": {
+      "tier": "legacy",
+      "why": "落后 6 个次版本",
+      "superseded_by": "grok-4.7",
+      "type": "text"
+    },
+    "grok-4.20-beta": {
+      "tier": "legacy",
+      "why": "4.20 为过渡版本",
+      "superseded_by": "grok-4.7",
+      "type": "text"
+    },
+    "grok-4.20-multi-agent": {
+      "tier": "legacy",
+      "why": "4.20 为过渡版本",
+      "superseded_by": "grok-4.7",
+      "type": "text"
+    },
+    "grok-4.20-multi-agent-beta": {
+      "tier": "legacy",
+      "why": "4.20 为过渡版本",
+      "superseded_by": "grok-4.7",
+      "type": "text"
+    },
+    "grok-4.20-non-reasoning": {
+      "tier": "legacy",
+      "why": "4.20 为过渡版本",
+      "superseded_by": "grok-4.7",
+      "type": "text"
+    },
+    "grok-4.20-reasoning": {
+      "tier": "legacy",
+      "why": "4.20 为过渡版本",
+      "superseded_by": "grok-4.7",
+      "type": "text"
+    },
+    "grok-4.3": {
+      "vendor": "xai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "grok-4.5": {
+      "vendor": "xai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "grok-4.6": {
+      "vendor": "xai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "grok-4.7": {
+      "vendor": "xai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "grok-build-0.1": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "grok-code-fast-1": {
+      "vendor": "xai",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "text"
+    },
+    "grok-imagine-image": {
+      "vendor": "xai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "image"
+    },
+    "grok-imagine-image-2.0": {
+      "vendor": "xai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "image"
+    },
+    "grok-imagine-quality": {
+      "vendor": "xai",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "image"
+    },
+    "grok-imagine-video": {
+      "vendor": "xai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "video"
+    },
+    "grok-imagine-video-1.5": {
+      "vendor": "xai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "video"
+    },
+    "grok-stt": {
+      "vendor": "xai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "transcription"
+    },
+    "grok-tts": {
+      "vendor": "xai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "speech"
+    },
+    "grok-voice-3.0": {
+      "vendor": "xai",
+      "gaps": [
+        "contextLength",
+        "maxOutputTokens"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "realtime"
+    },
+    "grok-voice-think-fast-2.0": {
+      "vendor": "xai",
+      "gaps": [
+        "contextLength",
+        "maxOutputTokens"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "realtime"
+    },
+    "gte-base": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "gte-large": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "happyhorse-1.0": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "video"
+    },
+    "heygen-video-1": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "media",
+      "why": "图像/视频/语音/转写，无 token 字段，信息齐全",
+      "type": "video"
+    },
+    "hunyuan-image-v3": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "image"
+    },
+    "hy-mt2-lite": {
+      "vendor": "tencent",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "hy-mt2-plus": {
+      "vendor": "tencent",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "hy-mt2-pro": {
+      "vendor": "tencent",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "hy3": {
+      "vendor": "tencent",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "hy4-preview": {
+      "vendor": "tencent",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "inkling": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "inkling-small": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "interfaze-beta": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "jev": {
+      "vendor": "other",
+      "gaps": [
+        "maxOutputTokens"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 maxOutputTokens",
+      "type": "decision"
+    },
+    "jev-1.13.0": {
+      "vendor": "other",
+      "gaps": [
+        "maxOutputTokens"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 maxOutputTokens",
+      "type": "decision"
+    },
+    "jev-1.14.0": {
+      "vendor": "other",
+      "gaps": [
+        "maxOutputTokens"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 maxOutputTokens",
+      "type": "decision"
+    },
+    "kimi-k2": {
+      "tier": "legacy",
+      "why": "K2 代；其中 kimi-k2.5 官方已于 2026-08-31 下线",
+      "superseded_by": "kimi-k3.1-pro",
+      "type": "text"
+    },
+    "kimi-k2-0905": {
+      "tier": "legacy",
+      "why": "K2 代；其中 kimi-k2.5 官方已于 2026-08-31 下线",
+      "superseded_by": "kimi-k3.1-pro",
+      "type": "text"
+    },
+    "kimi-k2-thinking": {
+      "tier": "legacy",
+      "why": "K2 代；其中 kimi-k2.5 官方已于 2026-08-31 下线",
+      "superseded_by": "kimi-k3.1-pro",
+      "type": "text"
+    },
+    "kimi-k2.5": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "kimi-k2.6": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "kimi-k2.7-code": {
+      "vendor": "moonshot",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "kimi-k2.7-code-highspeed": {
+      "vendor": "moonshot",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "kimi-k3": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "kimi-k3-fast": {
+      "vendor": "moonshot",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "kimi-k3.1-pro": {
+      "vendor": "moonshot",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "kimi-k3.1-pro-highspeed": {
+      "vendor": "moonshot",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "kling-v2.5-turbo": {
+      "vendor": "kuaishou",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "video"
+    },
+    "kling-v2.6": {
+      "vendor": "kuaishou",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "video"
+    },
+    "kling-v2.6-motion-control": {
+      "vendor": "kuaishou",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "video"
+    },
+    "kling-v3.0": {
+      "vendor": "kuaishou",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "video"
+    },
+    "kling-v3.0-motion-control": {
+      "vendor": "kuaishou",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "video"
+    },
+    "l3-8b-stheno-v3.2": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "laguna-s-2.1": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "laya": {
+      "vendor": "other",
+      "gaps": [
+        "maxOutputTokens"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 maxOutputTokens",
+      "type": "decision"
+    },
+    "lfm2.5-24b-a2b": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "ling-3.0-flash": {
+      "vendor": "ant",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "ling-3.0-flash-fin": {
+      "vendor": "ant",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "ling-3.0-flash-sante": {
+      "vendor": "ant",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "ling-3.0-flash-vl": {
+      "vendor": "ant",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "ling-3.1-flash": {
+      "vendor": "ant",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "llama-3.1-70b": {
+      "tier": "legacy",
+      "why": "Llama 3.x/4 代",
+      "superseded_by": "站点无更新代，但已明显落后",
+      "type": "text"
+    },
+    "llama-3.1-8b": {
+      "tier": "legacy",
+      "why": "Llama 3.x/4 代",
+      "superseded_by": "站点无更新代，但已明显落后",
+      "type": "text"
+    },
+    "llama-3.2-3b-instruct": {
+      "tier": "legacy",
+      "why": "Llama 3.x/4 代",
+      "superseded_by": "站点无更新代，但已明显落后",
+      "type": "text"
+    },
+    "llama-3.3-70b": {
+      "tier": "legacy",
+      "why": "Llama 3.x/4 代",
+      "superseded_by": "站点无更新代，但已明显落后",
+      "type": "text"
+    },
+    "llama-4-maverick": {
+      "tier": "legacy",
+      "why": "Llama 3.x/4 代",
+      "superseded_by": "站点无更新代，但已明显落后",
+      "type": "text"
+    },
+    "llama-4-scout": {
+      "tier": "legacy",
+      "why": "Llama 3.x/4 代",
+      "superseded_by": "站点无更新代，但已明显落后",
+      "type": "text"
+    },
+    "llama-nemotron-embed-vl-1b-v2": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "longcat": {
+      "vendor": "meituan",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "video"
+    },
+    "longcat-2.5-preview": {
+      "vendor": "meituan",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "longcat-distilled": {
+      "vendor": "meituan",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "video"
+    },
+    "luma-uni-1": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "image"
+    },
+    "macaron-v1-tall": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "text"
+    },
+    "macaron-v1-venti": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "text"
+    },
+    "magistral-small-2509": {
+      "vendor": "mistral",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "text"
+    },
+    "mai-image-2.6": {
+      "vendor": "microsoft",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "image"
+    },
+    "mai-image-2.6-flash": {
+      "vendor": "microsoft",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "image"
+    },
+    "mai-transcribe-2": {
+      "vendor": "microsoft",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "transcription"
+    },
+    "mai-voice-2": {
+      "vendor": "microsoft",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "speech"
+    },
+    "mai-voice-2-flash": {
+      "vendor": "microsoft",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "speech"
+    },
+    "mai-voice-2.1": {
+      "vendor": "microsoft",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "speech"
+    },
+    "mai-voice-2.1-flash": {
+      "vendor": "microsoft",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "speech"
+    },
+    "mammoth-1": {
+      "vendor": "other",
+      "gaps": [
+        "maxOutputTokens"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 maxOutputTokens",
+      "type": "decision"
+    },
+    "mercury-2": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "mercury-2.5": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "mercury-3": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "mercury-coder-small": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "microsoft-decision-1": {
+      "vendor": "other",
+      "gaps": [
+        "maxOutputTokens"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 maxOutputTokens",
+      "type": "decision"
+    },
+    "mimo-v2.5": {
+      "vendor": "xiaomi",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "mimo-v2.5-pro": {
+      "vendor": "xiaomi",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "mimo-v2.6-flash": {
+      "vendor": "xiaomi",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "mimo-v2.6-pro": {
+      "vendor": "xiaomi",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "mimo-v2.6-pro-ultraspeed": {
+      "vendor": "xiaomi",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "minimax-h3": {
+      "vendor": "minimax",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "video"
+    },
+    "minimax-h3-max": {
+      "vendor": "minimax",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "video"
+    },
+    "minimax-m1-80k": {
+      "tier": "legacy",
+      "why": "M1 代",
+      "superseded_by": "minimax-m3 系列",
+      "type": "text"
+    },
+    "minimax-m2": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "minimax-m2.1": {
+      "tier": "legacy",
+      "why": "M2.1 代",
+      "superseded_by": "minimax-m3 系列",
+      "type": "text"
+    },
+    "minimax-m2.1-lightning": {
+      "tier": "legacy",
+      "why": "M2.1 代",
+      "superseded_by": "minimax-m3 系列",
+      "type": "text"
+    },
+    "minimax-m2.5": {
+      "vendor": "minimax",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "minimax-m2.5-highspeed": {
+      "vendor": "minimax",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "minimax-m2.7": {
+      "vendor": "minimax",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "minimax-m2.7-highspeed": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "minimax-m3": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "minimax-m3.1-flash": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "ministral-14b": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "ministral-3b": {
+      "vendor": "mistral",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "ministral-8b": {
+      "vendor": "mistral",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "mistral-embed": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "mistral-large": {
+      "tier": "legacy",
+      "why": "Mistral 老代",
+      "superseded_by": "mistral-large-4",
+      "type": "text"
+    },
+    "mistral-large-3": {
+      "tier": "legacy",
+      "why": "Mistral 老代",
+      "superseded_by": "mistral-large-4",
+      "type": "text"
+    },
+    "mistral-large-4": {
+      "vendor": "mistral",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "mistral-medium-3.5": {
+      "vendor": "mistral",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "mistral-nemo": {
+      "tier": "legacy",
+      "why": "Mistral 老代",
+      "superseded_by": "mistral-large-4",
+      "type": "text"
+    },
+    "mistral-small": {
+      "tier": "legacy",
+      "why": "Mistral 老代",
+      "superseded_by": "mistral-large-4",
+      "type": "text"
+    },
+    "mistral-small-3.2-24b-instruct": {
+      "tier": "legacy",
+      "why": "Mistral 老代",
+      "superseded_by": "mistral-large-4",
+      "type": "text"
+    },
+    "moondream3": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "text"
+    },
+    "morph-v3-fast": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "morph-v3-large": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "multi-qa-mpnet-base-dot-v1": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "multilingual-e5-large": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "multilingual-e5-large-instruct": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "muse-glimmer-30b": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "muse-image-1.0": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "media",
+      "why": "图像/视频/语音/转写，无 token 字段，信息齐全",
+      "type": "image"
+    },
+    "muse-spark-1.1": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "muse-spark-1.2": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "muse-spark-1.2-contributor": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "muse-spark-1.3": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "muse-spark-1.3-contributor": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "muse-spark-open": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "muse-wonder-1.0": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "namazu": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "nano-banana": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "image"
+    },
+    "nano-banana-2": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "image"
+    },
+    "nano-banana-pro": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "image"
+    },
+    "nemotron-3-diarization": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "transcription"
+    },
+    "nemotron-3-embed-8b": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "nemotron-3-nano-30b-a3b": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "nemotron-3-super-120b-a12b": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "nemotron-3-ultra-550b-a55b": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "nemotron-3.5-asr-streaming-multilingual-0.6b": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "transcription"
+    },
+    "nemotron-3.5-super-vl": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "nemotron-nano-12b-v2-vl": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "nemotron-nano-9b-v2": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "nova-2-lite": {
+      "tier": "legacy",
+      "why": "Amazon Nova 初代",
+      "superseded_by": "站点无更新代，但已明显落后",
+      "type": "text"
+    },
+    "nova-lite": {
+      "tier": "legacy",
+      "why": "Amazon Nova 初代",
+      "superseded_by": "站点无更新代，但已明显落后",
+      "type": "text"
+    },
+    "nova-micro": {
+      "tier": "legacy",
+      "why": "Amazon Nova 初代",
+      "superseded_by": "站点无更新代，但已明显落后",
+      "type": "text"
+    },
+    "nova-pro": {
+      "tier": "legacy",
+      "why": "Amazon Nova 初代",
+      "superseded_by": "站点无更新代，但已明显落后",
+      "type": "text"
+    },
+    "nvidia-nemotron-3.5-lightning-30b-a3b": {
+      "vendor": "nvidia",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "nvidia-nemotron-nano-12b-v2": {
+      "vendor": "nvidia",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "text"
+    },
+    "o1": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "o3": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "o3-fast": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "o3-mini": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "o3-pro": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "o4-mini": {
+      "vendor": "openai",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "palmyra-vision-7b": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "text"
+    },
+    "parakeet-asr": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "transcription"
+    },
+    "paraphrase-minilm-l6-v2": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "pareto-26.9": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "text"
+    },
+    "pplx-decider-flash-v1.2": {
+      "vendor": "perplexity",
+      "gaps": [
+        "maxOutputTokens"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "decision"
+    },
+    "pplx-decider-v1.2": {
+      "vendor": "perplexity",
+      "gaps": [
+        "maxOutputTokens"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "decision"
+    },
+    "pplx-embed-v1-0.6b": {
+      "vendor": "perplexity",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "embedding"
+    },
+    "pplx-embed-v1-4b": {
+      "vendor": "perplexity",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "embedding"
+    },
+    "proteus": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "media",
+      "why": "图像/视频/语音/转写，无 token 字段，信息齐全",
+      "type": "video"
+    },
+    "qwen-image-2.1-turbo": {
+      "vendor": "alibaba",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "image"
+    },
+    "qwen-mt-plus": {
+      "vendor": "alibaba",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "text"
+    },
+    "qwen3-14b": {
+      "tier": "legacy",
+      "why": "Qwen3 首代（版本号未带小数）",
+      "superseded_by": "qwen3.8 系列",
+      "type": "text"
+    },
+    "qwen3-235b": {
+      "tier": "legacy",
+      "why": "Qwen3 首代（版本号未带小数）",
+      "superseded_by": "qwen3.8 系列",
+      "type": "text"
+    },
+    "qwen3-235b-a22b-2507": {
+      "tier": "legacy",
+      "why": "Qwen3 首代（版本号未带小数）",
+      "superseded_by": "qwen3.8 系列",
+      "type": "text"
+    },
+    "qwen3-235b-a22b-thinking-2507": {
+      "tier": "legacy",
+      "why": "Qwen3 首代（版本号未带小数）",
+      "superseded_by": "qwen3.8 系列",
+      "type": "text"
+    },
+    "qwen3-30b-a3b": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "qwen3-32b": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "qwen3-asr-0.6b": {
+      "vendor": "alibaba",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "transcription"
+    },
+    "qwen3-asr-1.7b": {
+      "vendor": "alibaba",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "transcription"
+    },
+    "qwen3-coder": {
+      "tier": "legacy",
+      "why": "Qwen3 首代（版本号未带小数）",
+      "superseded_by": "qwen3.8 系列",
+      "type": "text"
+    },
+    "qwen3-coder-30b-a3b-instruct": {
+      "tier": "legacy",
+      "why": "Qwen3 首代（版本号未带小数）",
+      "superseded_by": "qwen3.8 系列",
+      "type": "text"
+    },
+    "qwen3-coder-next": {
+      "vendor": "alibaba",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "qwen3-embedding-0.6b": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "qwen3-embedding-4b": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "qwen3-embedding-8b": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "qwen3-next-80b-a3b-instruct": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "qwen3-omni-30b-a3b-thinking": {
+      "tier": "legacy",
+      "why": "Qwen3 首代（版本号未带小数）",
+      "superseded_by": "qwen3.8 系列",
+      "type": "text"
+    },
+    "qwen3-vl-235b-a22b-instruct": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "qwen3-vl-235b-a22b-thinking": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "qwen3-vl-30b-a3b-instruct": {
+      "tier": "legacy",
+      "why": "Qwen3 首代（版本号未带小数）",
+      "superseded_by": "qwen3.8 系列",
+      "type": "text"
+    },
+    "qwen3-vl-30b-a3b-thinking": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "qwen3.5-122b-a10b": {
+      "tier": "legacy",
+      "why": "落后 3 个次版本",
+      "superseded_by": "qwen3.8 系列",
+      "type": "text"
+    },
+    "qwen3.5-27b": {
+      "tier": "legacy",
+      "why": "落后 3 个次版本",
+      "superseded_by": "qwen3.8 系列",
+      "type": "text"
+    },
+    "qwen3.5-35b-a3b": {
+      "tier": "legacy",
+      "why": "落后 3 个次版本",
+      "superseded_by": "qwen3.8 系列",
+      "type": "text"
+    },
+    "qwen3.5-397b-a17b": {
+      "tier": "legacy",
+      "why": "落后 3 个次版本",
+      "superseded_by": "qwen3.8 系列",
+      "type": "text"
+    },
+    "qwen3.5-9b": {
+      "tier": "legacy",
+      "why": "落后 3 个次版本",
+      "superseded_by": "qwen3.8 系列",
+      "type": "text"
+    },
+    "qwen3.5-flash": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "qwen3.5-plus": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "qwen3.6-27b": {
+      "vendor": "alibaba",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "qwen3.6-35b-a3b": {
+      "vendor": "alibaba",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "text"
+    },
+    "qwen3.6-plus": {
+      "vendor": "alibaba",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "qwen3.6-plus-uncensored": {
+      "vendor": "alibaba",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "text"
+    },
+    "qwen3.7-flash": {
+      "vendor": "alibaba",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "qwen3.7-max": {
+      "vendor": "alibaba",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "qwen3.7-plus": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "qwen3.8-2.4t-a95b": {
+      "vendor": "alibaba",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "qwen3.8-27b": {
+      "vendor": "alibaba",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "qwen3.8-flash": {
+      "vendor": "alibaba",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "qwen3.8-max": {
+      "vendor": "alibaba",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "qwen3.8-max-0902": {
+      "vendor": "alibaba",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "qwen3.8-max-prime": {
+      "vendor": "alibaba",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "qwen3.8-omni-flash": {
+      "vendor": "alibaba",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "recraft-v2": {
+      "tier": "legacy",
+      "why": "Recraft v2/v3",
+      "superseded_by": "recraft-v4.1",
+      "type": "image"
+    },
+    "recraft-v3": {
+      "tier": "legacy",
+      "why": "Recraft v2/v3",
+      "superseded_by": "recraft-v4.1",
+      "type": "image"
+    },
+    "recraft-v4": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "image"
+    },
+    "recraft-v4-pro": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "image"
+    },
+    "recraft-v4.1": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "media",
+      "why": "图像/视频/语音/转写，无 token 字段，信息齐全",
+      "type": "image"
+    },
+    "recraft-v4.1-pro": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "media",
+      "why": "图像/视频/语音/转写，无 token 字段，信息齐全",
+      "type": "image"
+    },
+    "recraft-v4.1-utility": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "media",
+      "why": "图像/视频/语音/转写，无 token 字段，信息齐全",
+      "type": "image"
+    },
+    "recraft-v4.1-utility-pro": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "media",
+      "why": "图像/视频/语音/转写，无 token 字段，信息齐全",
+      "type": "image"
+    },
+    "s1": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "media",
+      "why": "图像/视频/语音/转写，无 token 字段，信息齐全",
+      "type": "speech"
+    },
+    "s2-pro": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "media",
+      "why": "图像/视频/语音/转写，无 token 字段，信息齐全",
+      "type": "speech"
+    },
+    "s2.1-pro": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "media",
+      "why": "图像/视频/语音/转写，无 token 字段，信息齐全",
+      "type": "speech"
+    },
+    "scaledown-classify-1": {
+      "vendor": "other",
+      "gaps": [
+        "contextLength",
+        "maxOutputTokens"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 contextLength+maxOutputTokens",
+      "type": "decision"
+    },
+    "scaledown-extract-1": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "scaledown-summarize-1": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "schematron-v2-small": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "schematron-v2-turbo": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "seed-1.6": {
+      "vendor": "bytedance",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "seed-1.8": {
+      "vendor": "bytedance",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "seed-2.0-code": {
+      "vendor": "bytedance",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "text"
+    },
+    "seed-2.1-turbo": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "text"
+    },
+    "seedance-1.0-pro": {
+      "tier": "legacy",
+      "why": "落后 2 代",
+      "superseded_by": "seedance-2.5",
+      "type": "video"
+    },
+    "seedance-1.5-pro": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "video"
+    },
+    "seedance-2.0": {
+      "vendor": "bytedance",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "video"
+    },
+    "seedance-2.0-fast": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "video"
+    },
+    "seedance-2.0-mini": {
+      "vendor": "bytedance",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "video"
+    },
+    "seedance-2.5": {
+      "vendor": "bytedance",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "video"
+    },
+    "seedream-4.0": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "image"
+    },
+    "seedream-4.5": {
+      "tier": "legacy",
+      "why": "落后 1 代，且同系列 5.0 在售",
+      "superseded_by": "seedream-5.0",
+      "type": "image"
+    },
+    "seedream-5.0-lite": {
+      "vendor": "bytedance",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "image"
+    },
+    "seedream-5.0-pro": {
+      "vendor": "bytedance",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "image"
+    },
+    "sonar": {
+      "vendor": "perplexity",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "starlight-precise-2.6": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "media",
+      "why": "图像/视频/语音/转写，无 token 字段，信息齐全",
+      "type": "video"
+    },
+    "step-3.7-flash": {
+      "vendor": "stepfun",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "step-5-preview": {
+      "vendor": "stepfun",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "text"
+    },
+    "text-embedding-005": {
+      "vendor": "openai",
+      "gaps": [
+        "contextLength"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "embedding"
+    },
+    "text-embedding-3-large": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "text-embedding-3-small": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "text-embedding-ada-002": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "text-multilingual-embedding-002": {
+      "vendor": "google",
+      "gaps": [
+        "contextLength"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "embedding"
+    },
+    "text2vec-base-chinese": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "titan-embed-text-v2": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "toast-1": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "transcribe-1": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "media",
+      "why": "图像/视频/语音/转写，无 token 字段，信息齐全",
+      "type": "transcription"
+    },
+    "trinity-large-thinking": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "text"
+    },
+    "tts-1": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "speech"
+    },
+    "tts-1-hd": {
+      "tier": "legacy",
+      "why": "OpenAI 初代 TTS",
+      "superseded_by": "tts-gemini-3-1 / tts-qwen3 等",
+      "type": "speech"
+    },
+    "tts-gemini-3-1-flash": {
+      "vendor": "google",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "speech"
+    },
+    "tts-inworld-1-5-max": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "speech"
+    },
+    "tts-orpheus": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "speech"
+    },
+    "tts-qwen3-0-6b": {
+      "vendor": "alibaba",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "speech"
+    },
+    "tts-qwen3-1-7b": {
+      "vendor": "alibaba",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "speech"
+    },
+    "uncensored-av-gen": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "third_party_prefix": "uncensored",
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "video"
+    },
+    "uncensored-cosmos-predict": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "third_party_prefix": "uncensored",
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "video"
+    },
+    "uncensored-i2v-pro": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "third_party_prefix": "uncensored",
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "video"
+    },
+    "uncensored-i2v-standard": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "third_party_prefix": "uncensored",
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "video"
+    },
+    "uncensored-i2v-turbo": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "third_party_prefix": "uncensored",
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "video"
+    },
+    "uncensored-ltx-distilled": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "third_party_prefix": "uncensored",
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "video"
+    },
+    "uncensored-seedance-2.0": {
+      "vendor": "bytedance",
+      "gaps": [
+        "模态/参数"
+      ],
+      "third_party_prefix": "uncensored",
+      "tier": "ignore",
+      "why": "非主流（bytedance）且缺 模态/参数",
+      "type": "video"
+    },
+    "uncensored-t2v-standard": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "third_party_prefix": "uncensored",
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "video"
+    },
+    "uncensored-t2v-turbo": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "third_party_prefix": "uncensored",
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "video"
+    },
+    "uncensored-wan-2.2-ultra-fast": {
+      "vendor": "alibaba",
+      "gaps": [
+        "模态/参数"
+      ],
+      "third_party_prefix": "uncensored",
+      "tier": "ignore",
+      "why": "非主流（alibaba）且缺 模态/参数",
+      "type": "video"
+    },
+    "uncensored-wan-2.7": {
+      "vendor": "alibaba",
+      "gaps": [
+        "模态/参数"
+      ],
+      "third_party_prefix": "uncensored",
+      "tier": "ignore",
+      "why": "非主流（alibaba）且缺 模态/参数",
+      "type": "video"
+    },
+    "venice-uncensored-1.2": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "third_party_prefix": "venice",
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "text"
+    },
+    "venice-uncensored-role-play": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "third_party_prefix": "venice",
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "text"
+    },
+    "veo-3.1-fast-generate-001": {
+      "vendor": "google",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "video"
+    },
+    "veo-3.1-generate-001": {
+      "vendor": "google",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "video"
+    },
+    "veo-3.1-lite-generate-001": {
+      "vendor": "google",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "video"
+    },
+    "voxtral-mini-transcribe-3": {
+      "vendor": "mistral",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "transcription"
+    },
+    "voxtral-mini-tts-3": {
+      "vendor": "mistral",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "speech"
+    },
+    "voxtral-small-transcribe-3": {
+      "vendor": "mistral",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "transcription"
+    },
+    "voyage-3-large": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "voyage-3.5": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "voyage-3.5-lite": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "voyage-4": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "embedding"
+    },
+    "voyage-4-large": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "embedding"
+    },
+    "voyage-4-lite": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "review",
+      "why": "非主流但信息齐全",
+      "type": "embedding"
+    },
+    "voyage-code-2": {
+      "vendor": "other",
+      "gaps": [
+        "contextLength"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 contextLength",
+      "type": "embedding"
+    },
+    "voyage-code-3": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "voyage-finance-2": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "voyage-law-2": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "embedding"
+    },
+    "wan-2.5-preview": {
+      "tier": "legacy",
+      "why": "预览版且已有 3.0",
+      "superseded_by": "wan-3.0-video",
+      "type": "video"
+    },
+    "wan-2.6": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "video"
+    },
+    "wan-2.6-i2v-flash": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "video"
+    },
+    "wan-2.6-r2v-flash": {
+      "vendor": "alibaba",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "video"
+    },
+    "wan-2.6-ultra": {
+      "vendor": "alibaba",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "video"
+    },
+    "wan-2.7": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "video"
+    },
+    "wan-2.7-pro": {
+      "vendor": "alibaba",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "video"
+    },
+    "wan-3.0-video": {
+      "vendor": "alibaba",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "video"
+    },
+    "wan-3.0-video-prime": {
+      "vendor": "alibaba",
+      "gaps": [],
+      "tier": "main",
+      "why": "主流厂商",
+      "type": "video"
+    },
+    "whisper-1": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "transcription"
+    },
+    "whisper-large-v3": {
+      "tier": "done",
+      "why": "已有官方核实条目",
+      "type": "transcription"
+    },
+    "whisper-large-v3-turbo": {
+      "vendor": "openai",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "transcription"
+    },
+    "wizardlm-2-8x22b": {
+      "vendor": "other",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "ignore",
+      "why": "非主流（other）且缺 模态/参数",
+      "type": "text"
+    },
+    "wonder-3.5": {
+      "vendor": "other",
+      "gaps": [],
+      "tier": "media",
+      "why": "图像/视频/语音/转写，无 token 字段，信息齐全",
+      "type": "image"
+    },
+    "xai-stt-v1": {
+      "vendor": "xai",
+      "gaps": [
+        "模态/参数"
+      ],
+      "tier": "main",
+      "why": "主流厂商，缺数据也必须核",
+      "type": "transcription"
+    }
+  }
+}
