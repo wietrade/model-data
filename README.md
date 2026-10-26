@@ -63,6 +63,7 @@ tools/ops/                            官方页抓取核对、快照比对、定
 > 不含任何商业信息；`pricing.json` 只有官方价，无官方价的模型仅留 `{"price_kind": "unpriced"}` 一行。
 
 > 去哪里查官方数据、取哪几个字段、有哪些坑：见 [`docs/official-sources.md`](docs/official-sources.md)。
+> 拿不到官方原文、暂不改的字段：见 [`docs/pending-verification.md`](docs/pending-verification.md)。
 > 当前待办：见 [`TODO.md`](TODO.md)。
 
 ## 快速开始

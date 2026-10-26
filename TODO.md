@@ -19,6 +19,17 @@
 DeepSeek 四条汇率统一、`gemini-3-pro-image` / `-preview` / `gemini-3.1-flash-image` / `-preview`
 补上缓存读价。写入后内存与 DB 均为 73 条（4 个仅内存的 deepseek 默认键已一并固化）。
 
+## 0c. 存疑值先别改，等官方原文
+
+拿不出官方原文的字段（`grok-4.5/4.6` 的输出上限与知识截止、`gemini-3.8-flash-tiered`
+的日期口径等）已逐项写进 [`docs/pending-verification.md`](docs/pending-verification.md)，
+要查哪个页面、查到了怎么改，都在里面。**先别按推断改数据**。
+
+其中两条不是存疑而是已知缺陷，需要改代码：
+
+- 阶梯边界：官方「reaches 200k」是 ≥，而我们生成的是 `len <= 200000`，**差 1 token**
+- OpenAI 5.6/6.x 官方另写「最大输入 922,000」，与我们记的 `context_length = 1,050,000` 是两回事
+
 ## 1. 核实 kimi-k3.1-pro 是否涨价
 
 - **发现时间**：2026-10-26
