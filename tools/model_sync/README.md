@@ -125,5 +125,5 @@ python3 -m unittest discover -s tools/model_sync/tests -t . -v
 | 脚本 | 用途 |
 |:---|:---|
 | `tools/ops/compare_snapshot.py` | 把 `source-data/` 里的第三方快照与本目录逐字段比对，输出差异清单（只读，不改数据） |
-| `tools/ops/promote_upcoming_pricing.py` | 把已到生效日的 `upcoming[]` 价格转正；`cron-promote-upcoming.sh` 每天调用 |
+| `tools/ops/promote_upcoming_pricing.py` | 把已到生效日的 `upcoming[]` 价格转正；**手工**执行，没有定时任务 |
 | `export_billing --basis <私有文件>` | 在部署机上生成线上计费表达式（公开仓库不含结算价） |

@@ -76,6 +76,56 @@ python -m tools.ops.push_billing -i /opt/model-data-private/billing.json --dry-r
 python -m tools.ops.push_billing -i /opt/model-data-private/billing.json --apply     # 写后即时生效
 ```
 
+## 手工更新
+
+**没有任何定时任务。** 2026-10-26 起，GitHub 的 workflow 只保留手动触发，
+服务器上也不再有任何 cron 去拉仓库或改数据。三条链路各自怎么走：
+
+### 元数据（模型是什么）
+
+```bash
+# 1. 看厂商官方页与当前目录的差异（只出报告，不写盘）
+python -m tools.ops.harvest_official --fetch --check
+
+# 2. 人工过一遍，确认要改的写进 reference-data/metadata/overrides.json
+python -m tools.ops.harvest_official --fetch --apply     # 只动 context_length / max_output_tokens
+
+# 3. 合并多源，生成发布物
+python -m tools.model_sync.sync_models --only metadata
+
+# 4. 校验后提交
+python -m tools.model_sync.validate && python -m unittest discover -s tools/model_sync/tests -t .
+git add api reference-data && git commit -m "chore(metadata): ..." && git push
+```
+
+### 价格（模型多少钱）
+
+```bash
+# 1. 官方定价页核对（只出报告）
+python -m tools.ops.verify_official_prices --fetch
+
+# 2. 人工确认真实涨价后，改 reference-data/price/pricing.official.json（带 source_url + quote）
+python -m tools.model_sync.sync_models --only pricing
+python -m tools.model_sync.validate
+```
+
+### 让 new-api 用上
+
+两步都是手工的，缺一步都不生效：
+
+| 步骤 | 在哪做 | 做什么 |
+|:---|:---|:---|
+| 元数据 | 后台 → 模型管理 → **同步资料** | 预览 → 勾选 → 应用，写 `models` 表 |
+| 价格 | 服务器上跑 `export_billing` + `push_billing --apply` | 写 `billing_setting.billing_expr`，即时生效 |
+
+> **推完仓库不会自动生效。** 而且 `push` 之后后台可能还读到旧的 CDN 缓存：
+> `fetchJSON` 带 `If-None-Match`，raw 返回 304 就会用进程内 `bodyCache`。
+> 预览显示旧值时，`systemctl restart new-api` 强制重取。
+>
+> 另外「同步资料」只对元数据生效，**不读 `pricing.json`**；后台的「同步价格」面板对我们不可用——
+> 它只认倍率类的 10 个字段，而我们的全部模型都是 `tiered_expr`，见下文
+> 「new-api 的两个同步按钮，分别读什么」。
+
 ### 管理令牌与落库通道
 
 **落库只走 `push_billing`（HTTP + 管理令牌）**，不再直连 SQLite。
@@ -253,8 +303,9 @@ overrides.json  >  官方逐模型页 / 官方 API（official:*，需官方内�
   若该模型已有 override，则 override 说了算。
 - **override 钉住**：`harvest_official --apply` 会把「页面与 API 冲突」的字段写进 `overrides.json`，
   否则官方 API 会在下次同步把页面值改回去（当前有四个 Gemini 图像模型属于这种）。
-- 每日 02:17 UTC 的 workflow：`harvest_official --fetch --apply` → `sync_models` → `validate` → 开 PR；
-  合并前重点看 `overrides.json` 的改动、新增模型与价格涨跌。
+- 更新流程**全手工**（2026-10-26 起停掉定时任务）：`harvest_official --fetch --check` 看差异
+  → 人工确认后 `--apply` 写 `overrides.json` → `sync_models` → `validate` → 提交。
+  workflow 只在 GitHub 页面手动点 `Run workflow` 才跑，见下文[手工更新](#手工更新)。
 
 各源的具体 URL、取哪几个字段、有哪些坑（例如定价页的括号是**价格档**不是上下文）：
 见 [`docs/official-sources.md`](docs/official-sources.md)。
@@ -294,7 +345,7 @@ overrides.json  >  官方逐模型页 / 官方 API（official:*，需官方内�
 **连续 21 个 commit 静默失败**，线上一直在拉删不掉的旧供应商。
 
 现已**撤掉镜像入口**，`SYNC_UPSTREAM_BASE` 直指 raw。`/opt/model-data` 这个 checkout 仍保留，
-但只作为 cron 脚本（`cron-promote-upcoming.sh`）的执行目录，**不再对外提供数据**。
+供人工在上面跑 `export_billing` / `push_billing`，**不再对外提供数据，也没有任何定时拉取**。
 
 ### 不用拉什么
 
@@ -542,7 +593,7 @@ python -m tools.model_sync.validate \
 
 检查项：名称唯一、vendor 存在、枚举闭集、`max_output ≤ context`、`:free` 与 `is_free` 一致、
 阶梯阈值落在上下文内、`pricing.json` 不含 `billing_*` 派生物与结算痕迹、快照与 `pricing.official.json` 一致、
-三份 i18n 文件是否同步。CI 会在每日同步后自动执行。
+三份 i18n 文件是否同步。CI 只在手动触发 workflow 时执行；本地提交前请自己跑一次。
 
 > **改价红线**：任何价格变更都必须先改 `pricing.official.json` / `pricing.json`（结算成本则改私有
 > basis），再走 `export_billing --basis` + `push_billing` 落库。直接调

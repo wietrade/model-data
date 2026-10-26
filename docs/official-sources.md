@@ -169,9 +169,10 @@ python -m tools.ops.harvest_official --fetch --apply
 5. `python -m tools.model_sync.validate`，然后 `python -m unittest discover -s tools/model_sync/tests -t .`；
 6. 涉及结算价的改动**只走私有 `billing_basis.json`**，导出后必须与线上 `billing_setting.billing_expr` 逐条比对，确认无意外变化再落库。
 
-### 每天自动做的事（workflow）
+### 手工触发的 workflow
 
-`sync-model-metadata.yml` 的顺序是：
+**2026-10-26 起不再定时运行**：`sync-model-metadata.yml` 只保留 `workflow_dispatch`，
+在 GitHub 的 Actions 页面手动点 `Run workflow`。它做的事依次是：
 
 1. **Align metadata with vendor pages** — `harvest_official --fetch --apply`：把逐模型页的
    `context_length` / `max_output_tokens` 写进 `overrides.json`；页面与 `models.list` 冲突时**钉住页面值**；

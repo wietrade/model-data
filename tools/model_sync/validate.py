@@ -340,7 +340,7 @@ def check_live(pricing, live, report: Report, basis=None):
     if drift:
         report.error(
             f"线上生效价格与 catalog 不一致 {len(drift)} 条: {drift[:6]}"
-            "（改价必须走 export_billing --basis + apply_billing.py，不要直接改库）"
+            "（改价必须走 export_billing --basis + push_billing，不要直接改库）"
         )
     unknown = set(live) - set(catalog)
     if unknown:
@@ -348,12 +348,12 @@ def check_live(pricing, live, report: Report, basis=None):
 
 
 def check_cron_scripts(report: Report) -> None:
-    """crontab 直接执行路径的脚本，git 里必须是 100755。
+    """`tools/ops/*.sh` 若存在，git 里必须是 100755。
 
-    教训：`cron-promote-upcoming.sh` 曾以 100644 提交，Windows 上看是 -rwxr-xr-x
-    （MSYS 不读该位），Linux checkout 后是 -rw-r--r--，cron 调用直接
-    `Permission denied`，而它负责 12/01 的涨价提升——静默失败不会有人发现。
-    所以查 git index 的 mode（跨平台有效），而不是 os.access（Windows 恒为 True）。
+    2026-10-26 起已无任何定时任务，检查保留以防回归：万一以后再加 shell 脚本，
+    权限位错了同样会静默失败（历史上的 `cron-promote-upcoming.sh` 就曾以 100644
+    提交，Windows 上看着是 -rwxr-xr-x，Linux checkout 后 cron 直接 Permission denied）。
+    查 git index 的 mode 才能跨平台生效，`os.access` 在 Windows 上恒为 True。
     """
     scripts = sorted((ROOT / "tools" / "ops").glob("*.sh"))
     if not scripts:
@@ -367,14 +367,23 @@ def check_cron_scripts(report: Report) -> None:
         return  # 不是 git 环境或没装 git，跳过
     if out.returncode != 0 or not out.stdout.strip():
         return
-    for line in out.stdout.splitlines():
+    verify_script_modes(report, out.stdout)
+
+
+def verify_script_modes(report: Report, listing: str) -> None:
+    """解析 ``git ls-files -s`` 的输出，对非 100755 的 .sh 报错。
+
+    单独拆出来是为了能脱离仓库内容测试：现在 `tools/ops` 下可能一个 .sh 都没有，
+    但这条规则要在将来加回脚本时仍然生效。
+    """
+    for line in listing.splitlines():
         parts = line.split()
         if len(parts) < 4:
             continue
         mode, path = parts[0], parts[3]
         if path.endswith(".sh") and mode != "100755":
             report.error(
-                f"{path}: git 模式是 {mode}，crontab 直接执行会 Permission denied"
+                f"{path}: git 模式是 {mode}，计划任务直接执行会 Permission denied"
                 f"（修：git update-index --chmod=+x {path}）"
             )
 
