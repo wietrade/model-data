@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "_comment": "人工核对的权威值，优先级高于所有自动源。用于解决源冲突或补充源缺 口；请在 note 里写清依据与核对日期。excluded 里的模型不会被发布，即使聚合源仍然列出。",
+  "_comment": "人工核对的权威值，优先级高于所有自动源。用于解决源冲突或补充源缺 口；请在 note 里写清依据与核对日期。excluded 里的模型不会被发布，即使聚合源仍然列出。\nglm-5.3-prime 于 2026-10-26 加入 excluded：Z.AI 官方价目表只有 GLM-5.3 / 5.3-Flash / 5.3-FlashX，无 Prime；聚合源的 2.8/8.8 无法核实。",
   "models": [
     {
       "model_name": "MiniMax-M3",
@@ -244,12 +244,6 @@
       }
     },
     {
-      "model_name": "glm-5.3-prime",
-      "note": "第三轮核实：智谱官方模型概览无 glm-5.3-prime（官方加速变体为 GLM-5.3-FlashX）→ 判定为平台/转售命名，lifecycle 等字段永久留空，不再进入核实队列。",
-      "fields": {},
-      "platform_only": true
-    },
-    {
       "model_name": "gpt-5.4",
       "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-5.4.md，2026-10-25 复核）。",
       "fields": {
@@ -432,6 +426,7 @@
   "excluded": [
     "Qwen3-235B-A22B-Thinking-2507",
     "Qwen3-Coder-480B-A35B-Instruct-FP8",
-    "free"
+    "free",
+    "glm-5.3-prime"
   ]
 }
