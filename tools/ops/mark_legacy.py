@@ -67,6 +67,16 @@ RULES = [
 ]
 COMPILED = [(re.compile(pattern), by, reason) for pattern, by, reason in RULES]
 
+# 上游已下线 / 已退役，但站点仍在卖（请求会被转发到新模型）——优先于上面的家族规则
+RETIRED = {
+    "mimo-v2.5": ("（无，已下线）", "小米官方 2026-10-21 下线，ID 不再可用"),
+    "grok-4": ("grok-4.3", "xAI 2026-05-15 退役，请求转发到 grok-4.3"),
+    "grok-4.1-fast-reasoning": ("grok-4.3", "xAI 2026-05-15 退役，请求转发到 grok-4.3"),
+    "grok-4.1-fast-non-reasoning": ("grok-4.3", "xAI 2026-05-15 退役，请求转发到 grok-4.3"),
+    "grok-code-fast-1": ("grok-build-0.1", "xAI 2026-05-15 退役，请求转发到 grok-build-0.1"),
+    "deepseek-v4-flash-vision-exp": ("deepseek-v4.1-flash", "第三方标注 deprecated 2026-09-25"),
+}
+
 # 语音/转写/OCR/embedding 等专用模型的版本节奏与对话模型不同，不按「落后 N 代」判老
 MEDIA = ("-asr", "-embedding", "-transcribe", "-tts", "-live", "-ocr", "-diarization", "-stt", "-voice",
          "-image", "-video")
@@ -76,6 +86,10 @@ EXCEPTIONS = {"qwen3-coder-next"}
 legacy = {}
 for model_id, model in models.items():
     if model_id in covered:
+        continue
+    if model_id in RETIRED:
+        by, reason = RETIRED[model_id]
+        legacy[model_id] = {"superseded_by": by, "reason": reason, "type": model["type"]}
         continue
     for pattern, by, reason in COMPILED:
         if not pattern.match(model_id):
@@ -93,7 +107,8 @@ payload = {
     "applies_to": "raw/cheaperinference-20261026.json",
     "note": (
         "这些模型不再花核实成本：字段保留站点原值，也不进 corrections。"
-        "判定依据：同家族已有更新代（快照里能看到）或官方已下线；标注均为人工判断，非官方 EOL 声明。"
+        "判定依据：同家族已有更新代（快照里能看到）、官方已下线/退役，或第三方标注 deprecated；"
+        "标注均为人工判断，非官方 EOL 声明。"
     ),
     "count": len(legacy),
     "models": dict(sorted(legacy.items())),
