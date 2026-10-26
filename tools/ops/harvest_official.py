@@ -349,7 +349,7 @@ def main(argv=None) -> int:
     diffs = diff_rows(rows)
     now = datetime.now().astimezone()
     generated_at = now.isoformat(timespec="seconds")
-    day = now.strftime("%Y-%m-%d")
+    day = now.strftime("%Y%m%d")
 
     snapshot = {
         "generated_at": generated_at,
