@@ -1,4 +1,4 @@
-"""清洗（站点口径）的回归测试：只去冗余/矛盾，不引入我们自己的词表。"""
+"""清洗的回归测试：结构与原文件完全一致，只改有问题的值。"""
 
 from __future__ import annotations
 
@@ -16,80 +16,96 @@ def item(**overrides):
         "id": "m-1",
         "label": "m-1",
         "providerLabel": "Acme",
+        "providerSlug": None,
         "type": "text",
-        "kind": "text",
         "group": "text",
-        "contextLength": 128000,
-        "maxOutputTokens": 32768,
         "vision": False,
         "reasoning": False,
+        "contextLength": 128000,
+        "maxOutputTokens": 32768,
         "imageEdit": False,
+        "kind": "text",
         "capabilities": ["reasoning", "tool-use"],
+        "free": False,
+        "servedAt": "2026-10-21T00:00:00+00:00",
+        "detail_Type": "Text generation",
+        "detail_Endpoints": "/v1/chat/completions",
         "detail_Input": "text",
         "detail_Output": "text",
         "detail_VisionInput": "Not supported",
+        "detail_ImageEditing": "Not supported",
+        "detail_VideoInput": "Not supported",
         "detail_Reasoning": "Supported",
+        "detail_Streaming": "Supported",
         "detail_ContextWindow": "128,000 tokens",
         "detail_MaximumOutput": "32,768 tokens",
-        "detail_Endpoints": "/v1/chat/completions",
+        "detail_SupportedParameters": "tools, max_tokens",
     }
     base.update(overrides)
     return base
 
 
-class CleanTest(unittest.TestCase):
-    def test_context_token_is_dropped_and_recorded(self):
-        record = cs.clean_item(item(capabilities=["reasoning", "context-128k", "context-1m"]))
-        self.assertNotIn("context-128k", record["capabilities"])
-        self.assertNotIn("context-1m", record["capabilities"])
-        self.assertEqual(
-            [x["value"] for x in record["removed"]], ["context-128k", "context-1m"]
-        )
+class StructureTest(unittest.TestCase):
+    def test_keys_and_order_are_untouched(self):
+        record, _ = cs.clean_item(item())
+        self.assertEqual(list(record), list(item()))
 
-    def test_site_vocabulary_is_preserved(self):
-        """不把 tool-use 改成 tools，也不把 pdf 改成 file。"""
-        record = cs.clean_item(item(capabilities=["tool-use"], detail_Input="image, pdf, text"))
+    def test_no_extra_fields(self):
+        record, _ = cs.clean_item(item(capabilities=["context-128k"]))
+        self.assertNotIn("removed", record)
+        self.assertNotIn("conflicts", record)
+        self.assertNotIn("missing", record)
+        self.assertNotIn("input_source", record)
+
+    def test_input_is_not_mutated(self):
+        original = item(capabilities=["context-128k"])
+        cs.clean_item(original)
+        self.assertIn("context-128k", original["capabilities"])
+
+
+class ValueCleaningTest(unittest.TestCase):
+    def test_context_token_removed(self):
+        record, changes = cs.clean_item(item(capabilities=["reasoning", "context-128k", "context-1m"]))
+        self.assertEqual(record["capabilities"], ["reasoning"])
+        self.assertEqual(len(changes), 2)
+
+    def test_site_vocabulary_preserved(self):
+        record, _ = cs.clean_item(item(capabilities=["tool-use"], detail_Input="image, pdf, text"))
         self.assertEqual(record["capabilities"], ["tool-use"])
-        self.assertEqual(record["input"], ["image", "pdf", "text"])
+        self.assertEqual(record["detail_Input"], "image, pdf, text")
 
     def test_image_input_kept_when_vision_supported(self):
-        """能输文本也能输截图：detail_Input 只写 text，但视觉支持 -> 保留 token。"""
-        record = cs.clean_item(item(detail_Input="text", vision=True, detail_VisionInput="Supported",
-                                    capabilities=["image-input"]))
+        record, changes = cs.clean_item(
+            item(detail_Input="text", vision=True, detail_VisionInput="Supported", capabilities=["image-input"])
+        )
         self.assertIn("image-input", record["capabilities"])
-        self.assertEqual([c["reason"] for c in record["conflicts"]], ["not_listed_in_detail_Input"])
+        self.assertEqual(changes, [])
 
-    def test_image_input_removed_only_with_double_contradiction(self):
-        record = cs.clean_item(item(vision=False, detail_VisionInput="Not supported",
-                                    capabilities=["image-input"]))
-        self.assertNotIn("image-input", record["capabilities"])
-        self.assertIn("contradicts_detail_VisionInput", [c["reason"] for c in record["conflicts"]])
+    def test_image_input_removed_on_double_contradiction(self):
+        record, changes = cs.clean_item(
+            item(vision=False, detail_VisionInput="Not supported", capabilities=["image-input"])
+        )
+        self.assertEqual(record["capabilities"], [])
+        self.assertEqual(changes[0]["reason"], "vision=false 且原文 Not supported")
 
-    def test_reasoning_token_removed_only_when_detail_says_no(self):
-        record = cs.clean_item(item(reasoning=False, detail_Reasoning="Not supported",
-                                    capabilities=["reasoning"]))
-        self.assertNotIn("reasoning", record["capabilities"])
+    def test_reasoning_removed_only_when_both_say_no(self):
+        removed, _ = cs.clean_item(item(reasoning=False, detail_Reasoning="Not supported", capabilities=["reasoning"]))
+        self.assertEqual(removed["capabilities"], [])
+        kept, _ = cs.clean_item(item(reasoning=False, detail_Reasoning="Supported", capabilities=["reasoning"]))
+        self.assertEqual(kept["capabilities"], ["reasoning"])
 
-    def test_type_aliases_only_when_different(self):
-        same = cs.clean_item(item())
-        self.assertNotIn("type_aliases", same)
-        different = cs.clean_item(item(kind="retrieval", group="multimodal"))
-        self.assertEqual(different["type_aliases"], {"kind": "retrieval", "group": "multimodal"})
+    def test_backfill_context_and_max_output(self):
+        record, changes = cs.clean_item(item(contextLength=None, maxOutputTokens=None))
+        self.assertEqual(record["contextLength"], 128000)
+        self.assertEqual(record["maxOutputTokens"], 32768)
+        self.assertEqual(len(changes), 2)
 
-    def test_missing_uses_site_field_names(self):
-        record = cs.clean_item(item(contextLength=0, maxOutputTokens=0,
-                                    detail_ContextWindow="Not reported",
-                                    detail_MaximumOutput="Not reported",
-                                    detail_Input="Not reported", detail_Output="Not reported"))
-        self.assertEqual(record["missing"], ["contextLength", "maxOutputTokens", "detail_Input", "detail_Output"])
-        self.assertEqual(record["context_source"], "none")
-
-    def test_max_output_greater_than_context_is_flagged(self):
-        record = cs.clean_item(item(contextLength=100000, maxOutputTokens=128000,
-                                    detail_ContextWindow="100,000 tokens",
-                                    detail_MaximumOutput="128,000 tokens"))
-        self.assertEqual(record["conflicts"][0]["reason"], "greater_than_contextWindow")
-        self.assertEqual(record["max_output_tokens"], 128000)
+    def test_backfill_does_not_override_existing_values(self):
+        record, changes = cs.clean_item(
+            item(contextLength=100000, maxOutputTokens=32768, detail_ContextWindow="200,000 tokens")
+        )
+        self.assertEqual(record["contextLength"], 100000)
+        self.assertEqual(changes, [])
 
 
 if __name__ == "__main__":

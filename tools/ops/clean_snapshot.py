@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
-"""清洗第三方快照（cheaperinference）——**只做数据质量，不引入我们自己的词表**。
+"""按原始快照的结构清洗：**字段一个不加、一个不减，只改有问题的值**。
 
-原则：保持站点自己的字段名与取值，只做三件事：
+输入输出结构完全一致（顶层 7 个键、每条 27 个键）。只做三类改动：
 
-1. **去冗余**：`context-128k` / `context-1m` 与 `contextLength` 表达同一件事（126 条同时带两个），丢弃；
-   `kind` / `group` 与 `type` 相同时丢弃（不同的保留在 `type_aliases`）。
-2. **去掉自相矛盾的值**：`capabilities` 里的 token 与站点自己的 `detail_*` / 布尔字段冲突时，
-   以 `detail_*` 为准，被删掉的 token 记进 `removed[]` 并写原因。
-3. **如实标注缺口与冲突**：`missing[]` 用站点自己的字段名；`conflicts[]` 记录值之间打架的地方。
+1. `capabilities` 去掉与 `contextLength` 重复的 `context-128k` / `context-1m`；
+2. `capabilities` 去掉被**两个字段同时否定**的 token（如 `image-input` 而 `vision=false`
+   且 `detail_VisionInput = Not supported`）；
+3. `contextLength` / `maxOutputTokens` 为空时，从对应的 `detail_*` 文本回填。
 
-不做的事：不把 `pdf` 改成 `file`、不把 `tool-use` 改成 `tools`、不加计费维度、不推 `type` 之外的分类——
-这些都只属于「和我们目录对接」的适配器（`normalize_snapshot.py`）。
+其他值一律原样保留：`detail_Input` 漏写某个模态、`maxOutputTokens > contextLength`
+这类「有争议但不该擅自改」的情况，只在 `--report` 里统计，不写进文件。
 
 用法::
 
@@ -21,6 +20,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import re
 import sys
@@ -30,203 +30,120 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_IN = ROOT / "raw" / "cheaperinference-20261023-full.json"
 CONTEXT_TOKENS = {"context-128k", "context-1m"}
-# 站点 token -> 它在 detail_Input 里对应的词，用来判「token 说的输入类型原文里到底有没有」
-INPUT_TOKEN_WORDS = {
-    "image-input": {"image"},
-    "file-input": {"pdf", "file"},
-    "audio-input": {"audio"},
-    "video-input": {"video"},
-}
-_UNKNOWN = {"", "not reported", "n/a", "none"}
 _SCALE = {"k": 1_000, "m": 1_000_000, "b": 1_000_000_000}
 
 
-def _split(value):
-    text = str(value or "").strip()
-    if text.lower() in _UNKNOWN:
-        return []
-    return [part.strip() for part in text.split(",") if part.strip()]
-
-
 def _number(value):
+    """``'128,000 tokens'`` / ``'1M'`` -> int；``Not reported`` -> None。"""
     match = re.search(r"([0-9]+(?:\.[0-9]+)?)\s*([kKmMbB])?", str(value or "").replace(",", ""))
     if not match:
         return None
     return int(float(match.group(1)) * _SCALE.get((match.group(2) or "").lower(), 1))
 
 
-def clean_item(item) -> dict:
-    """一条原始记录 -> 去掉冗余/矛盾后的记录（字段名与取值保持站点原样）。"""
-    missing = []
-    removed = []
-    conflicts = []
+def clean_item(item):
+    """返回 ``(清洗后的记录, 改了什么)``；记录的键与顺序与原记录一致。"""
+    out = copy.deepcopy(item)
+    changes = []
 
-    # ---- 上下文：三个字段只留一个数字 ----
-    context_length = item.get("contextLength") or None
-    context_source = "contextLength" if context_length else "none"
-    detail_context = _number(item.get("detail_ContextWindow"))
-    if not context_length and detail_context:
-        context_length, context_source = detail_context, "detail_ContextWindow"
-    if context_length is None:
-        missing.append("contextLength")
-    elif detail_context and detail_context != context_length:
-        conflicts.append(
-            {"field": "contextLength", "value": context_length, "detail_ContextWindow": detail_context}
-        )
-
-    # ---- 最大输出：同样只留一个 ----
-    max_output = item.get("maxOutputTokens") or None
-    max_output_source = "maxOutputTokens" if max_output else "none"
-    detail_max = _number(item.get("detail_MaximumOutput"))
-    if not max_output and detail_max:
-        max_output, max_output_source = detail_max, "detail_MaximumOutput"
-    if max_output is None:
-        missing.append("maxOutputTokens")
-    elif detail_max and detail_max != max_output:
-        conflicts.append(
-            {"field": "maxOutputTokens", "value": max_output, "detail_MaximumOutput": detail_max}
-        )
-    if context_length and max_output and max_output > context_length:
-        conflicts.append(
-            {
-                "field": "maxOutputTokens",
-                "reason": "greater_than_contextWindow",
-                "maxOutputTokens": max_output,
-                "contextLength": context_length,
-            }
-        )
-
-    # ---- 模态：保持站点词表（text/image/pdf/audio/video） ----
-    inputs = _split(item.get("detail_Input"))
-    outputs = _split(item.get("detail_Output"))
-    if not inputs:
-        missing.append("detail_Input")
-    if not outputs:
-        missing.append("detail_Output")
-
-    # ---- capabilities：保留原 token，只去冗余与自相矛盾 ----
-    raw_tokens = list(item.get("capabilities") or [])
-    capabilities = []
-    for token in raw_tokens:
+    tokens = list(out.get("capabilities") or [])
+    kept = []
+    for token in tokens:
         if token in CONTEXT_TOKENS:
-            removed.append({"value": token, "reason": "duplicate_of_contextLength"})
+            changes.append({"field": "capabilities", "value": token, "reason": "duplicate_of_contextLength"})
             continue
         if token == "image-input" and not (
-            item.get("vision") or item.get("detail_VisionInput") == "Supported"
-        ) and item.get("detail_VisionInput") == "Not supported":
-            # 只有「vision=false」且「原文明确 Not supported」两个证据都反对时才删
-            removed.append({"value": token, "reason": "detail_VisionInput=Not supported"})
-            conflicts.append(
-                {
-                    "field": "capabilities",
-                    "value": token,
-                    "reason": "contradicts_detail_VisionInput",
-                    "detail_VisionInput": item.get("detail_VisionInput"),
-                    "vision": bool(item.get("vision")),
-                }
+            out.get("vision") or out.get("detail_VisionInput") == "Supported"
+        ) and out.get("detail_VisionInput") == "Not supported":
+            changes.append(
+                {"field": "capabilities", "value": token, "reason": "vision=false 且原文 Not supported"}
             )
             continue
         if token == "reasoning" and not (
-            item.get("reasoning") or item.get("detail_Reasoning") == "Supported"
-        ) and item.get("detail_Reasoning") == "Not supported":
-            removed.append({"value": token, "reason": "detail_Reasoning=Not supported"})
-            conflicts.append(
-                {
-                    "field": "capabilities",
-                    "value": token,
-                    "reason": "contradicts_detail_Reasoning",
-                    "detail_Reasoning": item.get("detail_Reasoning"),
-                }
+            out.get("reasoning") or out.get("detail_Reasoning") == "Supported"
+        ) and out.get("detail_Reasoning") == "Not supported":
+            changes.append(
+                {"field": "capabilities", "value": token, "reason": "reasoning=false 且原文 Not supported"}
             )
             continue
-        if token in INPUT_TOKEN_WORDS and inputs:
-            if not (INPUT_TOKEN_WORDS[token] & {word.lower() for word in inputs}):
-                # detail_Input 可能漏写（多模态模型只写 text 的很多），所以**不删**，
-                # 只记一条冲突——证据不足时不动原值。
-                conflicts.append(
-                    {
-                        "field": "capabilities",
-                        "value": token,
-                        "reason": "not_listed_in_detail_Input",
-                        "detail_Input": item.get("detail_Input"),
-                    }
-                )
-        capabilities.append(token)
+        kept.append(token)
+    if kept != tokens:
+        out["capabilities"] = kept
 
-    record = {
-        "id": item.get("id"),
-        "label": item.get("label"),
-        "provider": item.get("providerLabel"),
-        "type": item.get("type"),
-        "context_length": context_length,
-        "context_source": context_source,
-        "max_output_tokens": max_output,
-        "max_output_source": max_output_source,
-        "input": inputs,
-        "output": outputs,
-        "capabilities": capabilities,
-        "image_edit": bool(item.get("imageEdit")),
-        "endpoints": [ep for ep in _split(item.get("detail_Endpoints")) if ep.startswith("/")],
-        "missing": missing,
-        "removed": removed,
-        "conflicts": conflicts,
-    }
-    aliases = {k: item.get(k) for k in ("kind", "group") if item.get(k) and item.get(k) != item.get("type")}
-    if aliases:
-        record["type_aliases"] = aliases
-    return record
+    if not out.get("contextLength"):
+        filled = _number(out.get("detail_ContextWindow"))
+        if filled:
+            out["contextLength"] = filled
+            changes.append({"field": "contextLength", "value": filled, "reason": "从 detail_ContextWindow 回填"})
+
+    if not out.get("maxOutputTokens"):
+        filled = _number(out.get("detail_MaximumOutput"))
+        if filled:
+            out["maxOutputTokens"] = filled
+            changes.append(
+                {"field": "maxOutputTokens", "value": filled, "reason": "从 detail_MaximumOutput 回填"}
+            )
+
+    return out, changes
 
 
-def report(items):
-    rows = [clean_item(it) for it in items]
-    total = len(rows)
-    lines = [
-        "# 清洗结果（站点原样，不含我们的词表）",
-        "",
-        f"- 记录数：{total}",
-        f"- `context-128k/1m` 被删除：{sum(1 for r in rows if any(x['value'].startswith('context-') for x in r['removed']))} 条",
-        f"- 自相矛盾的能力 token 被删除：{sum(1 for r in rows if any(not x['value'].startswith('context-') for x in r['removed']))} 条",
-        f"- 有 `conflicts`：{sum(1 for r in rows if r['conflicts'])} 条",
-        f"- 有 `type_aliases`（kind/group 与 type 不同）：{sum(1 for r in rows if r.get('type_aliases'))} 条",
-        f"- 字段完整（`missing` 为空）：{sum(1 for r in rows if not r['missing'])} 条",
-        "",
-    ]
-    for field, count in Counter(f for r in rows for f in r["missing"]).most_common():
-        lines.append(f"- 缺 `{field}`：{count} 条")
-    return "\n".join(lines)
+def audit(items):
+    """只统计、不落盘：值之间的遗留矛盾。"""
+    stats = Counter()
+    for item in items:
+        ctx, out = item.get("contextLength"), item.get("maxOutputTokens")
+        if ctx and out and out > ctx:
+            stats["maxOutputTokens > contextLength"] += 1
+        tokens = set(item.get("capabilities") or [])
+        detail_in = (item.get("detail_Input") or "").lower()
+        if "image-input" in tokens and "image" not in detail_in and item.get("vision"):
+            stats["capabilities 有 image-input，detail_Input 未列（但视觉支持）"] += 1
+        if "video-input" in tokens and "video" not in detail_in:
+            stats["capabilities 有 video-input，detail_Input 未列"] += 1
+        if item.get("kind") and item.get("type") and item["kind"] != item["type"]:
+            stats["kind 与 type 不同"] += 1
+        if item.get("group") and item.get("type") and item["group"] != item["type"]:
+            stats["group 与 type 不同"] += 1
+    return stats
 
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("-i", "--input", default=str(DEFAULT_IN))
-    parser.add_argument("-o", "--out", help="输出清洗后的 JSON")
+    parser.add_argument("-o", "--out", help="输出路径（结构与输入完全一致）")
     parser.add_argument("--report", action="store_true", help="打印清洗统计")
     args = parser.parse_args(argv)
 
     payload = json.loads(Path(args.input).read_text(encoding="utf-8"))
-    items = payload["models"]
+    cleaned, all_changes = [], []
+    for item in payload["models"]:
+        record, changes = clean_item(item)
+        cleaned.append(record)
+        all_changes.extend(changes)
 
     if args.report:
-        print(report(items))
+        by_reason = Counter(c["reason"] for c in all_changes)
+        print("# 清洗统计（结构与原文件一致）")
+        print(f"- 记录数：{len(cleaned)}")
+        for reason, count in by_reason.most_common():
+            print(f"- {reason}：{count} 处")
+        print("\n# 遗留矛盾（未改动，仅提示）")
+        for text, count in audit(cleaned).most_common():
+            print(f"- {text}：{count} 条")
+
     if args.out:
-        cleaned = [clean_item(it) for it in items]
+        new_payload = copy.deepcopy(payload)
+        new_payload["models"] = cleaned
+        note = str(new_payload.get("note") or "")
+        summary = (
+            "2026-10-26 清洗：去 context-* 冗余 token、删自相矛盾 token、"
+            "contextLength/maxOutputTokens 空则从 detail_* 回填；结构未变。"
+        )
+        new_payload["note"] = (note + " " + summary).strip() if note else summary
         out = Path(args.out)
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(
-            json.dumps(
-                {
-                    "source": payload.get("source"),
-                    "fetched_at": payload.get("fetched_at"),
-                    "note": "站点原样清洗：去 context-* 冗余、删自相矛盾的 token、标缺失与冲突；不含我们的词表",
-                    "count": len(cleaned),
-                    "models": cleaned,
-                },
-                ensure_ascii=False,
-                indent=2,
-            )
-            + "\n",
-            encoding="utf-8",
-            newline="\n",
+            json.dumps(new_payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n"
         )
         print("wrote %s（%d 条）" % (out, len(cleaned)))
     if not args.out and not args.report:
