@@ -398,6 +398,25 @@ python -m tools.model_sync.validate \
 |:---|:---|:---|
 | `cheaperinference.json` | `platform.cheaperinference.com/markets`（2026-10-23，376 条） | 模型事实字段（上下文、最大输出、模态、能力标记），**已剔除全部价格字段** |
 | `cheaperinference-20261023-full.json` | 同上（同日全量抓取，**505 条**；2026-10-26 补抓） | 同上，另含 `detail_*` 原文（端点数、上下文/输出/类型/推理/视觉/编辑原文、支持参数），价格字段同样已剔除。**清洗版会合并掉 7 个重复字段** |
+| `cheaperinference-20261026.json` | 同一个站点，**523 条**，由 `tools/ops/fetch_site.py` 直接抓取（市场页 + 每个模型详情页） | 汇总字段 + 13 个 `detail_*`（多了 `detail_Provider` = **卖方/上游**，不是模型厂商）；价格字段已剔除；`fetch` 块记录抓取耗时与失败页 |
+| `cheaperinference-20261026.verified.json` | 上一条 + `corrections/cheaperinference-20261026.json` | 应用了有官方出处的修正（上下文/最大输出/能力标签）；`detail_*` 与 L1 逐字节相同 |
+
+### 快照分三层，不要合并
+
+```
+L1  raw/cheaperinference-<date>.json            站点原话，一字不改
+L2  corrections/cheaperinference-<date>.json    官方核实值 + source_url + quote
+L3  raw/cheaperinference-<date>.verified.json   L1 + L2，给下游用
+```
+
+| 工具 | 作用 |
+|:---|:---|
+| `tools/ops/fetch_site.py` | 抓 `/markets` + `/models/<id>`，产出 L1；内置自检（字段齐全、端点形态、身份一致性、数值冲突） |
+| `tools/ops/apply_corrections.py` | 把 L2 应用到 L1 得到 L3；**拒绝修改 `detail_*`**、拒绝无 `source_url` 的条目、`medium` 以下默认不应用、剩余 `max>context` 逐条列出 |
+
+为什么不让「修数据」直接改快照：`detail_*` 是站点逐字渲染的原文，是这份数据里唯一不可再生的部分。
+一旦被我们的推断覆盖，就既无法证明站点当时写了什么，也无法验证解析是否还正确（原文串与数值字段的一致性是抓取自检的基准）。
+详见 `corrections/README.md`。
 
 快照只作**旁证**：第三方聚合站的口径与厂商官方不同（例如它记的是对外零售价、`vision` 只表示能否喂图），
 不能直接并入目录。用下面的脚本生成差异清单，再对照官方文档决定改哪边：
