@@ -221,7 +221,7 @@ overrides.json  >  官方逐模型页 / 官方 API（official:*，需官方内�
 | `api/newapi/models.json` | ✅ | 模型元数据（字段见上方「模型字段」） |
 | `api/newapi/vendors.json` | ✅ | 供应商字典。`models.json` 里只有 `vendor_name` 字符串，**图标 / 描述 / 展示开关只在这里**，两者必须成对拉 |
 | `api/i18n/{zh,en}/newapi/{models,vendors}.json` | 可选 | 翻译版描述，结构同上 |
-| `api/newapi/pricing.json` | 可选 | 牌价 + `billing_expr`（由牌价生成，**不含任何采购 / 结算价**） |
+| `api/newapi/pricing.json` | 可选 | 参考价 + `billing_expr`（由参考价生成，**不含任何采购 / 结算价**；那个 `billing_expr` 只是示例，不是线上计费公式） |
 
 四类文件都是 `{"success": true, "message": "ok", "data": [...]}` 信封，与 `basellm/llm-metadata` 一致
 （因此 new-api 只需把 `SYNC_UPSTREAM_BASE` 指过来，无需改代码）。
@@ -288,7 +288,17 @@ overrides.json  >  官方逐模型页 / 官方 API（official:*，需官方内�
 | 文件 | 内容 | 维护方式 |
 |:---|:---|:---|
 | `sources/pricing.official.json` | 厂商官方定价页抄录，`price_kind: vendor_official`，逐条带 `source_url` 与 `quote` | 人工（官方页核对后导入） |
-| `api/newapi/pricing.json` | 每个已发布模型的**牌价**（官方优先、聚合源次之）+ 由牌价生成的 `billing_expr` | `tools/model_sync` 生成 |
+| `api/newapi/pricing.json` | 每个已发布模型的**参考价**（官方优先、聚合源次之）+ 由参考价生成的 `billing_expr` | `tools/model_sync` 生成 |
+
+> **官方价只是参考，不是计费依据。** 它有两个用途：① 给外部一个可核对的厂商牌价；
+> ② 作为我们自己算倍率 / 计费表达式的**输入**。
+>
+> 由此推出三条约束：
+> 1. `pricing.json` 里的 `billing_expr` 是「按参考价」推出来的**示例表达式**，不是线上计费公式；
+>    `export_billing` 从不读它，而是每次从价格字段重新生成（读完再叠私有结算价）。
+> 2. 线上生效的 `billing_setting.billing_expr` 是**用结算价重算**的结果，只存在于部署机，不进仓库。
+> 3. 所以 new-api **不需要也不应该**拉 `pricing.json`——它只拉 `models.json` + `vendors.json`。
+>    价格走「参考价 → `export_billing --basis` → `apply_billing.py`」这条链，结算价全程不出私域。
 
 ### 官方价的机器核对
 
