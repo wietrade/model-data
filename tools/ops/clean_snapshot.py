@@ -8,9 +8,9 @@
    且 `detail_VisionInput = Not supported`）；
 3. `contextLength` / `maxOutputTokens` 为空时，从对应的 `detail_*` 文本回填。
 
-**合并重复字段**：`detail_ContextWindow` / `detail_MaximumOutput` 只是数值字段的原文写法
-（实测「两边都有」0 处不一致、「只有原文」0 条），回填完成后整键删除，
-同一事实只留 `contextLength` / `maxOutputTokens` 一个字段。
+**合并重复字段**：`detail_ContextWindow` / `detail_MaximumOutput` / `detail_Type`
+只是对应字段的原文写法（实测「两边都有」0 处不一致），回填完成后整键删除，
+同一事实只留 `contextLength` / `maxOutputTokens` / `type` 一个字段。
 
 其他值一律原样保留：`detail_Input` 漏写某个模态、`maxOutputTokens > contextLength`
 这类「有争议但不该擅自改」的情况，只在 `--report` 里统计，不写进文件。
@@ -34,11 +34,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_IN = ROOT / "raw" / "cheaperinference-20261023-full.json"
 CONTEXT_TOKENS = {"context-128k", "context-1m"}
-# 原文写法 -> 数值字段：完全重复，回填后整键删除
+# 原文写法 -> 对应字段：同一个事实的两套写法，只保留后者，前者整键删除
 MERGED_DUPLICATES = (
     ("detail_ContextWindow", "contextLength"),
     ("detail_MaximumOutput", "maxOutputTokens"),
+    ("detail_Type", "type"),
 )
+# 原文里表示「没报」的占位值：删掉不丢信息
+PLACEHOLDERS = {None, "", "Not reported"}
 _SCALE = {"k": 1_000, "m": 1_000_000, "b": 1_000_000_000}
 
 
@@ -93,15 +96,15 @@ def clean_item(item):
                 {"field": "maxOutputTokens", "value": filled, "reason": "从 detail_MaximumOutput 回填"}
             )
 
-    # 合并：原文写法只是数值字段的另一种表示，回填完成后整键删除
-    for detail_key, numeric_key in MERGED_DUPLICATES:
+    # 合并：原文写法与目标字段是同一个事实，回填完成后整键删除
+    for detail_key, target_key in MERGED_DUPLICATES:
         if detail_key not in out:
             continue
         raw = out.get(detail_key)
-        if _number(raw) is not None and out.get(numeric_key) is None:
-            continue  # 数值回填失败，保留原文，别丢信息
+        if raw not in PLACEHOLDERS and out.get(target_key) in PLACEHOLDERS:
+            continue  # 目标字段没值、原文有值：保留原文，别丢信息
         changes.append(
-            {"field": detail_key, "value": out.pop(detail_key), "reason": "merged_into_%s" % numeric_key}
+            {"field": detail_key, "value": out.pop(detail_key), "reason": "merged_into_%s" % target_key}
         )
 
     return out, changes
@@ -143,7 +146,9 @@ def main(argv=None) -> int:
 
     if args.report:
         by_reason = Counter(c["reason"] for c in all_changes)
-        print("# 清洗统计（键：27 -> 25，仅少两个已合并的 detail_*）")
+        before = len(payload["models"][0])
+        after = len(cleaned[0])
+        print("# 清洗统计（每条键数 %d -> %d，仅少 %d 个已合并的 detail_*）" % (before, after, before - after))
         print(f"- 记录数：{len(cleaned)}")
         for reason, count in by_reason.most_common():
             print(f"- {reason}：{count} 处")
@@ -158,8 +163,8 @@ def main(argv=None) -> int:
         summary = (
             "2026-10-26 清洗：去 context-* 冗余 token、删自相矛盾 token、"
             "contextLength/maxOutputTokens 空则从 detail_* 回填；"
-            "detail_ContextWindow/detail_MaximumOutput 与数值字段完全重复，已合并删除，"
-            "同一事实只留 contextLength/maxOutputTokens 一个字段。"
+            "detail_ContextWindow/detail_MaximumOutput/detail_Type 与对应字段重复，已合并删除，"
+            "同一事实只留 contextLength/maxOutputTokens/type 一个字段。"
         )
         new_payload["note"] = (note + " " + summary).strip() if note else summary
         out = Path(args.out)

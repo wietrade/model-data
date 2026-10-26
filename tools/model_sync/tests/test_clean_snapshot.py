@@ -48,7 +48,9 @@ def item(**overrides):
 class StructureTest(unittest.TestCase):
     def test_only_the_merged_detail_keys_are_dropped(self):
         record, _ = cs.clean_item(item())
-        expected = [k for k in item() if k not in {"detail_ContextWindow", "detail_MaximumOutput"}]
+        expected = [
+            k for k in item() if k not in {"detail_ContextWindow", "detail_MaximumOutput", "detail_Type"}
+        ]
         self.assertEqual(list(record), expected)
 
     def test_no_extra_fields(self):
@@ -109,7 +111,15 @@ class ValueCleaningTest(unittest.TestCase):
             item(contextLength=100000, maxOutputTokens=32768, detail_ContextWindow="200,000 tokens")
         )
         self.assertEqual(record["contextLength"], 100000)
-        self.assertEqual([c["reason"] for c in changes], ["merged_into_contextLength", "merged_into_maxOutputTokens"])
+        self.assertEqual(
+            [c["reason"] for c in changes],
+            ["merged_into_contextLength", "merged_into_maxOutputTokens", "merged_into_type"],
+        )
+
+    def test_type_detail_is_merged_into_type(self):
+        record, _ = cs.clean_item(item(type="embedding", detail_Type="Embeddings"))
+        self.assertEqual(record["type"], "embedding")
+        self.assertNotIn("detail_Type", record)
 
     def test_merge_is_lossless(self):
         record, _ = cs.clean_item(item())
@@ -125,7 +135,10 @@ class ValueCleaningTest(unittest.TestCase):
         )
         self.assertIsNone(record["contextLength"])
         self.assertNotIn("detail_ContextWindow", record)
-        self.assertEqual(changes[-1]["reason"], "merged_into_maxOutputTokens")
+        self.assertNotIn("detail_MaximumOutput", record)
+        reasons = [c["reason"] for c in changes]
+        self.assertIn("merged_into_contextLength", reasons)
+        self.assertIn("merged_into_maxOutputTokens", reasons)
 
 
 if __name__ == "__main__":
