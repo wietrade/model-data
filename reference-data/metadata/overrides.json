@@ -262,16 +262,21 @@
     },
     {
       "model_name": "glm-5.3",
-      "note": "2026-10-26 官方核实钉住 max_output_tokens：z.ai API 参考写 \"GLM-5.3 series / GLM-5.3-Flash series supports a maximum output length of 128K；schema range 1–131072\"。聚合源给的 943,718 / 943,717 是思考预算，不是输出上限。",
+      "note": "2026-10-26 官方核实钉住 max_output_tokens：z.ai API 参考写 \"GLM-5.3 series / GLM-5.3-Flash series supports a maximum output length of 128K；schema range 1–131072\"。聚合源给的 943,718 / 943,717 是思考预算，不是输出上限。 2026-10-26 官方核实（https://docs.z.ai/guides/llm/glm-5.3）：原文 \"GLM-5.3 currently supports text-only inputs, with a 1M-token context window and a maximum output length of 128K tokens\"。1M 按本仓口径取二进制 1,048,576（与 128K=131,072 同口径，aggregator 写 1,000,000 是十进制读法）；官方明确 text-only，故 input_modalities 只记 text。",
       "fields": {
-        "max_output_tokens": 131072
+        "max_output_tokens": 131072,
+        "context_length": 1048576,
+        "input_modalities": [
+          "text"
+        ]
       }
     },
     {
       "model_name": "glm-5.3-flash",
-      "note": "2026-10-26 官方核实钉住 max_output_tokens：z.ai API 参考写 \"GLM-5.3 series / GLM-5.3-Flash series supports a maximum output length of 128K；schema range 1–131072\"。聚合源给的 943,718 / 943,717 是思考预算，不是输出上限。",
+      "note": "2026-10-26 官方核实钉住 max_output_tokens：z.ai API 参考写 \"GLM-5.3 series / GLM-5.3-Flash series supports a maximum output length of 128K；schema range 1–131072\"。聚合源给的 943,718 / 943,717 是思考预算，不是输出上限。 2026-10-26 官方核实：总览页（https://docs.z.ai/guides/overview/overview）称 GLM-5.3-Flash 为 \"Native Multimodal Model\"，上下文 1M → 取 1,048,576。官方没有逐模态清单，故 input_modalities 不钉（当前为 text,image,video，video 尚无原文支撑）。",
       "fields": {
-        "max_output_tokens": 131072
+        "max_output_tokens": 131072,
+        "context_length": 1048576
       }
     },
     {

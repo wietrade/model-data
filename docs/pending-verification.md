@@ -107,9 +107,19 @@ expr = f"len <= {thresholds[index]} ? {leaves[index]} : {expr}"
 | 模型 | 字段 | 线上现值 | 仓库值 |
 |:---|:---|:---|:---|
 | `gemini-3.8-flash` | `release_date` | `2026-10-13` | `2026-09-02` |
-| `glm-5.3` | `context_length` / `release_date` | `1000000` / `2026-09-23` | `1048576` / `2026-08-18` |
-| `glm-5.3-flash` | `context_length` / `release_date` / `input_modalities` | `1000000` / `2026-09-23` / `text` | `1048576` / `2026-08-26` / `text,image,video` |
+| ~~`glm-5.3`~~ | ~~context_length~~ | — | 已核：官方 "1M-token context window" → 1,048,576 ✅ |
+| ~~`glm-5.3-flash`~~ | ~~context_length~~ | — | 已核：官方称 "Native Multimodal Model"，上下文 1M → 1,048,576 ✅（video 仍无原文） |
 | `kimi-k3.1-pro` | `release_date` | `2026-07-16` | `2026-10-23` |
 | `gemma-4-26b-a4b-it:free` / `gemma-4-31b-it:free` | `input_modalities` | `text,image` | `text,image,video` |
 
 > 若以后要收紧口径，再回来看这几条；届时按上方各节的办法去官方页取原文。
+
+### 2026-10-26 追加：GLM-5.3 系列已核
+
+`docs.z.ai/guides/llm/glm-5.3` 原文：**"GLM-5.3 currently supports text-only inputs, with a
+1M-token context window and a maximum output length of 128K tokens"**。
+
+- 上下文 1M 按本仓口径取 **1,048,576**（与 128K=131,072 同口径；聚合源的 1,000,000 是十进制读法）
+- `glm-5.3` 官方明确 **text-only** → `input_modalities` 只记 `text`
+- `glm-5.3-flash` 总览页称 **"Native Multimodal Model"**，但没有逐模态清单，`video` 仍无原文支撑
+  → 只钉上下文，`input_modalities` 不钉
