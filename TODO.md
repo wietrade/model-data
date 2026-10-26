@@ -14,15 +14,11 @@
 - **要做什么**：给它定一个结算价写进私有 `billing_basis.json`（条目必须写全 `BASIS_FIELDS`），
   或者确认要下架它。**在这之前不要 `apply_billing --replace`**，否则会静默删掉它的计费配置。
 
-## 0b. 线上有 8 条表达式落后于仓库（历史核实结果尚未落库）
+## 0b. ~~线上有 8 条表达式落后于仓库~~ —— 2026-10-26 已落库
 
-`export_billing --basis` 与线上逐条比对，有 8 条会变，都是仓库里已修正、线上未应用的值：
-
-- DeepSeek 四条（`deepseek-v4.1-flash-1017` / `deepseek-v4-pro` / `deepseek-flash` / `deepseek-v4.1-flash`）：
-  汇率从 6.8 统一为 6.6774，0.3 → 0.2995 这类细微差异；`deepseek-v4.1-flash` 还会加上峰谷时段
-- `gemini-3.1-flash-image`：新增 `cr * 0.05`（补上了官方缓存读价）
-
-落库前请先确认这批差异是否符合预期。
+已用 `tools/ops/push_billing.py --apply` 通过管理令牌写入（HTTP，无需重启）：
+DeepSeek 四条汇率统一、`gemini-3-pro-image` / `-preview` / `gemini-3.1-flash-image` / `-preview`
+补上缓存读价。写入后内存与 DB 均为 73 条（4 个仅内存的 deepseek 默认键已一并固化）。
 
 ## 1. 核实 kimi-k3.1-pro 是否涨价
 
