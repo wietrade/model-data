@@ -9,7 +9,7 @@
 分档（按优先级从高到低判定，命中即止）：
 
   done      已经有官方核实条目（corrections/）
-  legacy    老代模型，不再投入核实成本（corrections/legacy-*.json）
+  legacy    老代模型，不再投入核实成本（corrections/<date>/legacy.json）
   main      主流厂商 ⇒ **无论缺不缺数据，都必须核**
   ignore    非主流厂商 且 缺关键数值 ⇒ 直接忽略
   review    非主流但数值齐全 / 主流以外的小众值缺失 ⇒ 有空再看
@@ -21,9 +21,14 @@
   image / video / speech / transcription   无
 
 用法：
-    python -m tools.ops.classify_scope                          # 打摘要
-    python -m tools.ops.classify_scope -o corrections/scope.json # 落盘
-    python -m tools.ops.classify_scope --list ignore             # 列出某一档
+    python -m tools.ops.classify_scope                             # 最新一期，打摘要
+    python -m tools.ops.classify_scope --date 20261026             # 指定快照
+    python -m tools.ops.classify_scope -o /tmp/scope.json           # 落盘（派生物，默认不进库）
+    python -m tools.ops.classify_scope --list ignore                # 列出某一档
+
+目录约定（按快照隔离，一次快照一套）：
+    raw/cheaperinference-<date>.json
+    corrections/<date>/{corrections,legacy,routing}.json
 """
 
 from __future__ import annotations
@@ -35,10 +40,29 @@ from collections import Counter, OrderedDict
 from datetime import date
 from pathlib import Path
 
-L1 = Path("raw/cheaperinference-20261026.json")
-CORRECTIONS = Path("corrections/cheaperinference-20261026.json")
-LEGACY = Path("corrections/legacy-20261026.json")
-ROUTING = Path("corrections/routing-20261026.json")
+RAW = Path("raw")
+CORRECTIONS_ROOT = Path("corrections")
+
+def resolve_date(day: str | None = None) -> str:
+    """不指定就用 corrections/ 下最新的日期目录。"""
+    if day:
+        return day.replace("-", "")
+    found = sorted(
+        p.name for p in CORRECTIONS_ROOT.iterdir()
+        if p.is_dir() and re.fullmatch(r"\d{8}", p.name)
+    ) if CORRECTIONS_ROOT.exists() else []
+    if not found:
+        raise SystemExit("corrections/ 下没有 YYYYMMDD 目录，请用 --date 指定")
+    return found[-1]
+
+
+def paths_for(day: str) -> dict[str, Path]:
+    return {
+        "snapshot": RAW / ("cheaperinference-%s.json" % day),
+        "corrections": CORRECTIONS_ROOT / day / "corrections.json",
+        "legacy": CORRECTIONS_ROOT / day / "legacy.json",
+        "routing": CORRECTIONS_ROOT / day / "routing.json",
+    }
 
 # --------------------------------------------------------------------------
 # 厂商识别：顺序敏感，先具体后笼统
@@ -145,7 +169,7 @@ def classify(model: dict, covered: set[str], legacy: dict) -> dict:
     return base
 
 
-def build(snapshot: Path, corrections: Path, legacy_path: Path, routing_path: Path = ROUTING) -> dict:
+def build(snapshot: Path, corrections: Path, legacy_path: Path, routing_path: Path) -> dict:
     models = json.loads(snapshot.read_text(encoding="utf-8"))["models"]
     covered = {c["id"] for c in json.loads(corrections.read_text(encoding="utf-8"))["corrections"]}
     legacy = {}
@@ -201,20 +225,25 @@ def summarize(plan: dict) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--snapshot", type=Path, default=L1)
-    ap.add_argument("--corrections", type=Path, default=CORRECTIONS)
-    ap.add_argument("--legacy", type=Path, default=LEGACY)
-    ap.add_argument("--routing", type=Path, default=ROUTING)
-    ap.add_argument("-o", "--out", type=Path)
+    ap.add_argument("--date", help="快照日期 YYYYMMDD，默认取 corrections/ 下最新一期")
+    ap.add_argument("-o", "--out", type=Path, help="落盘路径（派生物，一般不用存）")
     ap.add_argument("--list", choices=TIER_ORDER, help="列出某一档的模型")
     args = ap.parse_args()
 
-    plan = build(args.snapshot, args.corrections, args.legacy, args.routing)
+    day = resolve_date(args.date)
+    p = paths_for(day)
+    missing = [str(v) for v in p.values() if not v.exists()]
+    if missing:
+        raise SystemExit("缺少文件：%s" % ", ".join(missing))
+
+    plan = build(p["snapshot"], p["corrections"], p["legacy"], p["routing"])
+    plan["date"] = day
     if args.list:
         for mid, v in plan["models"].items():
             if v["tier"] == args.list:
                 print(f"{mid:<44} {v['vendor']:<10} {v['why']}")
         return
+    print(f"快照 {day}")
     summarize(plan)
     if args.out:
         args.out.write_text(

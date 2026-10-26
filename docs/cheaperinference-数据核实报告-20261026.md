@@ -18,13 +18,13 @@
 分三层，职责严格隔离，任何一步出问题都能回退：
 
 ```
-L1  raw/cheaperinference-20261026.json           站点原话，detail_* 一字不改
+L1  raw/cheaperinference-20261026.json             站点原话，detail_* 一字不改
         │  ↑ 抓取自服务端渲染页面（RSC payload），527 条 × 29 键
         │
-L2  corrections/cheaperinference-20261026.json   162 条官方核实值（带 source_url / 原文引用）
-    corrections/routing-20261026.json             5 条上游路由（servedAs / retiredAt）
+L2  corrections/20261026/corrections.json          162 条官方核实值（带 source_url / 原文引用）
+    corrections/20261026/routing.json              5 条上游路由（servedAs / retiredAt）
         │
-L3  raw/cheaperinference-20261026.verified.json   L1 + L2，供下游消费
+L3  raw/cheaperinference-20261026.verified.json    L1 + L2，供下游消费
 ```
 
 ### 为什么必须分三层
@@ -41,14 +41,15 @@ L3  raw/cheaperinference-20261026.verified.json   L1 + L2，供下游消费
 | 文件 | 内容 | 条数 |
 |:---|:---|---:|
 | `raw/...20261026.json` | L1 站点原文 | 527 |
-| `corrections/cheaperinference-20261026.json` | L2 核实值 | 162 |
-| `corrections/routing-20261026.json` | 上游路由（附加信息） | 5 |
-| `corrections/legacy-20261026.json` | 老代不核实清单 | 101 |
-| `corrections/scope-20261026.json` | 527 条全部定档 | 527 |
+| `corrections/20261026/corrections.json` | L2 核实值（**不可再生**） | 162 |
+| `corrections/20261026/routing.json` | 上游路由（人工查证） | 5 |
+| `corrections/20261026/legacy.json` | 老代不核实清单（派生） | 101 |
+| `corrections/20261026/changelog.csv` | 变更表（派生） | 166 |
+| `corrections/README.md` | 口径文档 | — |
 | `raw/...20261026.verified.json` | L3 成品 | 527 |
 | `tools/ops/fetch_site.py` | L1 生产者（带自检） | — |
 | `tools/ops/apply_corrections.py` | L2 → L3 | — |
-| `tools/ops/classify_scope.py` | 核实范围划分 | — |
+| `tools/ops/classify_scope.py` | 核实范围划分（`scope.json` 纯派生，不入库） | — |
 | `tools/ops/mark_legacy.py` | 老代清单生成 | — |
 
 ---
@@ -136,7 +137,13 @@ L3  raw/cheaperinference-20261026.verified.json   L1 + L2，供下游消费
 
 ## 3. 核实范围划分
 
-527 条全部定档，机器可读结果在 `corrections/scope-20261026.json`，随时可重跑。
+527 条全部定档。机器可读结果由 `classify_scope` 现算，**不存库**（纯派生，快照一换就过期）：
+
+```bash
+python -m tools.ops.classify_scope                    # 打摘要
+python -m tools.ops.classify_scope --list ignore      # 列某一档
+python -m tools.ops.classify_scope -o /tmp/scope.json # 需要时才落盘
+```
 
 | 档位 | 条数 | 含义 |
 |:---|---:|:---|
@@ -312,21 +319,22 @@ embedding 不存在"输出 token"，输出是向量 → `maxOutputTokens` 一律
 # 1. 抓取（L1）
 python -m tools.ops.fetch_site --save-html
 
-# 2. 生成 L3（应用核实值 + 路由标注）
-python -m tools.ops.apply_corrections \
-    --snapshot raw/cheaperinference-20261026.json \
-    --corrections corrections/cheaperinference-20261026.json \
-    --routing corrections/routing-20261026.json \
-    --out raw/cheaperinference-20261026.verified.json \
-    --changelog .tmp/changelog-20261026.csv
+# 2. 生成 L3（一条命令：核实值 + 路由标注 + changelog）
+python -m tools.ops.apply_corrections --date 20261026
 
 # 3. 看核实范围（哪 208 条要核、哪 48 条可忽略）
 python -m tools.ops.classify_scope
 python -m tools.ops.classify_scope --list ignore
 
-# 4. 测试
+# 4. 重生成老代清单（派生）
+python tools/ops/mark_legacy.py
+
+# 5. 测试
 python -m unittest discover -s tools/model_sync/tests -t .
 ```
+
+> 三个工具都支持 `--date`，不传则自动取 `corrections/` 下最新一期。下一次抓 11 月快照时，
+> 新建 `corrections/202611xx/`，把 `corrections.json` / `routing.json` 放进去即可，旧的不动。
 
 ---
 

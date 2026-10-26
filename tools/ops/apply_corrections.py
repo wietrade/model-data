@@ -4,7 +4,7 @@
 三层结构::
 
     L1  raw/cheaperinference-<date>.json         站点原话，一字不改
-    L2  corrections/cheaperinference-<date>.json  官方核实值 + source_url
+    L2  corrections/<date>/corrections.json  官方核实值 + source_url
     L3  raw/cheaperinference-<date>.verified.json L1 + L2，供下游消费
 
 硬性规则（脚本会强制检查，不是文档里的约定）：
@@ -16,9 +16,10 @@
 
 用法::
 
+    python -m tools.ops.apply_corrections --date 20261026
     python -m tools.ops.apply_corrections \\
         --snapshot raw/cheaperinference-20261026.json \\
-        --corrections corrections/cheaperinference-20261026.json \\
+        --corrections corrections/20261026/corrections.json \\
         --out raw/cheaperinference-20261026.verified.json \\
         --changelog .tmp/changelog-20261026.csv
     python -m tools.ops.apply_corrections --snapshot ... --corrections ... --dry-run
@@ -219,14 +220,27 @@ def check_invariants(before, after):
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--snapshot", required=True, help="L1 抓取快照")
-    parser.add_argument("--corrections", required=True, help="L2 核实层")
+    parser.add_argument("--date", help="快照日期 YYYYMMDD；给了就自动推导其余路径")
+    parser.add_argument("--snapshot", help="L1 抓取快照")
+    parser.add_argument("--corrections", help="L2 核实层")
     parser.add_argument("--routing", help="可选：上游路由层（servedAs / retiredAt）")
     parser.add_argument("--out", help="L3 输出路径")
     parser.add_argument("--changelog", help="变更清单 CSV")
     parser.add_argument("--min-confidence", default="high", choices=sorted(LEVELS, key=LEVELS.get))
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args(argv)
+
+    if args.date:
+        day = args.date.replace("-", "")
+        root = Path("corrections") / day
+        routing = root / "routing.json"
+        args.snapshot = args.snapshot or str(Path("raw") / ("cheaperinference-%s.json" % day))
+        args.corrections = args.corrections or str(root / "corrections.json")
+        args.routing = args.routing or (str(routing) if routing.exists() else None)
+        args.out = args.out or str(Path("raw") / ("cheaperinference-%s.verified.json" % day))
+        args.changelog = args.changelog or str(root / "changelog.csv")
+    if not args.snapshot or not args.corrections:
+        parser.error("需要 --date，或同时提供 --snapshot 与 --corrections")
 
     snapshot = load(args.snapshot)
     corrections = load(args.corrections)

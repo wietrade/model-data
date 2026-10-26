@@ -399,15 +399,19 @@ python -m tools.model_sync.validate \
 | `cheaperinference.json` | `platform.cheaperinference.com/markets`（2026-10-23，376 条） | 模型事实字段（上下文、最大输出、模态、能力标记），**已剔除全部价格字段** |
 | `cheaperinference-20261023-full.json` | 同上（同日全量抓取，**505 条**；2026-10-26 补抓） | 同上，另含 `detail_*` 原文（端点数、上下文/输出/类型/推理/视觉/编辑原文、支持参数），价格字段同样已剔除。**清洗版会合并掉 7 个重复字段** |
 | `cheaperinference-20261026.json` | 同一个站点，**523 条**，由 `tools/ops/fetch_site.py` 直接抓取（市场页 + 每个模型详情页） | 汇总字段 + 13 个 `detail_*`（多了 `detail_Provider` = **卖方/上游**，不是模型厂商）；价格字段已剔除；`fetch` 块记录抓取耗时与失败页 |
-| `cheaperinference-20261026.verified.json` | 上一条 + `corrections/cheaperinference-20261026.json` | 应用了有官方出处的修正（120 处，上下文/最大输出/能力标签/厂商）；`detail_*` 与 L1 逐字节相同，`max>context` 已归零 |
+| `cheaperinference-20261026.verified.json` | 上一条 + `corrections/20261026/corrections.json` | 应用了有官方出处的修正（157 处字段 + 9 处路由，上下文/最大输出/能力标签/厂商）；`detail_*` 与 L1 逐字节相同，`max>context` 已归零 |
 
 ### 快照分三层，不要合并
 
 ```
 L1  raw/cheaperinference-<date>.json            站点原话，一字不改
-L2  corrections/cheaperinference-<date>.json    官方核实值 + source_url + quote
+L2  corrections/<date>/corrections.json         官方核实值 + source_url + quote
 L3  raw/cheaperinference-<date>.verified.json   L1 + L2，给下游用
 ```
+
+> 一次快照一套，放在 `corrections/<YYYYMMDD>/`；口径文档固定在 `corrections/README.md`。
+> 三个工具都支持 `--date`（不传取最新一期），路径自动推导：
+> `python -m tools.ops.apply_corrections --date 20261026`
 
 | 工具 | 作用 |
 |:---|:---|

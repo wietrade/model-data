@@ -6,18 +6,35 @@
   2. 官方已宣布下线。
 
 每条都写清「被谁取代」，便于以后复核。这不是删除数据，只是不再为它们花核实成本。
+
+用法：
+    python tools/ops/mark_legacy.py                # 最新一期快照
+    python tools/ops/mark_legacy.py --date 20261026
+
+输出：corrections/<date>/legacy.json（派生，可随时重跑）
 """
 
+import argparse
 import json
 import re
+from collections import Counter
 from pathlib import Path
 
-L1 = Path("raw/cheaperinference-20261026.json")
-CORR = Path("corrections/cheaperinference-20261026.json")
-OUT = Path("corrections/legacy-20261026.json")
+RAW = Path("raw")
+ROOT = Path("corrections")
 
-models = {m["id"]: m for m in json.loads(L1.read_text(encoding="utf-8"))["models"]}
-covered = {c["id"] for c in json.loads(CORR.read_text(encoding="utf-8"))["corrections"]}
+
+def resolve_date(day=None):
+    """不指定就用 corrections/ 下最新的日期目录。"""
+    if day:
+        return day.replace("-", "")
+    found = sorted(
+        p.name for p in ROOT.iterdir()
+        if p.is_dir() and re.fullmatch(r"\d{8}", p.name)
+    ) if ROOT.exists() else []
+    if not found:
+        raise SystemExit("corrections/ 下没有 YYYYMMDD 目录，请用 --date 指定")
+    return found[-1]
 
 # (正则, 被谁取代, 原因)
 RULES = [
@@ -83,43 +100,63 @@ MEDIA = ("-asr", "-embedding", "-transcribe", "-tts", "-live", "-ocr", "-diariza
 # 名字里带 next / latest 的通常是新一代，不能按版本号判老
 EXCEPTIONS = {"qwen3-coder-next"}
 
-legacy = {}
-for model_id, model in models.items():
-    if model_id in covered:
-        continue
-    if model_id in RETIRED:
-        by, reason = RETIRED[model_id]
-        legacy[model_id] = {"superseded_by": by, "reason": reason, "type": model["type"]}
-        continue
-    for pattern, by, reason in COMPILED:
-        if not pattern.match(model_id):
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--date", help="快照日期 YYYYMMDD，默认取 corrections/ 下最新一期")
+    args = ap.parse_args()
+
+    day = resolve_date(args.date)
+    l1_path = RAW / ("cheaperinference-%s.json" % day)
+    corr_path = ROOT / day / "corrections.json"
+    out_path = ROOT / day / "legacy.json"
+    for p in (l1_path, corr_path):
+        if not p.exists():
+            raise SystemExit("缺少文件：%s" % p)
+
+    models = {m["id"]: m for m in json.loads(l1_path.read_text(encoding="utf-8"))["models"]}
+    covered = {c["id"] for c in json.loads(corr_path.read_text(encoding="utf-8"))["corrections"]}
+
+    legacy = {}
+    for model_id, model in models.items():
+        if model_id in covered:
             continue
-        # 专用媒体模型（ASR/TTS/转写/OCR/embedding）不按对话模型的代际判断
-        if model_id in EXCEPTIONS:
+        if model_id in RETIRED:
+            by, reason = RETIRED[model_id]
+            legacy[model_id] = {"superseded_by": by, "reason": reason, "type": model["type"]}
+            continue
+        for pattern, by, reason in COMPILED:
+            if not pattern.match(model_id):
+                continue
+            # 专用媒体模型（ASR/TTS/转写/OCR/embedding）不按对话模型的代际判断
+            if model_id in EXCEPTIONS:
+                break
+            if any(tag in model_id for tag in MEDIA) and "图像" not in reason and "视频" not in reason:
+                break
+            legacy[model_id] = {"superseded_by": by, "reason": reason, "type": model["type"]}
             break
-        if any(tag in model_id for tag in MEDIA) and "图像" not in reason and "视频" not in reason:
-            break
-        legacy[model_id] = {"superseded_by": by, "reason": reason, "type": model["type"]}
-        break
 
-payload = {
-    "id": "legacy-20261026",
-    "applies_to": "raw/cheaperinference-20261026.json",
-    "note": (
-        "这些模型不再花核实成本：字段保留站点原值，也不进 corrections。"
-        "判定依据：同家族已有更新代（快照里能看到）、官方已下线/退役，或第三方标注 deprecated；"
-        "标注均为人工判断，非官方 EOL 声明。"
-    ),
-    "count": len(legacy),
-    "models": dict(sorted(legacy.items())),
-}
-OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
+    payload = {
+        "id": "legacy-%s" % day,
+        "applies_to": "raw/cheaperinference-%s.json" % day,
+        "note": (
+            "这些模型不再花核实成本：字段保留站点原值，也不进 corrections。"
+            "判定依据：同家族已有更新代（快照里能看到）、官方已下线/退役，或第三方标注 deprecated；"
+            "标注均为人工判断，非官方 EOL 声明。"
+        ),
+        "count": len(legacy),
+        "models": dict(sorted(legacy.items())),
+    }
+    out_path.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n"
+    )
 
-total = len(models)
-unverified = total - len(covered)
-left = unverified - len(legacy)
-print("L1 %d 条｜已核实 %d｜未核实 %d｜其中判为老代 %d｜仍需核实 %d"
-      % (total, len(covered), unverified, len(legacy), left))
-from collections import Counter
-print("按原因:", dict(Counter(v["reason"] for v in legacy.values()).most_common(8)))
-print("wrote", OUT)
+    unverified = len(models) - len(covered)
+    print("L1 %d 条｜已核实 %d｜未核实 %d｜其中判为老代 %d｜仍需核实 %d"
+          % (len(models), len(covered), unverified, len(legacy), unverified - len(legacy)))
+    print("按原因:", dict(Counter(v["reason"] for v in legacy.values()).most_common(8)))
+    print("wrote", out_path)
+
+
+if __name__ == "__main__":
+    main()

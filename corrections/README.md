@@ -2,6 +2,34 @@
 
 这里存的是「**站点说错了什么、官方文档说对的应该是什么**」，与抓取快照分开存放。
 
+## 目录约定：按快照隔离
+
+一次抓取一套，放在 `corrections/<YYYYMMDD>/` 下；`README.md`（本文件）是跨快照的口径，不随日期变：
+
+```
+corrections/
+├── README.md              口径文档（本文件）
+└── 20261026/
+    ├── corrections.json   L2 核实值（162 条，不可再生）
+    ├── routing.json       上游路由事实（servedAs / retiredAt，人工查证）
+    ├── legacy.json        老代不核实清单（101 条，mark_legacy.py 生成）
+    └── changelog.csv      变更表（apply_corrections 生成）
+```
+
+`scope.json`（527 条定档结果）是纯派生物，**不入库**，需要时随时重跑：
+
+```bash
+python -m tools.ops.classify_scope -o /tmp/scope.json
+```
+
+三个工具都支持 `--date`，不传则自动取 `corrections/` 下最新一期：
+
+```bash
+python -m tools.ops.apply_corrections --date 20261026
+python -m tools.ops.classify_scope    --date 20261026
+python tools/ops/mark_legacy.py       --date 20261026
+```
+
 ## 为什么单独一层
 
 抓取快照（`raw/cheaperinference-<date>.json`）的价值在于**忠实**：它记录站点当时逐字写了什么。
@@ -10,7 +38,7 @@
 
 ```
 L1  raw/cheaperinference-<date>.json            站点原话，一字不改
-L2  corrections/cheaperinference-<date>.json    官方核实值 + 出处
+L2  corrections/<date>/corrections.json         官方核实值 + 出处
 L3  raw/cheaperinference-<date>.verified.json   L1 + L2，给下游用
 ```
 
@@ -94,8 +122,8 @@ L2 是**唯一**允许写入「外部知识」的地方，并且每条都必须�
 
 ## 不核实清单（legacy-20261026.json）
 
-`corrections/legacy-20261026.json` 标记**不再花核实成本**的模型：**快照里仍然保留、字段保留站点原值**，
-只是不进 `corrections/`、不派人去查官方文档。
+`corrections/20261026/legacy.json` 标记**不再花核实成本**的模型：**快照里仍然保留、字段保留站点原值**，
+只是不进 `corrections.json`、不派人去查官方文档。
 
 判定只用两条可复核规则（同家族已有更新代且站点在卖 / 官方已下线），每条都写 `superseded_by`：
 
@@ -121,23 +149,19 @@ L2 是**唯一**允许写入「外部知识」的地方，并且每条都必须�
 | `gemma-3-27b-it` | 40,000 | 131,072（Google 模型卡） | 某部署截断到 40,000 |
 | `claude-haiku-5.5` | 100,000 | 1,000,000 | 1,000,000（站点少打一个 0） |
 
-「站点实际服务」不写进主字段，另存 `corrections/routing-*.json`，应用后成为 L3 的
+「站点实际服务」不写进主字段，另存 `corrections/<date>/routing.json`，应用后成为 L3 的
 `servedAs` / `retiredAt` 两个附加键：
 
 ```bash
-python -m tools.ops.apply_corrections \
-    --snapshot raw/cheaperinference-20261026.json \
-    --corrections corrections/cheaperinference-20261026.json \
-    --routing corrections/routing-20261026.json \
-    --out raw/cheaperinference-20261026.verified.json
+python -m tools.ops.apply_corrections --date 20261026
 ```
 
 为什么不混进 `contextLength`：上游路由随时会改，写进主字段会让同一个模型的值反复漂移，
-且无法再引用任何一个官方页面作为出处。`servedAs` 是提示性的，`contextLength` 是可引用的。
+且无法再引用任何一个官方页面作为出处。`servedAs` 是提示性的，`contextLength` 是 可引用的。
 
-## 核实范围（scope-20261026.json）
+## 核实范围
 
-`python -m tools.ops.classify_scope -o corrections/scope-20261026.json` 给 527 条全部定档，
+`python -m tools.ops.classify_scope` 给 527 条全部定档，
 每个模型一个 tier，可随时重跑：
 
 | tier | 条数 | 含义 |
@@ -164,17 +188,27 @@ OpenAI、Anthropic、Google、xAI、Meta、Mistral、Cohere、Perplexity、NVIDI
 ## 用法
 
 ```bash
-# 只应用 high，产出 L3
+# 最常用：一条命令走完整套（路径按日期自动推导）
+python -m tools.ops.apply_corrections --date 20261026
+
+# 等价于
 python -m tools.ops.apply_corrections \
     --snapshot raw/cheaperinference-20261026.json \
-    --corrections corrections/cheaperinference-20261026.json \
+    --corrections corrections/20261026/corrections.json \
+    --routing corrections/20261026/routing.json \
     --out raw/cheaperinference-20261026.verified.json \
-    --changelog .tmp/changelog-20261026.csv
+    --changelog corrections/20261026/changelog.csv
 
 # 先看会改哪些、还剩多少矛盾，不落盘
-python -m tools.ops.apply_corrections --snapshot ... --corrections ... --dry-run
+python -m tools.ops.apply_corrections --date 20261026 --dry-run
 
 # 连 medium 一起应用（需要人工逐条过一遍）
-python -m tools.ops.apply_corrections --snapshot ... --corrections ... \
-    --min-confidence medium --out ...
+python -m tools.ops.apply_corrections --date 20261026 --min-confidence medium
+
+# 看核实范围：哪 208 条要核、哪 48 条可忽略
+python -m tools.ops.classify_scope
+python -m tools.ops.classify_scope --list ignore
+
+# 老代清单（派生）
+python tools/ops/mark_legacy.py
 ```
