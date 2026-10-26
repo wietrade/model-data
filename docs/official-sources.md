@@ -10,7 +10,21 @@
 | OpenAI | `https://developers.openai.com/api/docs/pricing.md` | **Markdown 表**（可直接解析） | 短/长上下文档的 input / output / cached input / 30m 写入 / 12h 写入 |
 | Anthropic | `https://platform.claude.com/docs/en/about-claude/pricing.md` | **Markdown 表** | Base input / 5m 写入 / 1h 写入 / cache 命中 / output |
 | Google | `https://cloud.google.com/gemini-enterprise-agent-platform/generative-ai/pricing` | HTML，**但表格结构规整可解析**（65 个 `<table>`，列固定为 `Model / Type / Region / Price`） | Standard 档每 1M token 的 input / text output / cached input，按 **Global / Non-global** 两个地区列 |
+| DeepSeek | `https://api-docs.deepseek.com/zh-cn/quick_start/pricing` | HTML，**人民币计价**，按「空闲 / 高峰」两个时段各报一组价 | 缓存命中 / 缓存未命中 / 输出，均按 ¥/1M tokens |
 | Google（开发端 API，旁证） | `https://ai.google.dev/gemini-api/docs/pricing` | HTML（`.md` 返回同一份 HTML，`llms.txt` 404） | 同上，仅 Global 一列；用于交叉核对 |
+
+> **DeepSeek 记的是「高峰价」**。官方按北京时间分峰谷：周一至周五 9:00–12:00、14:00–18:00
+> （不含法定节假日）为高峰，其余全天空闲，**空闲价 = 高峰价 × 0.5**。
+> 我们目录里记的是**高峰价 ÷ 6.8**（如 `deepseek-flash` ¥2 → $0.294 ≈ 0.3），
+> 所以实际成本只会比你看到的低，不会高——方向安全。
+>
+> 对账样例：`deepseek-flash` ¥0.04/¥2/¥8（命中/未命中/输出，高峰）→ $0.006/0.3/1.2；
+> `deepseek-v4-pro` ¥0.30/¥9/¥27 → $0.044/1.32/3.96。
+
+> **DeepSeek 的 Search / Fetch 是单独计费的独立 API**：¥5 / 1000 次成功请求。
+> 目前从 DeepSeek Harness / Claude Code / Codex 走 Server 端工具调用时**不收费**，
+> **2026-11-01 00:00（北京时间）起按次收取**——我们目录里完全没有这一类维度，
+> 若网关会透传这类请求，需要单独核成本。
 
 自动核对（只出报告，不改数据）：
 

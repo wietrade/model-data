@@ -3,6 +3,22 @@
   "applies_to": "raw/cheaperinference-20261026.json",
   "note": "上游已退役、站点仍在售的 id。contextLength / maxOutputTokens 仍按原型号官方规格记录（口径稳定、可引用），本文件只记录『请求实际被转到哪个模型』，供下游做提示或 id 映射。这里是附加信息，不参与核实结论的判定。",
   "models": {
+    "deepseek-v4-flash": {
+      "served_as": "DeepSeek-V4.1-Flash-1017",
+      "retired_at": null,
+      "source_url": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing",
+      "quote": "旧模型名 deepseek-v4-flash、deepseek-v4-flash-vision-exp 仍可调用，但对应模型已下线，请求将由 DeepSeek-V4.1-Flash-1017 模型提供服务，并按 Flash 价格计费。",
+      "source_type": "official",
+      "confidence": "high"
+    },
+    "deepseek-v4-flash-vision-exp": {
+      "served_as": "DeepSeek-V4.1-Flash-1017",
+      "retired_at": null,
+      "source_url": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing",
+      "quote": "旧模型名 deepseek-v4-flash、deepseek-v4-flash-vision-exp 仍可调用，但对应模型已下线，请求将由 DeepSeek-V4.1-Flash-1017 模型提供服务，并按 Flash 价格计费。",
+      "source_type": "official",
+      "confidence": "high"
+    },
     "grok-4": {
       "served_as": "grok-4.3",
       "retired_at": "2026-05-15",
@@ -11,7 +27,7 @@
       "source_type": "official",
       "confidence": "high"
     },
-    "grok-4.1-fast-reasoning": {
+    "grok-4.1-fast-non-reasoning": {
       "served_as": "grok-4.3",
       "retired_at": "2026-05-15",
       "source_url": "https://docs.x.ai/developers/migration/may-15-retirement",
@@ -19,7 +35,7 @@
       "source_type": "official",
       "confidence": "high"
     },
-    "grok-4.1-fast-non-reasoning": {
+    "grok-4.1-fast-reasoning": {
       "served_as": "grok-4.3",
       "retired_at": "2026-05-15",
       "source_url": "https://docs.x.ai/developers/migration/may-15-retirement",
