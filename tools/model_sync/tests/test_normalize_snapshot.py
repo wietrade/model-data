@@ -174,6 +174,34 @@ class BillingDimensionTest(unittest.TestCase):
         self.assertEqual(record["billing_dimension"], "tokens")
 
 
+class StrictModeTest(unittest.TestCase):
+    """strict：只用站点原文，原文没报就留空（不按 type/vision 推）。"""
+
+    def test_unreported_input_stays_empty(self):
+        record = ns.normalize_item(item(detail_Input="Not reported"), strict=True)
+        self.assertEqual(record["input_modalities"], [])
+        self.assertEqual(record["input_source"], "none")
+        self.assertIn("input_modalities", record["unknown"])
+
+    def test_vision_is_not_inferred(self):
+        record = ns.normalize_item(
+            item(detail_Input="Not reported", vision=True, detail_VisionInput="Supported"), strict=True
+        )
+        self.assertEqual(record["input_modalities"], [])
+
+    def test_capabilities_do_not_fall_back_to_tokens(self):
+        record = ns.normalize_item(
+            item(capabilities=["tool-use"], detail_SupportedParameters="Not reported"), strict=True
+        )
+        self.assertEqual(record["capabilities"], [])
+        self.assertEqual(record["capabilities_source"], "none")
+
+    def test_detail_is_still_parsed(self):
+        record = ns.normalize_item(item(detail_Input="image, pdf, text"), strict=True)
+        self.assertEqual(record["input_modalities"], ["file", "image", "text"])
+        self.assertEqual(record["input_source"], "detail")
+
+
 class TypeDerivationTest(unittest.TestCase):
     def test_speech_and_transcription(self):
         self.assertEqual(ns.model_type({"input_modalities": ["text"], "output_modalities": ["audio"]}), "speech")

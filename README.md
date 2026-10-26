@@ -438,7 +438,7 @@ input_modalities / output_modalities / capabilities / image_edit / endpoints`，
 
 | 字段 | 含义 |
 |:---|:---|
-| `input_source` | `detail` / `detail+vision`（原文只写 text，但视觉支持，补了 image）/ `type` / `type+vision` |
+| `input_source` | `detail` / `detail+vision`（原文只写 text，但视觉支持，补了 image）/ `type` / `type+vision` / `none`（strict 模式：原文没报就留空） |
 | `output_source` | `detail`（原文给的）/ `type`（原文没报，按 `type` 推的） |
 | `context_source` / `max_output_source` | `numeric`（原始数字字段）/ `detail`（从 `"128,000 tokens"` 这类文本解析）/ `none`（两边都没有） |
 | `capabilities_source` | `params`（据 `detail_SupportedParameters`）/ `tokens`（参数表没公布时的弱证据） |
@@ -450,6 +450,16 @@ input_modalities / output_modalities / capabilities / image_edit / endpoints`，
 `decision` / `realtime`），其中前 6 类可由模态唯一推出（见 `normalize_snapshot.model_type`），
 `decision` / `realtime` 推不出来——我们目录只用到 `text` 与 `image` 两类。
 清洗产物默认被 gitignore（可从 raw 快照重算）。
+
+默认会「原文没报时按 `type` / `vision` 推一个值」，并如实标在 `input_source` / `output_source`
+（实测 103/505 条的模态是推出来的）。只想要站点原文、不想要任何推断时：
+
+```bash
+python -m tools.ops.normalize_snapshot --strict -o raw/cheaperinference-strict.json
+```
+
+strict 模式下这 103 条的 `input_modalities` 直接留空（同时进 `unknown[]`），
+`capabilities` 也不再从 token 回退——适合「宁缺毋滥」的对比。
 
 抓取脚本（`fetch_cheaperinference.py` / `merge_cheaperinference.py`）未随本次拆分保留；
 `raw/` 里的快照是历史抓取结果，需要更新时按下方规则人工重跑并核对。

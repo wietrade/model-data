@@ -129,8 +129,12 @@ def model_type(record) -> str:
     return "text"
 
 
-def normalize_item(item) -> dict:
-    """一条原始记录 -> 无冗余的事实记录。缺失的维度记进 ``unknown``。"""
+def normalize_item(item, strict: bool = False) -> dict:
+    """一条原始记录 -> 无冗余的事实记录。缺失的维度记进 ``unknown``。
+
+    ``strict=True`` 时**只用站点原文**：原文没报的模态/能力就留空，
+    不按 ``type`` 或 ``vision`` 推断（``input_source`` 只会是 ``detail`` 或 ``none``）。
+    """
     tokens = set(item.get("capabilities") or [])
     params = set(_split(item.get("detail_SupportedParameters")))
     unknown = []
@@ -140,28 +144,31 @@ def normalize_item(item) -> dict:
     # （实测 13 条 detail_Input 只写 text、但 detail_VisionInput=Supported——
     #  即「既能输文本也能输截图」，不能判成 text-only）
     inputs = [INPUT_MAP[v] for v in _split(item.get("detail_Input")) if v in INPUT_MAP]
-    input_source = "detail" if inputs else "type"
+    input_source = "detail" if inputs else ("none" if strict else "type")
     if not inputs:
-        inputs = {"embedding": ["text"], "transcription": ["audio"], "realtime": ["audio", "text"]}.get(
-            kind, ["text"]
-        )
+        # 原文没报 -> unknown 恒记（无论后面是否按 type 补）
         unknown.append("input_modalities")
+        if not strict:
+            inputs = {"embedding": ["text"], "transcription": ["audio"], "realtime": ["audio", "text"]}.get(
+                kind, ["text"]
+            )
     vision = bool(item.get("vision")) or item.get("detail_VisionInput") == "Supported"
-    if vision and "image" not in inputs:
+    if vision and not strict and "image" not in inputs:
         inputs.append("image")
         input_source += "+vision"
 
     outputs = [OUTPUT_MAP[v] for v in _split(item.get("detail_Output")) if v in OUTPUT_MAP]
-    output_source = "detail" if outputs else "type"
+    output_source = "detail" if outputs else ("none" if strict else "type")
     if not outputs:
-        outputs = {
-            "image": ["image"],
-            "video": ["video"],
-            "speech": ["audio"],
-            "realtime": ["audio", "text"],
-            "embedding": ["text"],
-        }.get(kind, ["text"])
         unknown.append("output_modalities")
+        if not strict:
+            outputs = {
+                "image": ["image"],
+                "video": ["video"],
+                "speech": ["audio"],
+                "realtime": ["audio", "text"],
+                "embedding": ["text"],
+            }.get(kind, ["text"])
 
     caps = set()
     if item.get("reasoning") or item.get("detail_Reasoning") == "Supported":
@@ -169,6 +176,9 @@ def normalize_item(item) -> dict:
     if params:
         caps |= {cap for key, cap in PARAM_CAPS.items() if key in params}
         capabilities_source = "params"
+    elif strict:
+        capabilities_source = "none"
+        unknown.append("supported_parameters")
     else:
         # 参数表没公布时 token 只作弱证据（实测会过度声明，见文件头）
         if "tool-use" in tokens:
@@ -325,6 +335,11 @@ def main(argv=None) -> int:
     parser.add_argument("-i", "--input", default=str(DEFAULT_IN))
     parser.add_argument("-o", "--out", help="输出规范化 JSON")
     parser.add_argument("--report", action="store_true", help="打印冗余/冲突统计")
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="只用站点原文：原文没报的模态/能力留空，不按 type/vision 推",
+    )
     parser.add_argument("--limit", type=int, help="只处理前 N 条（调试用）")
     args = parser.parse_args(argv)
 
@@ -336,7 +351,7 @@ def main(argv=None) -> int:
     if args.report:
         print(render(audit(items)))
     if args.out:
-        normalized = [normalize_item(it) for it in items]
+        normalized = [normalize_item(it, strict=args.strict) for it in items]
         out = Path(args.out)
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(
