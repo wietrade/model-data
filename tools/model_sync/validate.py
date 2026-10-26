@@ -141,6 +141,16 @@ def check_metadata(models, vendors, report: Report):
         if count > 1:
             report.error(f"model_name 重复 {count} 次: {name}")
 
+    # vendors.json 会被发布出去，也没有删除机制（new-api 只 Create/Update）。
+    # 本地库遗留的供应商一旦写进来就永远挂着，所以这里把「空壳供应商」挑出来。
+    referenced = {str(m.get("vendor_name") or "") for m in models}
+    orphan = sorted(v for v in vendor_names if v and v not in referenced)
+    if orphan:
+        report.warn(
+            "vendors.json 有 %d 个供应商没有任何模型引用（发布出去只会是空壳，"
+            "通常是本地运维遗留）：%s" % (len(orphan), "、".join(orphan))
+        )
+
 
 def check_i18n(base_models, report: Report):
     base = {m["model_name"]: m for m in base_models}

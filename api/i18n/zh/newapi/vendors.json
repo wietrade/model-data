@@ -15,12 +15,6 @@
       "status": 1
     },
     {
-      "name": "自建渠道",
-      "description": "本站自建上游",
-      "icon": "",
-      "status": 1
-    },
-    {
       "name": "Z.AI",
       "description": "",
       "icon": "ZAI",
