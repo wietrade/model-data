@@ -1,0 +1,508 @@
+{
+  "id": "legacy-20261026",
+  "applies_to": "raw/cheaperinference-20261026.json",
+  "note": "这些模型不再花核实成本：字段保留站点原值，也不进 corrections。判定依据：同家族已有更新代（快照里能看到）或官方已下线；标注均为人工判断，非官方 EOL 声明。",
+  "count": 100,
+  "models": {
+    "claude-haiku-4.5": {
+      "superseded_by": "claude-*-5.5",
+      "reason": "Claude 4.x 代已被 5.5 取代",
+      "type": "text"
+    },
+    "claude-haiku-4.5-20251001-r": {
+      "superseded_by": "claude-*-5.5",
+      "reason": "Claude 4.x 代已被 5.5 取代",
+      "type": "text"
+    },
+    "claude-opus-4.6": {
+      "superseded_by": "claude-*-5.5",
+      "reason": "Claude 4.x 代已被 5.5 取代",
+      "type": "text"
+    },
+    "claude-opus-4.7": {
+      "superseded_by": "claude-*-5.5",
+      "reason": "Claude 4.x 代已被 5.5 取代",
+      "type": "text"
+    },
+    "claude-opus-4.8": {
+      "superseded_by": "claude-*-5.5",
+      "reason": "Claude 4.x 代已被 5.5 取代",
+      "type": "text"
+    },
+    "claude-sonnet-4.6": {
+      "superseded_by": "claude-*-5.5",
+      "reason": "Claude 4.x 代已被 5.5 取代",
+      "type": "text"
+    },
+    "deepseek-r1": {
+      "superseded_by": "deepseek-v4 系列",
+      "reason": "R1 代（V3 架构的推理版）",
+      "type": "text"
+    },
+    "deepseek-r1-0528": {
+      "superseded_by": "deepseek-v4 系列",
+      "reason": "R1 代（V3 架构的推理版）",
+      "type": "text"
+    },
+    "deepseek-r1-community": {
+      "superseded_by": "deepseek-v4 系列",
+      "reason": "R1 代（V3 架构的推理版）",
+      "type": "text"
+    },
+    "deepseek-r1-turbo": {
+      "superseded_by": "deepseek-v4 系列",
+      "reason": "R1 代（V3 架构的推理版）",
+      "type": "text"
+    },
+    "deepseek-v3": {
+      "superseded_by": "deepseek-v4.1-flash",
+      "reason": "V3 代",
+      "type": "text"
+    },
+    "deepseek-v3.2": {
+      "superseded_by": "deepseek-v4.1-flash",
+      "reason": "V3 代",
+      "type": "text"
+    },
+    "deepseek-v3.2-thinking": {
+      "superseded_by": "deepseek-v4.1-flash",
+      "reason": "V3 代",
+      "type": "text"
+    },
+    "flux-1.1": {
+      "superseded_by": "flux-3-image / flux-3-video",
+      "reason": "FLUX 1.x/2 代",
+      "type": "image"
+    },
+    "flux-2-flex": {
+      "superseded_by": "flux-3-image / flux-3-video",
+      "reason": "FLUX 1.x/2 代",
+      "type": "image"
+    },
+    "flux-2-klein-4b": {
+      "superseded_by": "flux-3-image / flux-3-video",
+      "reason": "FLUX 1.x/2 代",
+      "type": "image"
+    },
+    "flux-2-klein-9b": {
+      "superseded_by": "flux-3-image / flux-3-video",
+      "reason": "FLUX 1.x/2 代",
+      "type": "image"
+    },
+    "flux-pro-1.0-fill": {
+      "superseded_by": "flux-3-*",
+      "reason": "FLUX 1.x pro 代",
+      "type": "image"
+    },
+    "flux-pro-1.1-ultra": {
+      "superseded_by": "flux-3-*",
+      "reason": "FLUX 1.x pro 代",
+      "type": "image"
+    },
+    "gemini-2.5-pro-preview-06-05": {
+      "superseded_by": "gemini-4-argon / 3.8 系列",
+      "reason": "Gemini 2.5 代",
+      "type": "text"
+    },
+    "gemini-3.1-pro-preview": {
+      "superseded_by": "gemini-4-argon / 3.8 系列",
+      "reason": "Gemini 3.1 代，落后 3 个次版本",
+      "type": "text"
+    },
+    "gemma-3-12b-it": {
+      "superseded_by": "gemma-4-31b-it",
+      "reason": "Gemma 3 代已被 Gemma 4 取代",
+      "type": "text"
+    },
+    "gemma-3-27b-it": {
+      "superseded_by": "gemma-4-31b-it",
+      "reason": "Gemma 3 代已被 Gemma 4 取代",
+      "type": "text"
+    },
+    "gemma-3-4b-it": {
+      "superseded_by": "gemma-4-31b-it",
+      "reason": "Gemma 3 代已被 Gemma 4 取代",
+      "type": "text"
+    },
+    "glm-4.5": {
+      "superseded_by": "glm-5.3",
+      "reason": "GLM 4.x 代已被 5.3 取代",
+      "type": "text"
+    },
+    "glm-4.5-air": {
+      "superseded_by": "glm-5.3",
+      "reason": "GLM 4.x 代已被 5.3 取代",
+      "type": "text"
+    },
+    "glm-4.6": {
+      "superseded_by": "glm-5.3",
+      "reason": "GLM 4.x 代已被 5.3 取代",
+      "type": "text"
+    },
+    "glm-4.7-flash-heretic": {
+      "superseded_by": "glm-5.3",
+      "reason": "GLM 4.x 代已被 5.3 取代",
+      "type": "text"
+    },
+    "glm-4.7-flashx": {
+      "superseded_by": "glm-5.3",
+      "reason": "GLM 4.x 代已被 5.3 取代",
+      "type": "text"
+    },
+    "gpt-4.1-fast": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "GPT-4.1 代已落后 4 个大版本",
+      "type": "text"
+    },
+    "gpt-4.1-mini-fast": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "GPT-4.1 代已落后 4 个大版本",
+      "type": "text"
+    },
+    "gpt-4.1-nano": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "GPT-4.1 代已落后 4 个大版本",
+      "type": "text"
+    },
+    "gpt-4o": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "GPT-4o 代已落后 4 个大版本",
+      "type": "text"
+    },
+    "gpt-4o-fast": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "GPT-4o 代已落后 4 个大版本",
+      "type": "text"
+    },
+    "gpt-4o-mini": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "GPT-4o 代已落后 4 个大版本",
+      "type": "text"
+    },
+    "gpt-4o-mini-fast": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "GPT-4o 代已落后 4 个大版本",
+      "type": "text"
+    },
+    "gpt-5": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "GPT-5 首代",
+      "type": "text"
+    },
+    "gpt-5-codex": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "GPT-5 首代",
+      "type": "text"
+    },
+    "gpt-5-fast": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "GPT-5 首代",
+      "type": "text"
+    },
+    "gpt-5-mini": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "GPT-5 首代",
+      "type": "text"
+    },
+    "gpt-5-mini-fast": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "GPT-5 首代",
+      "type": "text"
+    },
+    "gpt-5-nano": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "GPT-5 首代",
+      "type": "text"
+    },
+    "gpt-5-pro": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "GPT-5 首代",
+      "type": "text"
+    },
+    "gpt-5.1": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "落后 3 代",
+      "type": "text"
+    },
+    "gpt-5.1-codex": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "落后 3 代",
+      "type": "text"
+    },
+    "gpt-5.1-codex-max": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "落后 3 代",
+      "type": "text"
+    },
+    "gpt-5.1-codex-mini": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "落后 3 代",
+      "type": "text"
+    },
+    "gpt-5.1-thinking": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "落后 3 代",
+      "type": "text"
+    },
+    "gpt-5.1-thinking-fast": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "落后 3 代",
+      "type": "text"
+    },
+    "gpt-5.2-codex": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "落后 2 代",
+      "type": "text"
+    },
+    "gpt-5.2-fast": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "落后 2 代",
+      "type": "text"
+    },
+    "gpt-5.2-pro": {
+      "superseded_by": "gpt-6.1 系列",
+      "reason": "落后 2 代",
+      "type": "text"
+    },
+    "gpt-image-1-mini": {
+      "superseded_by": "gpt-image-2.5 系列",
+      "reason": "图像模型上游已有 2.5",
+      "type": "image"
+    },
+    "grok-4.1-fast-non-reasoning": {
+      "superseded_by": "grok-4.7",
+      "reason": "落后 6 个次版本",
+      "type": "text"
+    },
+    "grok-4.1-fast-reasoning": {
+      "superseded_by": "grok-4.7",
+      "reason": "落后 6 个次版本",
+      "type": "text"
+    },
+    "grok-4.20-beta": {
+      "superseded_by": "grok-4.7",
+      "reason": "4.20 为过渡版本",
+      "type": "text"
+    },
+    "grok-4.20-multi-agent": {
+      "superseded_by": "grok-4.7",
+      "reason": "4.20 为过渡版本",
+      "type": "text"
+    },
+    "grok-4.20-multi-agent-beta": {
+      "superseded_by": "grok-4.7",
+      "reason": "4.20 为过渡版本",
+      "type": "text"
+    },
+    "grok-4.20-non-reasoning": {
+      "superseded_by": "grok-4.7",
+      "reason": "4.20 为过渡版本",
+      "type": "text"
+    },
+    "grok-4.20-reasoning": {
+      "superseded_by": "grok-4.7",
+      "reason": "4.20 为过渡版本",
+      "type": "text"
+    },
+    "kimi-k2": {
+      "superseded_by": "kimi-k3.1-pro",
+      "reason": "K2 代；其中 kimi-k2.5 官方已于 2026-08-31 下线",
+      "type": "text"
+    },
+    "kimi-k2-0905": {
+      "superseded_by": "kimi-k3.1-pro",
+      "reason": "K2 代；其中 kimi-k2.5 官方已于 2026-08-31 下线",
+      "type": "text"
+    },
+    "kimi-k2-thinking": {
+      "superseded_by": "kimi-k3.1-pro",
+      "reason": "K2 代；其中 kimi-k2.5 官方已于 2026-08-31 下线",
+      "type": "text"
+    },
+    "llama-3.1-70b": {
+      "superseded_by": "站点无更新代，但已明显落后",
+      "reason": "Llama 3.x/4 代",
+      "type": "text"
+    },
+    "llama-3.1-8b": {
+      "superseded_by": "站点无更新代，但已明显落后",
+      "reason": "Llama 3.x/4 代",
+      "type": "text"
+    },
+    "llama-3.2-3b-instruct": {
+      "superseded_by": "站点无更新代，但已明显落后",
+      "reason": "Llama 3.x/4 代",
+      "type": "text"
+    },
+    "llama-3.3-70b": {
+      "superseded_by": "站点无更新代，但已明显落后",
+      "reason": "Llama 3.x/4 代",
+      "type": "text"
+    },
+    "llama-4-maverick": {
+      "superseded_by": "站点无更新代，但已明显落后",
+      "reason": "Llama 3.x/4 代",
+      "type": "text"
+    },
+    "llama-4-scout": {
+      "superseded_by": "站点无更新代，但已明显落后",
+      "reason": "Llama 3.x/4 代",
+      "type": "text"
+    },
+    "minimax-m1-80k": {
+      "superseded_by": "minimax-m3 系列",
+      "reason": "M1 代",
+      "type": "text"
+    },
+    "minimax-m2.1": {
+      "superseded_by": "minimax-m3 系列",
+      "reason": "M2.1 代",
+      "type": "text"
+    },
+    "minimax-m2.1-lightning": {
+      "superseded_by": "minimax-m3 系列",
+      "reason": "M2.1 代",
+      "type": "text"
+    },
+    "mistral-large": {
+      "superseded_by": "mistral-large-4",
+      "reason": "Mistral 老代",
+      "type": "text"
+    },
+    "mistral-large-3": {
+      "superseded_by": "mistral-large-4",
+      "reason": "Mistral 老代",
+      "type": "text"
+    },
+    "mistral-nemo": {
+      "superseded_by": "mistral-large-4",
+      "reason": "Mistral 老代",
+      "type": "text"
+    },
+    "mistral-small": {
+      "superseded_by": "mistral-large-4",
+      "reason": "Mistral 老代",
+      "type": "text"
+    },
+    "mistral-small-3.2-24b-instruct": {
+      "superseded_by": "mistral-large-4",
+      "reason": "Mistral 老代",
+      "type": "text"
+    },
+    "nova-2-lite": {
+      "superseded_by": "站点无更新代，但已明显落后",
+      "reason": "Amazon Nova 初代",
+      "type": "text"
+    },
+    "nova-lite": {
+      "superseded_by": "站点无更新代，但已明显落后",
+      "reason": "Amazon Nova 初代",
+      "type": "text"
+    },
+    "nova-micro": {
+      "superseded_by": "站点无更新代，但已明显落后",
+      "reason": "Amazon Nova 初代",
+      "type": "text"
+    },
+    "nova-pro": {
+      "superseded_by": "站点无更新代，但已明显落后",
+      "reason": "Amazon Nova 初代",
+      "type": "text"
+    },
+    "qwen3-14b": {
+      "superseded_by": "qwen3.8 系列",
+      "reason": "Qwen3 首代（版本号未带小数）",
+      "type": "text"
+    },
+    "qwen3-235b": {
+      "superseded_by": "qwen3.8 系列",
+      "reason": "Qwen3 首代（版本号未带小数）",
+      "type": "text"
+    },
+    "qwen3-235b-a22b-2507": {
+      "superseded_by": "qwen3.8 系列",
+      "reason": "Qwen3 首代（版本号未带小数）",
+      "type": "text"
+    },
+    "qwen3-235b-a22b-thinking-2507": {
+      "superseded_by": "qwen3.8 系列",
+      "reason": "Qwen3 首代（版本号未带小数）",
+      "type": "text"
+    },
+    "qwen3-coder": {
+      "superseded_by": "qwen3.8 系列",
+      "reason": "Qwen3 首代（版本号未带小数）",
+      "type": "text"
+    },
+    "qwen3-coder-30b-a3b-instruct": {
+      "superseded_by": "qwen3.8 系列",
+      "reason": "Qwen3 首代（版本号未带小数）",
+      "type": "text"
+    },
+    "qwen3-omni-30b-a3b-thinking": {
+      "superseded_by": "qwen3.8 系列",
+      "reason": "Qwen3 首代（版本号未带小数）",
+      "type": "text"
+    },
+    "qwen3-vl-30b-a3b-instruct": {
+      "superseded_by": "qwen3.8 系列",
+      "reason": "Qwen3 首代（版本号未带小数）",
+      "type": "text"
+    },
+    "qwen3.5-122b-a10b": {
+      "superseded_by": "qwen3.8 系列",
+      "reason": "落后 3 个次版本",
+      "type": "text"
+    },
+    "qwen3.5-27b": {
+      "superseded_by": "qwen3.8 系列",
+      "reason": "落后 3 个次版本",
+      "type": "text"
+    },
+    "qwen3.5-35b-a3b": {
+      "superseded_by": "qwen3.8 系列",
+      "reason": "落后 3 个次版本",
+      "type": "text"
+    },
+    "qwen3.5-397b-a17b": {
+      "superseded_by": "qwen3.8 系列",
+      "reason": "落后 3 个次版本",
+      "type": "text"
+    },
+    "qwen3.5-9b": {
+      "superseded_by": "qwen3.8 系列",
+      "reason": "落后 3 个次版本",
+      "type": "text"
+    },
+    "recraft-v2": {
+      "superseded_by": "recraft-v4.1",
+      "reason": "Recraft v2/v3",
+      "type": "image"
+    },
+    "recraft-v3": {
+      "superseded_by": "recraft-v4.1",
+      "reason": "Recraft v2/v3",
+      "type": "image"
+    },
+    "seedance-1.0-pro": {
+      "superseded_by": "seedance-2.5",
+      "reason": "落后 2 代",
+      "type": "video"
+    },
+    "seedream-4.5": {
+      "superseded_by": "seedream-5.0",
+      "reason": "落后 1 代，且同系列 5.0 在售",
+      "type": "image"
+    },
+    "tts-1-hd": {
+      "superseded_by": "tts-gemini-3-1 / tts-qwen3 等",
+      "reason": "OpenAI 初代 TTS",
+      "type": "speech"
+    },
+    "wan-2.5-preview": {
+      "superseded_by": "wan-3.0-video",
+      "reason": "预览版且已有 3.0",
+      "type": "video"
+    }
+  }
+}
