@@ -421,8 +421,7 @@ python -m tools.ops.compare_snapshot raw/cheaperinference-20261023-full.json
 | 冗余 / 冲突 | 现象 | 处理 |
 |:---|:---|:---|
 | `capabilities` 里的 `context-128k` / `context-1m` | 126 条**同时带两个**（是「≥阈值」累积标签），201 条一个都没带 | 与 `contextLength` 重复，丢弃 |
-| `detail_ContextWindow` / `contextLength` | 两边都有时 **0 处不一致**；152 条缺数字（其中 2 条从原文回填，150 条两边都没有） | 只输出一个 `context_length`，并附 `context_source` |
-| `vision` vs `image-input` token vs `detail_VisionInput` | token 过度声明 21 条（bool 与原文都说没有） | 以 bool + 原文为准，token 降为旁证 |
+| `detail_ContextWindow` / `contextLength` | 两边都有时 **0 处不一致**；152 条缺数字（其中 2 条从原文回填，150 条两边都没有） | 只输出一个 `context_length`，并附 `context_source` || `detail_MaximumOutput` / `maxOutputTokens` | 两边都有 352 条、**0 处不一致**；151 条两边都没有；**19 条输出上限 > 上下文** | 只输出一个 `max_output_tokens`；超过上下文的记 `conflicts[].reason=exceeds_context`，不擅自截断 || `vision` vs `image-input` token vs `detail_VisionInput` | token 过度声明 21 条（bool 与原文都说没有） | 以 bool + 原文为准，token 降为旁证 |
 | `detail_Input` 只写 `text`，但 `detail_VisionInput = Supported` | 13 条（多模态模型，**文本和截图都能输**） | 补上 `image`，来源记 `detail+vision` |
 | `reasoning` 同理 | token 过度声明 27 条 | 同上 |
 | `detail_Input` vs 输入 token | 65 处矛盾 | 以 `detail_Input` 为准；`Not reported` = 未知，不当 false |

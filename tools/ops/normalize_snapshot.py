@@ -200,6 +200,16 @@ def normalize_item(item) -> dict:
         conflicts.append({"field": "max_output_tokens", "numeric": max_output, "detail": detail_max})
     elif not max_output and detail_max:
         max_output, max_output_source = detail_max, "detail"
+    if context_length and max_output and max_output > context_length:
+        # 该站实测 19 条「输出上限 > 上下文」，违反我们目录自己的不变式（max ≤ ctx）
+        conflicts.append(
+            {
+                "field": "max_output_tokens",
+                "reason": "exceeds_context",
+                "max_output_tokens": max_output,
+                "context_length": context_length,
+            }
+        )
 
     record = {
         "id": item.get("id"),

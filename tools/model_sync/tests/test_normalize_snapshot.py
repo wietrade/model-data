@@ -133,6 +133,21 @@ class NormalizeTest(unittest.TestCase):
         self.assertEqual(ns._number("1,048,576 tokens"), 1048576)
         self.assertIsNone(ns._number("Not reported"))
 
+    def test_max_output_exceeding_context_is_flagged_not_clamped(self):
+        """该站有 19 条输出上限大于上下文；不能静默截断，也不能当真。"""
+        record = ns.normalize_item(
+            item(
+                contextLength=100000,
+                maxOutputTokens=128000,
+                detail_ContextWindow="100,000 tokens",
+                detail_MaximumOutput="128,000 tokens",
+            )
+        )
+        self.assertEqual(record["max_output_tokens"], 128000)
+        conflict = record["conflicts"][0]
+        self.assertEqual(conflict["reason"], "exceeds_context")
+        self.assertEqual(conflict["context_length"], 100000)
+
 
 class BillingDimensionTest(unittest.TestCase):
     def test_endpoint_decides(self):
