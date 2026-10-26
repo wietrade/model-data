@@ -19,6 +19,16 @@ python -m tools.ops.verify_official_prices \
 # 或现场抓取：--fetch（走 HTTPS_PROXY / --proxy）
 ```
 
+> **`GEMINI_API_KEY` 帮不上价格**。`generativelanguage.googleapis.com` 是推理接口，返回的字段只有
+> `inputTokenLimit` / `outputTokenLimit` / `supportedGenerationMethods` / `thinking` 等元数据，
+> **schema 里没有任何价格字段**（2026-10-26 实测）。定价属于商业文档，只能从上面的页面拿。
+> 想要机器可读的价格得走 Vertex AI 的 `cloudbilling.googleapis.com` SKU 接口，那需要 GCP 项目 +
+> 服务账号，不是 API key。
+>
+> `pricing.md` 这个 URL 会返回 200，但内容是 **HTML**（和 `pricing` 完全一样，`.md` 后缀被忽略），
+> `llms.txt` 是 404。页面里确实有 88 个 `<table>`、价格是可读文本，所以理论上可解析，
+> 但每模型重复三列且夹着生效日期与过渡价，目前仍按人工抄录处理。
+
 人工确认后写进 `api/newapi/pricing.official.json`，每条必须带 `source_url` 与 `quote`（官方原文）。
 `pricing.json` 由 `python -m tools.model_sync.sync_models --only pricing` 生成，不要手改。
 
