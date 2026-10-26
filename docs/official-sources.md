@@ -47,10 +47,14 @@ python -m tools.ops.verify_official_prices \
 人工确认后写进 `api/newapi/pricing.official.json`，每条必须带 `source_url` 与 `quote`（官方原文）。
 `pricing.json` 由 `python -m tools.model_sync.sync_models --only pricing` 生成，不要手改。
 
-> **`gpt-oss-120b` 不采用 GCP 价（2026-10-26 决定）**。Google Cloud 列 $0.09 / $0.36，
-> 但我们目录记 **0.15 / 0.6**——我方进货渠道不是 GCP，按 GCP 价会低于成本。
-> 同理 `gpt-oss-20b` 在 GCP 是 0.07 / 0.25，不直接套用。
-> 该条目前没有 `source_url`，属于已知例外；要改之前先确认渠道。
+> **`pricing.json` 记的是厂商牌价，不是我们的进货成本。** 成本（结算价）走私有的
+> `billing_basis.json`，由 `export_billing --basis` 在部署机生成，不进本仓库。
+> 所以抄价时**不用关心我们从哪进货**——只需回答「厂商自己的定价页写的是多少」。
+>
+> 例外：**开源权重模型没有厂商牌价**。`gpt-oss-120b` / `gpt-oss-20b` 在 OpenAI 页面只有
+> 模型卡（Apache 2.0、HuggingFace 下载），**没有价格表**；Google Cloud 列的是它自己的托管价
+> （$0.09 / $0.36）。这类只能记某个托管方的参考价，并在 `notes` 写明是哪一家、哪个日期。
+> 目前 `gpt-oss-120b` 记 0.15 / 0.6，**出处待补**。
 
 ## 二、元数据（上下文 / 最大输出）
 
