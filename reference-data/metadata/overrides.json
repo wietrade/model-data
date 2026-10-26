@@ -183,7 +183,7 @@
     },
     {
       "model_name": "gemini-3-pro-image-preview",
-      "note": "官方模型页 ai.google.dev/gemini-api/docs/models/gemini-3-pro-image（2026-09-08 更新）：输入 token 上限 65,536，输出 32,768；官方价格表 >200K 档对本模型不可达。",
+      "note": "官方模型页 ai.google.dev/gemini-api/docs/models/gemini-3-pro-image（2026-09-08 更新）：输入 token 上限 65,536，输出 32,768；官方价格表 >200K 档对本模型不可达。 2026-10-26 复核：该 id 无独立模型页（404），上面引的是同族正式版 `gemini-3-pro-image` 的页面；`models.list` 对该 preview 报 131,072，与正式版页面（65,536）和豆包核实表（65,536）都不一致，取 65,536 与同族保持一致——只有 API 一面之辞，不据此改目录。",
       "fields": {
         "context_length": 65536,
         "max_output_tokens": 32768
