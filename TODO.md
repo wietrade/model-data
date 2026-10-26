@@ -24,8 +24,8 @@ DeepSeek 四条汇率统一、`gemini-3-pro-image` / `-preview` / `gemini-3.1-fl
 - **发现时间**：2026-10-26
 - **现象**：跑 `sync_models --only pricing` 时，models.dev 把 `kimi-k3.1-pro` 的牌价从
   `input 2 / output 10 / cache_write 2` 改成了 `input 4 / output 20 / cache_write 4`（全部翻倍）。
-  当时为了不让这次「结算价迁私有」的提交掺入无关变更，已手工回退；每日 02:17 UTC 的
-  workflow 会把它作为独立 PR 再提出来。
+  当时为了不让这次「结算价迁私有」的提交掺入无关变更，已手工回退。
+  **2026-10-26 起 workflow 不再定时运行**，这条只能手工去核。
 - **要做什么**：
   1. 去 Moonshot 官方定价页核对 `kimi-k3.1-pro` 现价；
   2. 若确为涨价：更新 `reference-data/price/pricing.official.json`（带 `source_url` + `quote`）→
@@ -36,7 +36,32 @@ DeepSeek 四条汇率统一、`gemini-3-pro-image` / `-preview` / `gemini-3.1-fl
   4. 若 models.dev 报错（例如把 `cache_write` 单位搞错）：在 `overrides.json` 写死正确值并留 note。
 - **参考**：`docs/official-sources.md`
 
-## 2. GitHub 侧清理旧的不可达对象（可选）
+## 2. 核实的剩余缺口（来自 2026-10-26 那一期）
+
+### 数据侧
+
+- [ ] **44 条主流缺口**待核：先做 15 条「缺数值」的——`gpt-realtime-2` / `-mini` / `-1.5`、`gpt-live-1`、
+      `gemini-3.8-live` / `-extended-thinking`、`grok-voice-3.0` / `-think-fast-2.0`、
+      四个 embedding（`text-embedding-005`、`gemini-embedding-2`、`codestral-embed`、
+      `text-multilingual-embedding-002`，只缺上下文上限）、三个决策模型（只缺 max output）。
+      其余 29 条是站点连模态都没填。
+- [ ] **3 条 `medium` 修正**待人工过目：`flux-kontext-max` / `-pro` 上下文 512、
+      `nemotron-3.5-super-vl` 最大输出 16,384。
+- [ ] Claude 两批共 **45 条「未落盘」结论**需要逐条裁决（P0 10 / P1 24 / P2 6 / P3 4）。
+
+### 工程侧
+
+- [ ] **B2** 抓取成功后做 schema 漂移检测（新增/消失字段立刻告警）
+- [ ] **B3** L1 对 L1 的快照 diff 工具（现在只能人工比对，站点一直在变）
+- [ ] **B4** 确定抓取节奏基线（多久抓一次、变更率多少算异常）
+- [ ] **B7** `normalize_snapshot` 不认识 `detail_Provider` / `costPlus: null`
+
+### 发布决策
+
+- [ ] L1 + L3 各约 1.2 MB，每次抓取都要落盘 → 需要定保留策略（按周/按月归档？）
+- [ ] L3 目前没有消费方：我们的模型目录只有 67 个模型，527 条里绝大部分用不上
+
+## 3. GitHub 侧清理旧的不可达对象（可选）
 
 2026-10-26 重写历史并强推后，`main` 已不含内部渠道名 / 结算 URL / 采购成本表述，但 GitHub 上
 旧提交对象可能仍可通过 SHA 访问一段时间。若在意，可联系 GitHub Support 触发

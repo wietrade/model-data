@@ -48,9 +48,6 @@ L3  source-data/cheaperinference-<date>.verified.json   L1 + L2，给下游用
 
 L2 是**唯一**允许写入「外部知识」的地方，并且每条都必须能被单独复核。
 
-每一期的目录里还有一份人读的核实报告（`report.md`），记录这批修正的统计与争议条目，
-例如 `corrections/20261026/report.md`。
-
 ## 文件格式
 
 ```json
@@ -106,10 +103,12 @@ L2 是**唯一**允许写入「外部知识」的地方，并且每条都必须�
 | `medium` | 有官方依据，但结论含一步推断（如「NIM 示例默认值」「社区模型无官方 max output」） | 默认不应用，人工确认后用 `--min-confidence medium` |
 | `low` | 只有聚合站/论坛线索 | 不写入本文件，只进疑点清单 |
 
-## 当前状态（2026-10-26）
+## 当前状态（2026-10-26 那一期）
 
-- 条目 **131 条**，覆盖 84 个模型；`high` 128 / `medium` 3
-- 来源：豆包 138 条核实报告（每条带厂商官方 URL）+ Claude 复核稿中**能对上官方页**的 41 条
+- 条目 **162 条**，覆盖 **116 个模型**；`confidence` 实测 `high` 159 / `medium` 3
+  （文件头 `counts` 里写的 153/3 是生成时的旧值，以条目实际内容为准）
+- 来源构成 `origin`：`ours` 107（我方逐页核对官方文档）、`claude` 41、`override` 8
+  （直接读官方配置文件）、`claude-batch2` 6
 - 8 条是读官方**配置文件**直接拿到的，优先于任何二手转述：
   `sentence_bert_config.json` 的 `max_seq_length`（MiniLM-L6 256、MiniLM-L12 128、mpnet 384、
   paraphrase-MiniLM 128、clip-multilingual 128、multi-qa-mpnet 512），CLIP `text_config.max_position_embeddings` 77
@@ -219,3 +218,65 @@ python -m tools.ops.classify_scope --list ignore
 # 老代清单（派生）
 python tools/ops/mark_legacy.py
 ```
+
+## 聚合站的典型伪值：943,718 / 0.9× / `max_completion_tokens`
+
+聚合站会把**思考预算**或**折算值**当成 `max_output_tokens` 写进目录，实例：
+
+| 模型 | 聚合站给的 max | 官方实际 |
+|:---|---:|---:|
+| `gemini-3.8-flash-tiered` | 943,718 | 该模型并不存在（3.8 Flash 平价，无分档版） |
+| `deepseek-v4.1-flash` | 943,718 | 384,000（官方「输出最大 384K」） |
+| 多个 OpenAI 模型 | 58,982 一类 | 官方 65,536（聚合站做了 0.9× 折算） |
+
+判断方法：看到 `943,718` / `0.9×` 折算值 / `max_completion_tokens` 这类数字，
+**先当聚合站伪值处理**，回官方页确认后再落盘。
+
+## 三个容易记错的字段口径
+
+**embedding 模型**：站点把最大输入填进了 `maxOutputTokens`（如 `bge-m3` 两个字段都是 8,192）。
+embedding 没有「输出 token」，输出是向量 → `maxOutputTokens` 一律 `null`，输入上限记在 `contextLength`。
+
+**`detail_Provider` ≠ `providerLabel`**：详情页的 Provider 是**卖方/上游**（Venice AI、SpaceXAI 之类），
+不是模型开发方。`providerLabel` 记开发方（OpenAI、Anthropic、ByteDance…），站点原文留在 `detail_Provider`。
+已修 12 条，例如 `tts-1` / `whisper-1` 站点写 "Venice AI"，实际是 OpenAI。
+
+**布尔值映射**：`detail_VisionInput` 这类字段——
+
+| 站点写法 | 含义 | 转为 |
+|:---|:---|:---|
+| `Supported` | 支持 | `true` |
+| `Not supported` | 不支持 | `false` |
+| `Not reported` | 站点没报 | `null` |
+
+## 站点侧已知问题（照实记录，不去猜）
+
+| 问题 | 数量（2026-10-26 快照） | 处理 |
+|:---|:---|:---|
+| `detail_Input` / `detail_Output` 为 `Not reported` | 125 / 125 | 保留；用 `capabilities` 表达能力 |
+| `detail_SupportedParameters` 为 `Not reported` | 255 | 保留 |
+| 端点写占位符 `None has passed a live request yet` | 4 | 转为 `null` |
+| `servedAt` 为 `null`（无人调用过） | 57 | 保留 |
+| `providerSlug` / `costPlus` 为 `null` | 250 / 451 | 保留 |
+| `vision: true` 但 Input 里没有 image | 48 | 两处都留，冲突登记 |
+| 有 `video-input` 标签但 Input 里没有 video | 68 | 同上 |
+
+> **站点数据是动态计算的。** 相隔 20 分钟的两次抓取，有 9 处不同
+> （`capabilities` 6 处、`detail_Endpoints` 3 处）——端点和能力按近期真实流量算出来。
+> 所以：每次核实必须绑定一个**具体快照**；跨快照比较时这两个字段的差异
+> **不能当成错误**。
+
+## 验收清单（每批新修正必须全部通过）
+
+1. `detail_*` 零改动 —— 动了就是废掉证据链，直接打回
+2. 每条都有 `source_url`，且是官方域名（第三方只能标 `third-party`，不能进 `high`）
+3. `expected_old` 必须等于当前 L1 的实际值（防止上游已变、修正在改空气）
+4. 不得引入 `maxOutputTokens > contextLength`
+5. 不得自造枚举值（`"embedding"`、`"Realtime (speech-to-speech)"` 这类站点没出现过的字符串）
+6. `providerLabel` 必须是模型开发方，不是转售方
+7. 拿不准的一律进 `pending`，不允许用 `low` 置信度硬写盘
+8. 聚合站的值不得覆盖任何官方值；冲突时以官方为准并在备注记下差异
+9. 不得出现 `943,718` / `0.9×` 折算值 / `max_completion_tokens` 这类聚合站伪值
+
+> 这套闸门在第一轮拦下过一批问题：518 处 `detail_*` 被覆盖、新增 `maxOutputTokens > contextLength`、
+> 靠「多数投票」删掉官方确认支持的能力、以及 449 条 `costPlus: false` 的凭空猜测。
