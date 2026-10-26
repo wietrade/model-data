@@ -206,6 +206,13 @@
       }
     },
     {
+      "model_name": "gemini-3.8-flash-tiered",
+      "note": "2026-10-26 官方核实：`gemini-3.8-flash-tiered` 是我们对 3.8 Flash 的阶梯计价命名，型号与 `gemini-3.8-flash` 相同；官方页写 Output token limit 65,536。聚合源给的 943,718 是思考预算，不是输出上限。",
+      "fields": {
+        "max_output_tokens": 65536
+      }
+    },
+    {
       "model_name": "gemini-4-argon",
       "note": "官方模型页 https://ai.google.dev/gemini-api/docs/models/gemini-4-argon（2026-10-26 复核）：Context window 1,048,576（输入输出统一），Max output 65,536（默认同步；long decode 可到 1,048,576）。原先的 943,718 来自 openrouter，不是官方口径。",
       "fields": {

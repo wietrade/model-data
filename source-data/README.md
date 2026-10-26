@@ -46,16 +46,38 @@ source-data/
 - 修正方向相反——前者是「站点错了、官方是对的」，后者是「我们的目录 vs 官方页」的差异报告；
 - 生命周期相反——前者删了就没了，后者随时能重抓，所以默认不进 git。
 
+### 拿到 404 先怀疑我们的 URL，不是「官方没数据」
+
+`page_url()` 是拿**我们的模型名**拼官方地址的，而我们的命名里混了四种官方没有的东西：
+
+| 我们的名字 | 官方 id | 处理 |
+|:---|:---|:---|
+| `claude-haiku-4-5-20251001` | `haiku-4-5` | 去掉日期快照后缀 |
+| `gemma-4-26b-a4b-it:free` | `gemma-4-26b-a4b-it` | 去掉聚合源的 `:free` |
+| `gemini-3.8-flash-tiered` | `gemini-3.8-flash` | 去掉平台自造的 `-tiered` |
+| `gemini-3-pro-image-preview` | —— | **不退化**：preview 是另一个 SKU |
+
+`harvest_official` 现在会按上表逐级退化再取，并把命中的名字记在 `resolved_name`、
+尝试过的 URL 记在 `url_candidates`。2026-10-26 那次有 9 个 404，其中 5 个是**我们自己拼错**，
+退化后拿到正确页面，还揪出 1 处真错（`gemini-3.8-flash-tiered` 输出上限 943,718 → 65,536）。
+
+真 404 只剩两种，都要单独处理：
+
+| 情形 | 例子 | 怎么判 |
+|:---|:---|:---|
+| 厂商没有逐模型页 | `gemma-4-*`（Gemma 只有模型卡汇总页） | 记 `no_official_page`，靠 `models.list` 或人工 |
+| 这个 id 官方根本不存在 | `gpt-image-2.5`、`gpt-image-medium` | 要么改 ID，要么从目录里删掉 |
+
 `official-metadata-*.json` 里 `basis` 的含义：
 
 | `basis` | 含义 | 能不能用来改数据 |
 |:---|:---|:---|
-| `page` | 逐模型官方页解析成功 | 能，`--apply` 会写进 `reference-data/metadata/overrides.json` |
-| `api_only` | 只有 `models.list` 有值，官方页 404 | 不能，只作提示 |
-| `none` | 页面 404 或表格解析失败 | 不能，`context_length` 为 `null` 表示**没取到**，不是「官方说是 0」 |
+| `page` | 逐模型官方页解析成功（可能来自 `resolved_name`） | 能，`--apply` 会写进 `reference-data/metadata/overrides.json` |
+| `api_only` | 只有 `models.list` 有值，官方页不存在 | 不能，只作提示 |
+| `none` | 所有候选 URL 都没拿到有效表格 | 不能，`null` 表示**没取到**，不是「官方说是 0」 |
 
-> 看这个文件里的「差异」时先看 `basis`：`basis: none` 那几条的 `null` 只是没数据，
-> 不是发现我们目录错了（当前 12 条差异里有 11 条属于这种）。
+> 判「官方说 0」还是「我们没取到」，看 `status` 与 `resolved_name`：
+> `404` + 所有候选都 404 才是前者；`unparsed` 说明页在但表格解析失败，属于解析器要修。
 
 ## 约定
 

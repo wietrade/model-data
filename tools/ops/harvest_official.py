@@ -30,6 +30,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import sys
 import tempfile
 import urllib.error
@@ -58,6 +59,58 @@ def page_url(vendor: str, name: str) -> str | None:
     if vendor == "Google":
         return "https://ai.google.dev/gemini-api/docs/models/%s?hl=en" % name
     return None
+
+
+# 平台侧后缀：官方站点上不存在这些 id，但底下的基础型号存在
+_DATE_SUFFIX = re.compile(r"-\d{8}$|-\d{4}-\d{2}-\d{2}$")
+_PLATFORM_SUFFIXES = ("-tiered",)
+
+
+def name_variants(name: str) -> list[str]:
+    """把我们的模型名退化成可能的**官方模型 id**，按可信度从高到低。
+
+    直接拿平台命名去拼官方 URL 会得到 404，但那**不等于「官方没有这个模型」**。
+    实测到的四类（2026-10-26 快照 9 个 404 里的 7 个）：
+
+    * `claude-haiku-4-5-20251001` → 日期快照后缀，官方 slug 是 `haiku-4-5`
+    * `gemma-4-26b-a4b-it:free`  → 聚合源后缀，官方 id 没有 `:free`
+    * `gemini-3.8-flash-tiered`  → 平台自造的阶梯计价版本
+    * 而 `gemini-3-pro-image-preview` 这种 `-preview` 变体**不退化**：
+      preview 是另一个 SKU，借用非 preview 页的数值会污染目录。
+
+    先试原名，再逐级去掉这些后缀；第一个 200 即采用，并在结果里记下 `resolved_name`。
+    全部 404 时才能判定为「官方确实没这个 id」。
+    """
+    out = [name]
+
+    def add(candidate: str) -> None:
+        if candidate and candidate not in out:
+            out.append(candidate)
+
+    base = name
+    if ":" in base:
+        base = base.split(":", 1)[0]
+        add(base)
+    # 后缀可能叠加（gemini-3.8-flash-tiered-20260908），逐级剥到不再变化为止
+    reduced = True
+    while reduced:
+        reduced = False
+        stripped = _DATE_SUFFIX.sub("", base)
+        if stripped != base:
+            base = stripped
+            add(base)
+            reduced = True
+            continue
+        for suffix in _PLATFORM_SUFFIXES:
+            if base.endswith(suffix):
+                base = base[: -len(suffix)]
+                add(base)
+                reduced = True
+                break
+    # 注意**不做** `-preview` 退化：preview 是另一个 SKU（规格可能不同），
+    # 借用非 preview 页的数值会把它抬成 `basis: page` 从而被 --apply 写进目录。
+    # 这类模型只有 models.list 一面之辞，保持 basis: api_only 由人工判断。
+    return out
 
 
 class Fetcher:
@@ -107,14 +160,30 @@ def collect(fetcher: Fetcher, catalog, gemini_map):
     for model in catalog:
         vendor = model.get("vendor_name") or ""
         name = model.get("model_name") or ""
-        url = page_url(vendor, name)
+        # 拿平台命名直接拼官方 URL 会 404；逐级退化到官方 id 再判定
+        url = None
+        status, body = "ERR", b""
+        resolved = ""
+        tried = []
+        for candidate in name_variants(name):
+            attempt = page_url(vendor, candidate)
+            if not attempt or attempt in tried:
+                continue
+            tried.append(attempt)
+            got_status, got_body = fetcher.get(attempt)
+            if url is None:
+                url, status, body = attempt, got_status, got_body
+            if got_status == "200":
+                url, status, body = attempt, got_status, got_body
+                resolved = candidate
+                break
         if not url:
             continue
-        status, body = fetcher.get(url)
         parsed = {}
         basis = "none"
         if status != "200":
-            kind = "unsupported" if status in ("404", "ERR") else "error"
+            # 全部候选都 404 才算「官方没有这个 id」；单个 404 只说明 URL 拼法不对
+            kind = "no_official_page" if status == "404" else "error"
         else:
             if vendor == "OpenAI":
                 parsed = official_meta.parse_openai(body)
@@ -142,6 +211,8 @@ def collect(fetcher: Fetcher, catalog, gemini_map):
                 "source_kind": kind,
                 "basis": basis,
                 "source_url": url,
+                "resolved_name": resolved or name,
+                "url_candidates": tried,
                 "context_length": parsed.get("context_length"),
                 "max_output_tokens": parsed.get("max_output_tokens"),
                 "conflicts": parsed.get("conflicts"),
