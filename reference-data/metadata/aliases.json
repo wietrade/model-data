@@ -1,8 +1,10 @@
 {
-  "_comment": "渠道/上游的模型 id → 我们目录里的官方模型。这些 id 在厂商官方列表里不存在（OpenAI: https://developers.openai.com/api/docs/models/all），但上游确实在卖、客户可能在调用，所以目录不建条目，只保留计费表达式。映射目标刻意选**与本条原表达式完全等价**的模型（同样按 ¥0.12/张 → fixed(0.017647)*image_count），让改名不改变任何金额；`gpt-image-2.5-sunburst` 走官方 token 价，不能当别名目标。",
+  "_comment": "渠道/上游的模型 id → 我们目录里的官方模型。这些 id 在厂商官方列表里不存在，但上游可能按组售卖、客户可能仍在调用；映射后目录不建条目，只借用该官方模型的计费表达式。",
+  "_rule": "映射目标必须与原表达式等价，否则改名会静默改价（例：gpt-image-2.5-sunburst 走官方 token 价，不能当别名目标）。",
   "_checked_at": "2026-10-26",
-  "aliases": {
-    "gpt-image-2.5": "gpt-image-2.5-flare",
-    "gpt-image-medium": "gpt-image-2"
-  }
+  "_history": [
+    "2026-10-26 曾映射 gpt-image-2.5 -> gpt-image-2.5-flare、gpt-image-medium -> gpt-image-2；",
+    "当日随模型下架一并删除（models 表与渠道 ability 均已移除），恢复售卖时再加回来。"
+  ],
+  "aliases": {}
 }

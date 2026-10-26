@@ -22,8 +22,11 @@ from tools.model_sync import validate as vd  # noqa: E402
 
 class AliasFileTest(unittest.TestCase):
     def test_repo_alias_file_loads(self):
+        """文件必须在，允许暂时为空（没有要映射的 id 时）。"""
+        path = ROOT / "reference-data" / "metadata" / "aliases.json"
+        self.assertTrue(path.exists(), "aliases.json 必须存在，哪怕 aliases 是空对象")
         aliases = eb.load_aliases()
-        self.assertTrue(aliases, "reference-data/metadata/aliases.json 应存在且非空")
+        self.assertIsInstance(aliases, dict)
         for alias, target in aliases.items():
             self.assertNotEqual(alias, target)
 
