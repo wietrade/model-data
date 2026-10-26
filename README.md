@@ -34,6 +34,11 @@ tools/ops/            官方页抓取核对、快照比对、upcoming 价格转�
 > 多一个文件都会让「发布了什么」变得含糊。`overrides.json` 里的取舍理由、`pricing.official.json`
 > 的抄录原文，都是**生成过程中的中间证据**，放 `sources/` 才不会与发布物混淆。
 
+> **`api/newapi/` 的边界**：只放**厂商公开数据** + new-api 落库必需的展示字段。
+> 属于我们平台的一律不进：结算价、成本、采购渠道名、聚合站报价、我们算出来的倍率与计费表达式。
+> 其中 `models.json` 的 `description` / `tags` / `icon` / `status` 是展示配置（供 new-api 直接写库），
+> 不含任何商业信息；`pricing.json` 只有官方价，无官方价的模型仅留 `{"price_kind": "unpriced"}` 一行。
+
 > 去哪里查官方数据、取哪几个字段、有哪些坑：见 [`docs/official-sources.md`](docs/official-sources.md)。
 > 当前待办：见 [`TODO.md`](TODO.md)。
 
@@ -221,7 +226,7 @@ overrides.json  >  官方逐模型页 / 官方 API（official:*，需官方内�
 | `api/newapi/models.json` | ✅ | 模型元数据（字段见上方「模型字段」） |
 | `api/newapi/vendors.json` | ✅ | 供应商字典。`models.json` 里只有 `vendor_name` 字符串，**图标 / 描述 / 展示开关只在这里**，两者必须成对拉 |
 | `api/i18n/{zh,en}/newapi/{models,vendors}.json` | 可选 | 翻译版描述，结构同上 |
-| `api/newapi/pricing.json` | 可选 | 参考价 + `billing_expr`（由参考价生成，**不含任何采购 / 结算价**；那个 `billing_expr` 只是示例，不是线上计费公式） |
+| `api/newapi/pricing.json` | 可选 | **官方价** + 出处。无官方价的模型只有 `{"price_kind": "unpriced"}` 一行（无数字）；文件里不含结算价、不含计费表达式 |
 
 四类文件都是 `{"success": true, "message": "ok", "data": [...]}` 信封，与 `basellm/llm-metadata` 一致
 （因此 new-api 只需把 `SYNC_UPSTREAM_BASE` 指过来，无需改代码）。
@@ -288,17 +293,17 @@ overrides.json  >  官方逐模型页 / 官方 API（official:*，需官方内�
 | 文件 | 内容 | 维护方式 |
 |:---|:---|:---|
 | `sources/pricing.official.json` | 厂商官方定价页抄录，`price_kind: vendor_official`，逐条带 `source_url` 与 `quote` | 人工（官方页核对后导入） |
-| `api/newapi/pricing.json` | 每个已发布模型的**参考价**（官方优先、聚合源次之）+ 由参考价生成的 `billing_expr` | `tools/model_sync` 生成 |
+| `api/newapi/pricing.json` | 每个已发布模型的**官方价** + 出处；无官方价的模型只留一行壳（`price_kind: unpriced`，不带任何数字） | `tools/model_sync` 生成 |
 
-> **官方价只是参考，不是计费依据。** 它有两个用途：① 给外部一个可核对的厂商牌价；
-> ② 作为我们自己算倍率 / 计费表达式的**输入**。
+> **`api/newapi/` 只放厂商公开数据。** 属于我们平台的一律不进这个目录：
+> 结算价（成本）、聚合站报价、渠道名、我们算出来的倍率与计费表达式。
 >
-> 由此推出三条约束：
-> 1. `pricing.json` 里的 `billing_expr` 是「按参考价」推出来的**示例表达式**，不是线上计费公式；
->    `export_billing` 从不读它，而是每次从价格字段重新生成（读完再叠私有结算价）。
-> 2. 线上生效的 `billing_setting.billing_expr` 是**用结算价重算**的结果，只存在于部署机，不进仓库。
+> 三条约束：
+> 1. `pricing.json` 里**没有** `billing_expr` / `billing_mode` —— 表达式是我们算的派生物，
+>    由部署机 `export_billing` 在导出时从价格字段重算（再叠私有结算价）。`validate` 会报错拦住它们。
+> 2. 线上生效的 `billing_setting.billing_expr` 是**用结算价重算** 的结果，只存在于部署机，不进仓库。
 > 3. 所以 new-api **不需要也不应该**拉 `pricing.json`——它只拉 `models.json` + `vendors.json`。
->    价格走「参考价 → `export_billing --basis` → `apply_billing.py`」这条链，结算价全程不出私域。
+>    价格走「官方价 → `export_billing --basis` → `apply_billing.py`」这条链，结 算价全程不出私域。
 
 ### 官方价的机器核对
 
@@ -378,9 +383,10 @@ Google 的 `https://ai.google.dev/gemini-api/docs/pricing.md` 返回的仍是 HT
 | `effective_from` / `effective_to` | 该价格的有效期（`YYYY-MM-DD`），长期价写 `null` |
 | `upcoming[]` | 已公布但尚未生效的价格（如 `gemini-4-argon` 2026-12-01 涨价） |
 | `per_image` | 按张计价；仅当没有 token 价时作为 `fixed()` 兜底，否则只供展示 |
-| `billing_mode` / `billing_expr` | **按牌价**生成的计费表达式，由 `tools/model_sync/expr.py` 从上面的价格字段确定性生成。线上实际结算使用结算价重算的版本（部署机导出），与此不同 |
-| `billing_unexpressible` | 官方价里无法用引擎变量表达的收费项，逐条列出，绝不猜测 |
 | `confidence` / `quote` | 抄录置信度与官方原文片段，用于复核 |
+
+> 本文件**不含** `billing_mode` / `billing_expr` / `billing_unexpressible`：那些是按价格算出来的
+> 派生物，由部署机导出时生成。`validate` 发现它们出现在本文件会直接报错。
 
 > `tiers` **不是「第 0 档」**：基础价是阈值以下的价，`tiers[i]` 是「达到阈值之后」的价。
 > 例：`claude-haiku-5.5` 基础 `input: 0.1`，`tiers[0] = {prompt_tokens_at_least: 100000, input: 0.5}`。
@@ -430,8 +436,8 @@ LLM 的 token 价继续用上面的标量字段；**按张 / 按秒 / 按次 / �
 
 ### 从数据源到线上
 
-`pricing.json` 里的 `billing_expr` 只是**按牌价**的表达式。线上按**结算价**计费，
-所以要在部署机上用私有 basis 导出一份 payload：
+`pricing.json` 只有官方价，**没有表达式**。线上按**结算价**计费，
+所以要在部署机上用私有 basis 现算一份 payload：
 
 ```bash
 # 1. 改完元数据/牌价后先自检（CI 也会跑）
@@ -466,7 +472,7 @@ python -m tools.model_sync.validate \
 ```
 
 检查项：名称唯一、vendor 存在、枚举闭集、`max_output ≤ context`、`:free` 与 `is_free` 一致、
-阶梯阈值落在上下文内、`billing_expr` 可由价格字段复现、快照与 `pricing.official.json` 一致、
+阶梯阈值落在上下文内、`pricing.json` 不含 `billing_*` 派生物与结算痕迹、快照与 `pricing.official.json` 一致、
 三份 i18n 文件是否同步。CI 会在每日同步后自动执行。
 
 > **改价红线**：任何价格变更都必须先改 `pricing.official.json` / `pricing.json`（结算成本则改私有

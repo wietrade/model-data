@@ -36,9 +36,7 @@
           "cache_write": null,
           "cache_write_1h": null
         }
-      ],
-      "billing_mode": "tiered_expr",
-      "billing_expr": "len <= 512000 ? tier(\"standard\", p * 0.3 + c * 1.2 + cr * 0.06) : tier(\"long_context\", p * 0.6 + c * 2.4 + cr * 0.12)"
+      ]
     },
     {
       "model_name": "chatgpt-image-latest",
@@ -141,9 +139,7 @@
             "size": "1536x1024"
           }
         }
-      ],
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 5 + c * 10 + img_o * 32 + cr * 1.25 + img_cr * 2 + img * 8)"
+      ]
     },
     {
       "model_name": "claude-fable-5",
@@ -161,9 +157,7 @@
       "output": 50.0,
       "cache_read": 1.0,
       "cache_write": 12.5,
-      "cache_write_1h": 20.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 10 + c * 50 + cr * 1 + cc * 12.5 + cc1h * 20)"
+      "cache_write_1h": 20.0
     },
     {
       "model_name": "claude-fable-5-1",
@@ -181,9 +175,7 @@
       "output": 50.0,
       "cache_read": 0.25,
       "cache_write": 12.5,
-      "cache_write_1h": 20.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 10 + c * 50 + cr * 0.25 + cc * 12.5 + cc1h * 20)"
+      "cache_write_1h": 20.0
     },
     {
       "model_name": "claude-haiku-4-5",
@@ -201,9 +193,7 @@
       "output": 5.0,
       "cache_read": 0.1,
       "cache_write": 1.25,
-      "cache_write_1h": 2.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 1 + c * 5 + cr * 0.1 + cc * 1.25 + cc1h * 2)"
+      "cache_write_1h": 2.0
     },
     {
       "model_name": "claude-haiku-4-5-20251001",
@@ -221,9 +211,7 @@
       "output": 5.0,
       "cache_read": 0.1,
       "cache_write": 1.25,
-      "cache_write_1h": 2.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 1 + c * 5 + cr * 0.1 + cc * 1.25 + cc1h * 2)"
+      "cache_write_1h": 2.0
     },
     {
       "model_name": "claude-haiku-5-5",
@@ -253,9 +241,7 @@
           "cache_write": 0.625,
           "cache_write_1h": 1.0
         }
-      ],
-      "billing_mode": "tiered_expr",
-      "billing_expr": "len <= 100000 ? tier(\"standard\", p * 0.1 + c * 0.5 + cr * 0.01 + cc * 0.125 + cc1h * 0.2) : tier(\"long_context\", p * 0.5 + c * 2.5 + cr * 0.05 + cc * 0.625 + cc1h * 1)"
+      ]
     },
     {
       "model_name": "claude-opus-4-8",
@@ -273,9 +259,7 @@
       "output": 25.0,
       "cache_read": 0.5,
       "cache_write": 6.25,
-      "cache_write_1h": 10.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 5 + c * 25 + cr * 0.5 + cc * 6.25 + cc1h * 10)"
+      "cache_write_1h": 10.0
     },
     {
       "model_name": "claude-opus-4.5",
@@ -293,9 +277,7 @@
       "output": 25.0,
       "cache_read": 0.5,
       "cache_write": 6.25,
-      "cache_write_1h": 10.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 5 + c * 25 + cr * 0.5 + cc * 6.25 + cc1h * 10)"
+      "cache_write_1h": 10.0
     },
     {
       "model_name": "claude-opus-4.6",
@@ -313,9 +295,7 @@
       "output": 25.0,
       "cache_read": 0.5,
       "cache_write": 6.25,
-      "cache_write_1h": 10.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 5 + c * 25 + cr * 0.5 + cc * 6.25 + cc1h * 10)"
+      "cache_write_1h": 10.0
     },
     {
       "model_name": "claude-opus-4.7",
@@ -333,9 +313,7 @@
       "output": 25.0,
       "cache_read": 0.5,
       "cache_write": 6.25,
-      "cache_write_1h": 10.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 5 + c * 25 + cr * 0.5 + cc * 6.25 + cc1h * 10)"
+      "cache_write_1h": 10.0
     },
     {
       "model_name": "claude-opus-5",
@@ -353,9 +331,7 @@
       "output": 25.0,
       "cache_read": 0.5,
       "cache_write": 6.25,
-      "cache_write_1h": 10.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 5 + c * 25 + cr * 0.5 + cc * 6.25 + cc1h * 10)"
+      "cache_write_1h": 10.0
     },
     {
       "model_name": "claude-opus-5-5",
@@ -373,9 +349,7 @@
       "output": 20.0,
       "cache_read": 0.2,
       "cache_write": 5.0,
-      "cache_write_1h": 8.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 4 + c * 20 + cr * 0.2 + cc * 5 + cc1h * 8)"
+      "cache_write_1h": 8.0
     },
     {
       "model_name": "claude-sonnet-5",
@@ -393,9 +367,7 @@
       "output": 10.0,
       "cache_read": 0.2,
       "cache_write": 2.5,
-      "cache_write_1h": 4.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 2 + c * 10 + cr * 0.2 + cc * 2.5 + cc1h * 4)"
+      "cache_write_1h": 4.0
     },
     {
       "model_name": "claude-sonnet-5-5",
@@ -413,9 +385,7 @@
       "output": 10.0,
       "cache_read": 0.1,
       "cache_write": 2.5,
-      "cache_write_1h": 4.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 2 + c * 10 + cr * 0.1 + cc * 2.5 + cc1h * 4)"
+      "cache_write_1h": 4.0
     },
     {
       "model_name": "deepseek-flash",
@@ -440,9 +410,7 @@
           "cache_read": 0.006
         },
         "off_peak_multiplier": 0.5
-      },
-      "billing_mode": "tiered_expr",
-      "billing_expr": "weekday(\"Asia/Shanghai\") >= 1 && weekday(\"Asia/Shanghai\") <= 5 && ((hour(\"Asia/Shanghai\") >= 9 && hour(\"Asia/Shanghai\") < 12) || (hour(\"Asia/Shanghai\") >= 14 && hour(\"Asia/Shanghai\") < 18)) ? tier(\"peak\", p * 0.2995 + c * 1.1981 + cr * 0.006) : tier(\"off_peak\", p * 0.14975 + c * 0.59905 + cr * 0.003)"
+      }
     },
     {
       "model_name": "deepseek-v4-pro",
@@ -467,9 +435,7 @@
           "cache_read": 0.0449
         },
         "off_peak_multiplier": 0.5
-      },
-      "billing_mode": "tiered_expr",
-      "billing_expr": "weekday(\"Asia/Shanghai\") >= 1 && weekday(\"Asia/Shanghai\") <= 5 && ((hour(\"Asia/Shanghai\") >= 9 && hour(\"Asia/Shanghai\") < 12) || (hour(\"Asia/Shanghai\") >= 14 && hour(\"Asia/Shanghai\") < 18)) ? tier(\"peak\", p * 1.3478 + c * 4.0435 + cr * 0.0449) : tier(\"off_peak\", p * 0.6739 + c * 2.02175 + cr * 0.02245)"
+      }
     },
     {
       "model_name": "deepseek-v4.1-flash",
@@ -494,9 +460,7 @@
           "cache_read": 0.006
         },
         "off_peak_multiplier": 0.5
-      },
-      "billing_mode": "tiered_expr",
-      "billing_expr": "weekday(\"Asia/Shanghai\") >= 1 && weekday(\"Asia/Shanghai\") <= 5 && ((hour(\"Asia/Shanghai\") >= 9 && hour(\"Asia/Shanghai\") < 12) || (hour(\"Asia/Shanghai\") >= 14 && hour(\"Asia/Shanghai\") < 18)) ? tier(\"peak\", p * 0.2995 + c * 1.1981 + cr * 0.006) : tier(\"off_peak\", p * 0.14975 + c * 0.59905 + cr * 0.003)"
+      }
     },
     {
       "model_name": "deepseek-v4.1-flash-1017",
@@ -521,9 +485,7 @@
           "cache_read": 0.006
         },
         "off_peak_multiplier": 0.5
-      },
-      "billing_mode": "tiered_expr",
-      "billing_expr": "weekday(\"Asia/Shanghai\") >= 1 && weekday(\"Asia/Shanghai\") <= 5 && ((hour(\"Asia/Shanghai\") >= 9 && hour(\"Asia/Shanghai\") < 12) || (hour(\"Asia/Shanghai\") >= 14 && hour(\"Asia/Shanghai\") < 18)) ? tier(\"peak\", p * 0.2995 + c * 1.1981 + cr * 0.006) : tier(\"off_peak\", p * 0.14975 + c * 0.59905 + cr * 0.003)"
+      }
     },
     {
       "model_name": "dots-3-note-preview:free",
@@ -535,9 +497,7 @@
       "unit": "per_1m_tokens",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"free\", p * 0 + c * 0)"
+      "cache_read": 0.0
     },
     {
       "model_name": "gemini-3-pro-image",
@@ -591,9 +551,7 @@
             "resolution": "4K"
           }
         }
-      ],
-      "billing_mode": "tiered_expr",
-      "billing_expr": "len <= 200000 ? tier(\"standard\", p * 2 + c * 12 + img_o * 120 + cr * 0.2) : tier(\"long_context\", p * 4 + c * 18 + img_o * 120)"
+      ]
     },
     {
       "model_name": "gemini-3-pro-image-preview",
@@ -647,9 +605,7 @@
             "resolution": "4K"
           }
         }
-      ],
-      "billing_mode": "tiered_expr",
-      "billing_expr": "len <= 200000 ? tier(\"standard\", p * 2 + c * 12 + img_o * 120 + cr * 0.2) : tier(\"long_context\", p * 4 + c * 18 + img_o * 120)"
+      ]
     },
     {
       "model_name": "gemini-3.1-flash-image",
@@ -702,9 +658,7 @@
             "resolution": "4K"
           }
         }
-      ],
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 0.5 + c * 3 + img_o * 60 + cr * 0.05)"
+      ]
     },
     {
       "model_name": "gemini-3.1-flash-image-preview",
@@ -757,9 +711,7 @@
             "resolution": "4K"
           }
         }
-      ],
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 0.5 + c * 3 + img_o * 60 + cr * 0.05)"
+      ]
     },
     {
       "model_name": "gemini-3.8-flash",
@@ -787,19 +739,12 @@
           "cache_read": 0.15,
           "cache_write": null
         }
-      ],
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 0.75 + c * 3.75 + cr * 0.075)"
+      ]
     },
     {
       "model_name": "gemini-3.8-flash-tiered",
       "vendor_name": "Google",
-      "price_kind": "aggregator_reference",
-      "source_kind": "aggregator",
-      "source": "settlement",
-      "currency": "USD",
-      "unit": "per_1m_tokens",
-      "retrieved_at": "2026-10-25T22:00:00+08:00"
+      "price_kind": "unpriced"
     },
     {
       "model_name": "gemini-4-argon",
@@ -827,9 +772,7 @@
           "cache_read": 0.2,
           "cache_write": null
         }
-      ],
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 2 + c * 10 + cr * 0.1)"
+      ]
     },
     {
       "model_name": "gemini-nano-banana-2.1",
@@ -847,9 +790,7 @@
       "output": 30.0,
       "output_text": 7.5,
       "output_image": 30.0,
-      "cache_read": 0.15,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 1.5 + c * 7.5 + img_o * 30 + cr * 0.15)"
+      "cache_read": 0.15
     },
     {
       "model_name": "gemma-4-26b-a4b-it:free",
@@ -865,9 +806,7 @@
       "confidence": "medium",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 0 + c * 0 + cr * 0)"
+      "cache_read": 0.0
     },
     {
       "model_name": "gemma-4-31b-it:free",
@@ -883,9 +822,7 @@
       "confidence": "medium",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 0 + c * 0 + cr * 0)"
+      "cache_read": 0.0
     },
     {
       "model_name": "glm-5",
@@ -901,9 +838,7 @@
       "confidence": "high",
       "input": 1.0,
       "output": 3.2,
-      "cache_read": 0.2,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 1 + c * 3.2 + cr * 0.2)"
+      "cache_read": 0.2
     },
     {
       "model_name": "glm-5.3",
@@ -919,9 +854,7 @@
       "confidence": "high",
       "input": 1.4,
       "output": 4.4,
-      "cache_read": 0.26,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 1.4 + c * 4.4 + cr * 0.26)"
+      "cache_read": 0.26
     },
     {
       "model_name": "glm-5.3-flash",
@@ -937,9 +870,7 @@
       "confidence": "high",
       "input": 0.15,
       "output": 0.5,
-      "cache_read": 0.03,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 0.15 + c * 0.5 + cr * 0.03)"
+      "cache_read": 0.03
     },
     {
       "model_name": "gpt-5.4",
@@ -967,9 +898,7 @@
           "cache_write": null,
           "cache_write_1h": null
         }
-      ],
-      "billing_mode": "tiered_expr",
-      "billing_expr": "len <= 272000 ? tier(\"standard\", p * 2.5 + c * 15 + cr * 0.25) : tier(\"long_context\", p * 5 + c * 22.5 + cr * 0.5)"
+      ]
     },
     {
       "model_name": "gpt-5.5",
@@ -997,9 +926,7 @@
           "cache_write": null,
           "cache_write_1h": null
         }
-      ],
-      "billing_mode": "tiered_expr",
-      "billing_expr": "len <= 272000 ? tier(\"standard\", p * 5 + c * 30 + cr * 0.5) : tier(\"long_context\", p * 10 + c * 45 + cr * 1)"
+      ]
     },
     {
       "model_name": "gpt-5.6-luna",
@@ -1030,9 +957,7 @@
           "cache_write_1h": null,
           "cache_write_12h": 1.0
         }
-      ],
-      "billing_mode": "tiered_expr",
-      "billing_expr": "len <= 272000 ? tier(\"standard\", p * 0.2 + c * 1.2 + cr * 0.02 + cc * 0.25) : tier(\"long_context\", p * 0.4 + c * 1.8 + cr * 0.04 + cc * 0.5)"
+      ]
     },
     {
       "model_name": "gpt-5.6-sol",
@@ -1063,9 +988,7 @@
           "cache_write_1h": null,
           "cache_write_12h": 20.0
         }
-      ],
-      "billing_mode": "tiered_expr",
-      "billing_expr": "len <= 272000 ? tier(\"standard\", p * 4 + c * 20 + cr * 0.4 + cc * 5) : tier(\"long_context\", p * 8 + c * 30 + cr * 0.8 + cc * 10)"
+      ]
     },
     {
       "model_name": "gpt-5.6-terra",
@@ -1096,9 +1019,7 @@
           "cache_write_1h": null,
           "cache_write_12h": 10.0
         }
-      ],
-      "billing_mode": "tiered_expr",
-      "billing_expr": "len <= 272000 ? tier(\"standard\", p * 2 + c * 12 + cr * 0.2 + cc * 2.5) : tier(\"long_context\", p * 4 + c * 18 + cr * 0.4 + cc * 5)"
+      ]
     },
     {
       "model_name": "gpt-6-astra",
@@ -1129,9 +1050,7 @@
           "cache_write_1h": null,
           "cache_write_12h": 50.0
         }
-      ],
-      "billing_mode": "tiered_expr",
-      "billing_expr": "len <= 272000 ? tier(\"standard\", p * 10 + c * 50 + cr * 1 + cc * 12.5) : tier(\"long_context\", p * 20 + c * 75 + cr * 2 + cc * 25)"
+      ]
     },
     {
       "model_name": "gpt-6-luna",
@@ -1162,9 +1081,7 @@
           "cache_write_1h": null,
           "cache_write_12h": 0.5
         }
-      ],
-      "billing_mode": "tiered_expr",
-      "billing_expr": "len <= 272000 ? tier(\"standard\", p * 0.1 + c * 0.5 + cr * 0.01 + cc * 0.125) : tier(\"long_context\", p * 0.2 + c * 0.75 + cr * 0.02 + cc * 0.25)"
+      ]
     },
     {
       "model_name": "gpt-6-sol",
@@ -1195,9 +1112,7 @@
           "cache_write_1h": null,
           "cache_write_12h": 10.0
         }
-      ],
-      "billing_mode": "tiered_expr",
-      "billing_expr": "len <= 272000 ? tier(\"standard\", p * 2 + c * 10 + cr * 0.2 + cc * 2.5) : tier(\"long_context\", p * 4 + c * 15 + cr * 0.4 + cc * 5)"
+      ]
     },
     {
       "model_name": "gpt-6.1-sol",
@@ -1228,46 +1143,22 @@
           "cache_write_1h": null,
           "cache_write_12h": 10.0
         }
-      ],
-      "billing_mode": "tiered_expr",
-      "billing_expr": "len <= 272000 ? tier(\"standard\", p * 2 + c * 10 + cr * 0.1 + cc * 2.5) : tier(\"long_context\", p * 4 + c * 15 + cr * 0.2 + cc * 5)"
+      ]
     },
     {
       "model_name": "gpt-image-2",
       "vendor_name": "OpenAI",
-      "price_kind": "aggregator_reference",
-      "source_kind": "aggregator",
-      "source": "models.dev",
-      "source_model_id": "openai/gpt-image-2",
-      "currency": "USD",
-      "unit": "per_1m_tokens",
-      "input": 5,
-      "output": 30,
-      "cache_read": 1.25,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 5 + c * 30 + cr * 1.25)"
+      "price_kind": "unpriced"
     },
     {
       "model_name": "gpt-image-2.5",
       "vendor_name": "OpenAI",
-      "price_kind": "aggregator_reference",
-      "source_kind": "aggregator",
-      "source": "settlement",
-      "currency": "USD",
-      "unit": "per_image",
-      "retrieved_at": "2026-10-26T03:00:00+08:00",
-      "fx_to_usd": 6.8
+      "price_kind": "unpriced"
     },
     {
       "model_name": "gpt-image-2.5-flare",
       "vendor_name": "OpenAI",
-      "price_kind": "aggregator_reference",
-      "source_kind": "aggregator",
-      "source": "settlement",
-      "currency": "USD",
-      "unit": "per_image",
-      "retrieved_at": "2026-10-26T03:00:00+08:00",
-      "fx_to_usd": 6.8
+      "price_kind": "unpriced"
     },
     {
       "model_name": "gpt-image-2.5-sunburst",
@@ -1286,9 +1177,7 @@
       "output_image": 30.0,
       "input_image": 8.0,
       "cache_read": 1.25,
-      "cache_read_image": 2.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 5 + img_o * 30 + cr * 1.25 + img_cr * 2 + img * 8)"
+      "cache_read_image": 2.0
     },
     {
       "model_name": "gpt-image-2.5-sunburst-2026-09-08",
@@ -1307,35 +1196,17 @@
       "output_image": 30.0,
       "input_image": 8.0,
       "cache_read": 1.25,
-      "cache_read_image": 2.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 5 + img_o * 30 + cr * 1.25 + img_cr * 2 + img * 8)"
+      "cache_read_image": 2.0
     },
     {
       "model_name": "gpt-image-medium",
       "vendor_name": "OpenAI",
-      "price_kind": "aggregator_reference",
-      "source_kind": "aggregator",
-      "source": "settlement",
-      "currency": "USD",
-      "unit": "per_image",
-      "retrieved_at": "2026-10-26T03:00:00+08:00",
-      "fx_to_usd": 6.8
+      "price_kind": "unpriced"
     },
     {
       "model_name": "gpt-oss-120b",
       "vendor_name": "OpenAI",
-      "price_kind": "aggregator_reference",
-      "source_kind": "aggregator",
-      "source": "openrouter",
-      "source_model_id": "openai/gpt-oss-120b",
-      "currency": "USD",
-      "unit": "per_1m_tokens",
-      "input": 0.15,
-      "output": 0.6,
-      "cache_read": 0.075,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 0.15 + c * 0.6 + cr * 0.075)"
+      "price_kind": "unpriced"
     },
     {
       "model_name": "grok-4.5",
@@ -1363,9 +1234,7 @@
           "cache_write": null,
           "cache_write_1h": null
         }
-      ],
-      "billing_mode": "tiered_expr",
-      "billing_expr": "len <= 200000 ? tier(\"standard\", p * 2 + c * 6 + cr * 0.3) : tier(\"long_context\", p * 4 + c * 12 + cr * 0.6)"
+      ]
     },
     {
       "model_name": "grok-4.6",
@@ -1393,9 +1262,7 @@
           "cache_write": null,
           "cache_write_1h": null
         }
-      ],
-      "billing_mode": "tiered_expr",
-      "billing_expr": "len <= 200000 ? tier(\"standard\", p * 2 + c * 6 + cr * 0.5) : tier(\"long_context\", p * 4 + c * 12 + cr * 1)"
+      ]
     },
     {
       "model_name": "grok-4.7",
@@ -1411,42 +1278,22 @@
       "confidence": "high",
       "input": 2.0,
       "output": 6.0,
-      "cache_read": 0.5,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 2 + c * 6 + cr * 0.5)"
+      "cache_read": 0.5
     },
     {
       "model_name": "grok-imagine-image",
       "vendor_name": "xAI",
-      "price_kind": "aggregator_reference",
-      "source_kind": "aggregator",
-      "source": "settlement",
-      "currency": "USD",
-      "unit": "per_image",
-      "retrieved_at": "2026-10-26T03:00:00+08:00",
-      "fx_to_usd": 6.8
+      "price_kind": "unpriced"
     },
     {
       "model_name": "grok-imagine-image-2.0",
       "vendor_name": "xAI",
-      "price_kind": "aggregator_reference",
-      "source_kind": "aggregator",
-      "source": "settlement",
-      "currency": "USD",
-      "unit": "per_image",
-      "retrieved_at": "2026-10-26T03:00:00+08:00",
-      "fx_to_usd": 6.8
+      "price_kind": "unpriced"
     },
     {
       "model_name": "grok-imagine-image-quality",
       "vendor_name": "xAI",
-      "price_kind": "aggregator_reference",
-      "source_kind": "aggregator",
-      "source": "settlement",
-      "currency": "USD",
-      "unit": "per_image",
-      "retrieved_at": "2026-10-26T03:00:00+08:00",
-      "fx_to_usd": 6.8
+      "price_kind": "unpriced"
     },
     {
       "model_name": "inkling-small:free",
@@ -1458,9 +1305,7 @@
       "unit": "per_1m_tokens",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"free\", p * 0 + c * 0)"
+      "cache_read": 0.0
     },
     {
       "model_name": "inkling:free",
@@ -1472,9 +1317,7 @@
       "unit": "per_1m_tokens",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"free\", p * 0 + c * 0)"
+      "cache_read": 0.0
     },
     {
       "model_name": "kimi-k3",
@@ -1492,25 +1335,12 @@
       "output": 15.0,
       "cache_read": 0.3,
       "cache_write": 3.0,
-      "cache_write_1h": 6.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 3 + c * 15 + cr * 0.3 + cc * 3 + cc1h * 6)"
+      "cache_write_1h": 6.0
     },
     {
       "model_name": "kimi-k3.1-pro",
       "vendor_name": "Moonshot AI",
-      "price_kind": "aggregator_reference",
-      "source_kind": "aggregator",
-      "source": "models.dev",
-      "source_model_id": "moonshotai/kimi-k3.1-pro",
-      "currency": "USD",
-      "unit": "per_1m_tokens",
-      "input": 2,
-      "output": 10,
-      "cache_read": 0.2,
-      "cache_write": 2,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 2 + c * 10 + cr * 0.2 + cc * 2)"
+      "price_kind": "unpriced"
     },
     {
       "model_name": "laguna-s-2.1:free",
@@ -1522,9 +1352,7 @@
       "unit": "per_1m_tokens",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"free\", p * 0 + c * 0)"
+      "cache_read": 0.0
     },
     {
       "model_name": "laguna-xs-2.1:free",
@@ -1536,9 +1364,7 @@
       "unit": "per_1m_tokens",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"free\", p * 0 + c * 0)"
+      "cache_read": 0.0
     },
     {
       "model_name": "lfm-2.5-2.6b:free",
@@ -1550,9 +1376,7 @@
       "unit": "per_1m_tokens",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"free\", p * 0 + c * 0)"
+      "cache_read": 0.0
     },
     {
       "model_name": "minimax-m3.1-flash",
@@ -1568,9 +1392,7 @@
       "confidence": "high",
       "input": 0.15,
       "output": 0.6,
-      "cache_read": 0.015,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 0.15 + c * 0.6 + cr * 0.015)"
+      "cache_read": 0.015
     },
     {
       "model_name": "nemotron-3.5-content-safety:free",
@@ -1582,9 +1404,7 @@
       "unit": "per_1m_tokens",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"free\", p * 0 + c * 0)"
+      "cache_read": 0.0
     },
     {
       "model_name": "nemotron-3.5-lightning:free",
@@ -1596,9 +1416,7 @@
       "unit": "per_1m_tokens",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"free\", p * 0 + c * 0)"
+      "cache_read": 0.0
     },
     {
       "model_name": "nemotron-3.5-super-vl:free",
@@ -1610,9 +1428,7 @@
       "unit": "per_1m_tokens",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"free\", p * 0 + c * 0)"
+      "cache_read": 0.0
     },
     {
       "model_name": "qwen3.8-flash",
@@ -1627,9 +1443,7 @@
       "retrieved_at": "2026-10-23T22:40:00+08:00",
       "confidence": "high",
       "input": 0.15,
-      "output": 0.47,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 0.15 + c * 0.47)"
+      "output": 0.47
     },
     {
       "model_name": "xing4.0-29b-a4b:free",
@@ -1641,9 +1455,7 @@
       "unit": "per_1m_tokens",
       "input": 0.0,
       "output": 0.0,
-      "cache_read": 0.0,
-      "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"free\", p * 0 + c * 0)"
+      "cache_read": 0.0
     }
   ]
 }

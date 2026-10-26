@@ -5,13 +5,13 @@
 | 产物 | 用途 | 是否被 new-api 自动消费 |
 |:---|:---|:---|
 | `api/newapi/models.json`、`vendors.json`（含 `i18n/zh`、`i18n/en`） | 模型元数据（描述、能力、模态、上下文、最大输出、免费标记） | 是，走「模型元数据同步」（预览 + 字段级应用） |
-| `api/newapi/pricing.json` | 当前牌价（USD / 每 1M tokens），逐条 `price_kind` 标明来源，附按牌价生成的 `billing_expr` | **否**；上线由部署机 `export_billing --basis <私有结算价>` 导出后 `apply_billing.py` 落库 |
+| `api/newapi/pricing.json` | 官方价（USD / 每 1M tokens）+ 出处；无官方价的模型只有一行壳（`price_kind: unpriced`） | **否**；上线由部署机 `export_billing --basis <私有结算价>` 导出后 `apply_billing.py` 落库 |
 | `sources/pricing.official.json` | 厂商官方定价页抄录（输入源，人工维护） | **否**，由 `pricing.json` 消费 |
 
-价格优先级：`pricing.official.json` > 聚合源（models.dev / OpenRouter）> 目录 `is_free`。
-官方有条目的模型一律用官方价，聚合价只用来补官方未覆盖的模型；目录标为免费但两边都没报价的，
-直接写 `0`（`price_kind: free`）。每条 `pricing.json` 记录都用 `price_kind` 标明来源。
-这样「聚合站最低价」不会在无人察觉的情况下替掉厂商牌价。
+价格优先级：`pricing.official.json` > 目录 `is_free`。**聚合站报价与结算价都不进发布文件**：
+聚合价只是我们自己算倍率时的旁证，结算价是我们的成本，两者都不属于公开数据。
+`api/newapi/pricing.json` 里只出现三类行：官方价（`vendor_official`）、免费（`free`）、
+无公开价（`unpriced`，不带任何数字）。
 
 非 token 计费（按张 / 按秒 / 按次 / 按 credit）写在官方条目的 `meters[]` 里，原样透传到
 `pricing.json`；字段语义见仓库根 `README.md`。
@@ -19,9 +19,9 @@
 分开的原因：元数据变更风险低、可自动应用；价格变更直接影响实收，必须人工过目，
 且厂商调价频率远高于新模型发布。两者失败也互不影响。
 
-> 本仓库是**公开**的，只放牌价。上游结算价（我方采购成本）在部署机的私有文件里，
-> 由 `export_billing --basis <文件>` 叠加后生成线上表达式；`pricing.json` 里的
-> `billing_expr` 只是按牌价算出来的参考值。
+> 本仓库是**公开**的，只放官方价。上游结算价（我方采购成本）在部署机的私有文件里，
+> 由 `export_billing --basis <文件>` 叠加后生成线上表达式。`pricing.json` 里
+> **不含** `billing_expr`——表达式是导出时现算的派生物。
 
 ## 用法
 

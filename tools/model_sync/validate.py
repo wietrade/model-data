@@ -38,7 +38,7 @@ META = ROOT / "api"
 
 INPUT_MODALITIES = {"text", "image", "audio", "video", "file"}
 OUTPUT_MODALITIES = {"text", "image", "audio", "video"}
-PRICE_KINDS = {"vendor_official", "aggregator_reference", "free"}
+PRICE_KINDS = {"vendor_official", "aggregator_reference", "free", "unpriced"}
 LIFECYCLES = {"", "ga", "preview", "legacy", "deprecated", "retired"}
 
 
@@ -267,12 +267,22 @@ def check_pricing(models, pricing, official, context_by_name, report: Report):
         if kind not in PRICE_KINDS:
             report.error(f"{name}: 未知 price_kind「{kind}」")
 
-        # 表达式必须能由价格字段确定性复现，否则快照与字段已经漂移
-        expected, _ = expr_mod.build(row)
-        if expected != row.get("billing_expr"):
+        # 公开仓只放官方价。结算价（我们向上游付多少）与它派生的一切都不属于这里，
+        # 包括只留下“来源=结算”这层标签——那同样泄露了商业信息。
+        leaked = row.get("source") == "settlement" or "billing_basis" in row
+        leaked = leaked or any(k.endswith("_cny") for k in row)
+        if leaked:
             report.error(
-                f"{name}: billing_expr 无法由价格字段复现\n      字段生成: {expected}\n      文件内容: {row.get('billing_expr')}"
+                f"{name}: 公开价格文件出现结算价痕迹（source=settlement / billing_basis / *_cny）"
             )
+
+        # 公开价格文件只放价格。表达式 / 计费模式是我们自己算出来的派生物，
+        # 由部署机导出时生成（export_billing），不随数据发布。
+        for forbidden in ("billing_expr", "billing_mode", "billing_unexpressible"):
+            if forbidden in row:
+                report.error(
+                    f"{name}: 公开价格文件不应包含 {forbidden}（表达式由部署机导出时生成）"
+                )
 
         # 阶梯阈值高于上下文窗口：官方价目表可能按同系列更大模型给出高档价，
         # 本模型的输入上限却达不到阈值（如 gemini-3-pro-image 上限 65,536 但有 200K 档）。

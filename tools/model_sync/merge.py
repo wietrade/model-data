@@ -17,7 +17,6 @@ from __future__ import annotations
 
 import json
 
-from . import expr
 from .normalize import CAPABILITY_ORDER, normalize_key
 
 MODALITY_ORDER = ("text", "image", "file", "audio", "video")
@@ -477,29 +476,28 @@ def free_price_row(record):
         "output": 0.0,
         "cache_read": 0.0,
     }
-    return attach_expression(row)
-
-
-def attach_expression(row):
-    """Add the billing expression new-api actually settles with.
-
-    The engine has no ratio step: the expression is the whole price contract.
-    Emitting it next to the audited numbers keeps the vendor comparison and the
-    billing behaviour in one row, so they cannot drift apart. Whatever the
-    engine cannot express stays visible in ``billing_unexpressible`` rather
-    than being dropped.
-    """
-    expression, unexpressible = expr.build(row)
-    if expression:
-        row["billing_mode"] = "tiered_expr"
-        row["billing_expr"] = expression
-    if unexpressible:
-        row["billing_unexpressible"] = unexpressible
     return row
 
 
-def official_price_row(record, official, basis=None):
-    """Turn one ``pricing.official.json`` row into a ``pricing.json`` row."""
+def unpriced_row(record):
+    """Row for a model with no vendor list price.
+
+    公开仓只放官方价。聚合站报价是我们自己算倍率时用的旁证，结算价是我们
+    的成本——两者都不进这个目录，所以这里只留「有此模型、无公开价」这一个事实。
+    """
+    return {
+        "model_name": str(record.get("model_name", "")),
+        "vendor_name": record.get("vendor_name") or "",
+        "price_kind": "unpriced",
+    }
+
+
+def official_price_row(record, official):
+    """Turn one ``pricing.official.json`` row into a ``pricing.json`` row.
+
+    只搬运厂商官方价与其出处（``source_url`` / ``retrieved_at`` / ``confidence``）。
+    结算价（basis）与由价格派生的表达式一律不进来。
+    """
     name = str(record.get("model_name", ""))
     row = {
         "model_name": name,
@@ -519,12 +517,7 @@ def official_price_row(record, official, basis=None):
         value = official.get(field)
         if value is not None:
             row[field] = value
-    # The vendor list price is a global baseline. What we actually pay depends on
-    # the upstream channel, so the settlement basis arrives from a separate
-    # document instead of being written into the official price file.
-    if basis:
-        row["billing_basis"] = basis
-    return attach_expression(row)
+    return row
 
 
 def has_usable_price(official):
@@ -582,117 +575,35 @@ def load_billing_basis(path):
     }
 
 
-# Basis fields that describe a per-image/per-request price instead of tokens.
-IMAGE_BASIS_FIELDS = ("per_image", "meters")
-
-
-def is_image_basis(entry):
-    """True when the settlement document prices this model per image."""
-    if not entry:
-        return False
-    return entry.get("per_image") is not None or bool(entry.get("meters"))
-
-
-def per_image_basis_row(record, entry, meta):
-    """Row for a model whose only trustworthy price is the per-image settlement.
-
-    Token list prices (official or aggregator) are deliberately omitted: the
-    billing engine prefers token terms over per-image meters, so keeping them
-    next to ``per_image`` would silently switch the model back to token billing.
-    """
-    row = {
-        "model_name": str(record.get("model_name", "")),
-        "vendor_name": record.get("vendor_name") or "",
-        "price_kind": "aggregator_reference",
-        "source_kind": "aggregator",
-        # 公开仓不能出现采购渠道名/URL：这里只写事实类别。
-        "source": "settlement",
-        "currency": "USD",
-        "unit": "per_image",
-    }
-    for key in ("retrieved_at",):
-        value = entry.get(key) or meta.get(key)
-        if value:
-            row[key] = value
-    if meta.get("fx_to_usd") is not None:
-        row["fx_to_usd"] = meta["fx_to_usd"]
-    row["per_image"] = entry["per_image"]
-    if entry.get("per_image_cny") is not None:
-        row["per_image_cny"] = entry["per_image_cny"]
-    if entry.get("meters"):
-        row["meters"] = entry["meters"]
-    return row
-
-
-def settlement_fields(entry):
-    """Token price fields the settlement document defines, in USD."""
-    if not entry:
-        return {}
-    return {
-        field: entry[field]
-        for field in expr.BASIS_FIELDS
-        if field not in IMAGE_BASIS_FIELDS and entry.get(field) is not None
-    }
-
-
-def settlement_only_row(record, entry, meta):
-    """Row for a model that has no list price but does have a settlement price.
-
-    The top-level numbers mirror the settlement document so the file stays
-    self-describing; ``billing_basis`` still carries the audited CNY originals.
-    """
-    row = {
-        "model_name": str(record.get("model_name", "")),
-        "vendor_name": record.get("vendor_name") or "",
-        "price_kind": "aggregator_reference",
-        "source_kind": "aggregator",
-        # 同上：采购渠道名与结算文档 URL 不属于公开牌价。
-        "source": "settlement",
-        "currency": "USD",
-        "unit": "per_1m_tokens",
-    }
-    for key in ("retrieved_at",):
-        value = entry.get(key) or meta.get(key)
-        if value:
-            row[key] = value
-    row.update(settlement_fields(entry))
-    row["billing_basis"] = entry
-    return row
-
-
 def strip_settlement(row):
-    """Remove every settlement-only field from a carried row.
+    """Reduce a carried settlement-flavoured row to a bare published shell.
 
-    ``billing_basis`` / ``*_cny`` / settlement-mirrored prices never belong in
-    the published file: they describe what we pay upstream, not a list price.
+    公开仓只放牌价。``billing_basis`` / ``*_cny`` / ``source: settlement`` /
+    ``fx_to_usd`` / 结算价镜像值描述的是我们向上游付多少，一律不落盘。
+    落不下来的行只留「有这个模型，但没有公开牌价」这一个事实（``unpriced``）。
     """
     if not row.get("billing_basis") and not any(k.endswith("_cny") for k in row):
         # 已是公开行（只有牌价）：原样保留，避免数据源临时失败时把价格洗掉。
         return dict(row)
-    cleaned = dict(row)
-    cleaned.pop("billing_basis", None)
-    cleaned.pop("billing_expr", None)
-    cleaned.pop("billing_mode", None)
-    cleaned.pop("billing_unexpressible", None)
-    for key in list(cleaned):
-        if key.endswith("_cny"):
-            cleaned.pop(key)
-    for key in expr.BASIS_FIELDS:
-        cleaned.pop(key, None)
-    return cleaned
+    return {
+        "model_name": str(row.get("model_name", "")),
+        "vendor_name": str(row.get("vendor_name", "")),
+        "price_kind": "unpriced",
+    }
 
 
 def price_records(existing, index, official=None, previous=None):
-    """Build the published pricing rows (list prices only).
+    """Build the published pricing rows (vendor list prices only).
 
-    Vendor official list prices win over aggregator rows: a reseller price must
-    never silently replace the published list price. Models without an official
-    entry keep the aggregator reference price, so coverage stays complete and
-    every row still says where its number came from (``price_kind``).
+    ``api/newapi/`` 只放厂商公开数据，所以这里只产出三类行：
 
-    Settlement prices (what we pay upstream) and the expressions derived from
-    them are deliberately absent: they are generated on the private side by
-    ``export_billing --basis`` and never committed.
+    * ``vendor_official`` —— 官方定价页抄录的价，带出处；
+    * ``free`` —— 目录标记免费且确实没有报价；
+    * ``unpriced`` —— 有此模型但没有公开价，**不带任何数字**。
+
+    聚合站报价（models.dev / OpenRouter）与结算价（我们向上游付多少）都不发布：
+    前者是我们算倍率时的旁证，后者是成本。由价格派生的表达式同样不在这里，
+    部署机 ``export_billing --basis`` 导出时现算。
 
     One row per **published model name**: aliases (``claude-haiku-5.5`` vs
     ``claude-haiku-5-5``) each get their own row, because price lookup is by
@@ -720,28 +631,19 @@ def price_records(existing, index, official=None, previous=None):
             continue
         model = pick_incoming(index.get(key) or [], name)
         if model is not None and model.price:
-            row = {
-                "model_name": name,
-                "vendor_name": record.get("vendor_name") or model.vendor_name,
-                "price_kind": "aggregator_reference",
-                "source_kind": "aggregator",
-                "source": model.source,
-                "source_model_id": model.source_id,
-                "currency": "USD",
-                "unit": "per_1m_tokens",
-            }
-            for component in ("input", "output", "cache_read", "cache_write"):
-                value = model.price.get(component)
-                if value is not None:
-                    row[component] = value
-            rows.append(attach_expression(row))
+            # 聚合站报价不发布：它既不是官方价，也是我们算倍率时的内部旁证。
+            rows.append(unpriced_row(record))
             continue
         if record.get("is_free"):
             rows.append(free_price_row(record))
             continue
         if name in carried:
-            rows.append(strip_settlement(carried[name]))
-            continue
+            previous_row = carried[name]
+            if previous_row.get("price_kind") in ("vendor_official", "free"):
+                # 官方源临时挂掉时用上一版保住价格，避免把已核实的值洗成空。
+                rows.append(strip_settlement(previous_row))
+                continue
+        rows.append(unpriced_row(record))
 
     rows.sort(key=lambda item: (item["vendor_name"], item["model_name"]))
     return rows

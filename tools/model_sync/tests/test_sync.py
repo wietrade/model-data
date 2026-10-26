@@ -166,7 +166,9 @@ class MergeTest(unittest.TestCase):
         rows = merge.price_records(self.existing, index)
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]["model_name"], "claude-haiku-4-5-20251001")
-        self.assertEqual(rows[0]["input"], 1.0)
+        # 聚合站报价不发布：只留“有模型、无官方价”的壳。
+        self.assertEqual(rows[0]["price_kind"], "unpriced")
+        self.assertNotIn("input", rows[0])
         self.assertNotIn("cache_write", rows[0])
 
     def test_official_price_beats_aggregator(self):
@@ -305,8 +307,8 @@ class MergeTest(unittest.TestCase):
         row = merge.price_records(existing, index, official)[0]
         self.assertEqual(row["meters"], meters)
 
-    def test_official_row_without_numbers_is_skipped(self):
-        """Unpriced official entries (unresolved) must not become price rows."""
+    def test_official_row_without_numbers_becomes_unpriced(self):
+        """Unpriced official entries (unresolved) keep a shell row, not a price."""
         index, _ = merge.index_incoming([])
         official = {
             normalize_key("claude-haiku-4-5-20251001"): {
@@ -317,7 +319,10 @@ class MergeTest(unittest.TestCase):
             }
         }
         rows = merge.price_records(self.existing, index, official)
-        self.assertEqual(rows, [])
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["price_kind"], "unpriced")
+        self.assertNotIn("input", rows[0])
+        self.assertNotIn("source_url", rows[0])
 
     def test_official_cache_write_12h_pass_through(self):
         index, _ = merge.index_incoming([])
@@ -532,6 +537,20 @@ class PricingPublicationTest(unittest.TestCase):
             "上游结算价文件不能提交到仓库",
         )
 
+    def test_committed_pricing_holds_only_vendor_public_data(self):
+        """api/newapi/ 只放厂商公开数据：结算、聚合价、我们算的表达式都不行。"""
+        pricing = self.load("api/newapi/pricing.json")["data"]
+        for row in pricing:
+            name = row["model_name"]
+            for forbidden in ("billing_expr", "billing_mode", "billing_unexpressible"):
+                self.assertNotIn(forbidden, row, "%s 带了派生物 %s" % (name, forbidden))
+            self.assertNotEqual(row.get("source"), "settlement", name)
+            self.assertIn(
+                row.get("price_kind"), ("vendor_official", "free", "unpriced"), name
+            )
+            # 聚合站 / 结算价行可能残留的标记
+            self.assertIn(row.get("source"), (None, "vendor_official", "metadata:is_free"), name)
+
     def test_export_uses_private_basis(self):
         prices = {
             "data": [
@@ -615,11 +634,14 @@ class PricingPublicationTest(unittest.TestCase):
         self.assertNotIn("billing_expr", rows[0])
         self.assertNotIn("billing_basis", rows[0])
 
-    def test_unpriced_model_without_history_is_skipped(self):
+    def test_unpriced_model_gets_shell_row(self):
+        """每个已发布模型都要有行（validate 会查），无官方价时只写壳。"""
         rows = merge.price_records(
             [{"model_name": "brand-new", "vendor_name": "Vendor"}], {}, {}
         )
-        self.assertEqual(rows, [])
+        self.assertEqual(
+            rows, [{"model_name": "brand-new", "vendor_name": "Vendor", "price_kind": "unpriced"}]
+        )
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@
 未来调价（例：`gemini-4-argon` 2026-12-01 起输入 $2 → $4）。到期后需要：
 
 1. 把 `upcoming` 里的价格写进行的基础字段；
-2. 用 `expr.build()` 重新生成 `billing_expr`（保持「表达式由价格字段生成」这条约束）；
+2. 校验新价能生成计费表达式（表达式本身不写进公开文件，由导出时现算）；
 3. 通过 `export_billing.py` + `apply_billing.py` 落库并重启。
 
 本脚本负责第 1、2 步，默认只预演。
@@ -76,13 +76,10 @@ def promote_row(row: dict, today: dt.date) -> bool:
     note = f"{item['effective_from']} 起按官方已公布的新价生效（由 upcoming 提升）"
     row["notes"] = (row.get("notes", "") + "\n" + note).strip()
 
-    expression, unexpressible = expr_mod.build(row)
+    # 只校验新价能生成表达式（计费侧要能用）；表达式本身不写进公开文件。
+    expression, _ = expr_mod.build(row)
     if not expression:
         raise SystemExit(f"{row['model_name']}: 新价格无法生成计费表达式")
-    if unexpressible:
-        row["billing_unexpressible"] = unexpressible
-    row["billing_mode"] = "tiered_expr"
-    row["billing_expr"] = expression
     return True
 
 
@@ -102,7 +99,7 @@ def main(argv=None) -> int:
     for row in rows:
         if promote_row(row, today):
             promoted.append(row["model_name"])
-            print(f"  {row['model_name']}: {row['billing_expr']}")
+            print(f"  {row['model_name']}: in={row.get('input')} out={row.get('output')}")
 
     print(f"PROMOTED: {len(promoted)}")
     if not promoted:
