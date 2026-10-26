@@ -53,6 +53,9 @@ class StructureTest(unittest.TestCase):
             "detail_MaximumOutput",
             "detail_Type",
             "detail_Reasoning",
+            "detail_VisionInput",
+            "detail_ImageEditing",
+            "label",
         }
         expected = [k for k in item() if k not in merged]
         self.assertEqual(list(record), expected)
@@ -122,8 +125,21 @@ class ValueCleaningTest(unittest.TestCase):
                 "merged_into_maxOutputTokens",
                 "merged_into_type",
                 "merged_into_reasoning",
+                "merged_into_vision",
+                "merged_into_imageEdit",
+                "merged_into_id",
             ],
         )
+
+    def test_all_duplicate_pairs_are_merged(self):
+        record, _ = cs.clean_item(
+            item(label="m-1", vision=True, detail_VisionInput="Supported", imageEdit=False)
+        )
+        self.assertEqual(record["id"], "m-1")
+        self.assertIs(record["vision"], True)
+        self.assertIs(record["imageEdit"], False)
+        for key in ("label", "detail_VisionInput", "detail_ImageEditing"):
+            self.assertNotIn(key, record)
 
     def test_detail_reasoning_is_merged_into_reasoning(self):
         record, _ = cs.clean_item(item(reasoning=True, detail_Reasoning="Supported"))

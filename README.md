@@ -397,7 +397,7 @@ python -m tools.model_sync.validate \
 | 文件 | 来源 | 内容 |
 |:---|:---|:---|
 | `cheaperinference.json` | `platform.cheaperinference.com/markets`（2026-10-23，376 条） | 模型事实字段（上下文、最大输出、模态、能力标记），**已剔除全部价格字段** |
-| `cheaperinference-20261023-full.json` | 同上（同日全量抓取，**505 条**；2026-10-26 补抓） | 同上，另含 `detail_*` 原文（端点数、上下文/输出/类型/推理原文、支持参数），价格字段同样已剔除。**清洗版会合并掉四个重复的 `detail_*`** |
+| `cheaperinference-20261023-full.json` | 同上（同日全量抓取，**505 条**；2026-10-26 补抓） | 同上，另含 `detail_*` 原文（端点数、上下文/输出/类型/推理/视觉/编辑原文、支持参数），价格字段同样已剔除。**清洗版会合并掉 7 个重复字段** |
 
 快照只作**旁证**：第三方聚合站的口径与厂商官方不同（例如它记的是对外零售价、`vision` 只表示能否喂图），
 不能直接并入目录。用下面的脚本生成差异清单，再对照官方文档决定改哪边：
@@ -426,6 +426,9 @@ python -m tools.ops.compare_snapshot raw/cheaperinference-20261023-full.json
 | `vision` vs `image-input` token vs `detail_VisionInput` | token 过度声明 21 条（bool 与原文都说没有） | 以 bool + 原文为准，token 降为旁证 |
 | `detail_Type` / `type` | `type` 8 个值、`detail_Type` 8 个值，除 2 条原文为空外一一对应；但 `realtime`（9 条）在原文里也写作 `Text generation` | **合并**：只留 `type`（更细，能区分 `text` / `realtime`），`detail_Type` 整键删除 |
 | `detail_Reasoning` / `reasoning` | 503 条一致、**0 处冲突**；2 条原文为空 | **合并**：只留 `reasoning`（bool），`detail_Reasoning` 整键删除 |
+| `detail_VisionInput` / `vision` | 503 条一致、**0 处冲突**；2 条原文为空 | **合并**：只留 `vision`（bool） |
+| `detail_ImageEditing` / `imageEdit` | 503 条一致、**0 处冲突**；2 条原文为空 | **合并**：只留 `imageEdit`（bool） |
+| `label` / `id` | **505/505 完全相同**（`label` 就是 `id` 的拷贝） | **合并**：只留 `id` |
 | `detail_Input` 只写 `text`，但 `detail_VisionInput = Supported` | 13 条（多模态模型，**文本和截图都能输**） | 补上 `image`，来源记 `detail+vision` |
 | `reasoning` 同理 | token 过度声明 27 条 | 同上 |
 | `detail_Input` vs 输入 token | 65 处矛盾 | 以 `detail_Input` 为准；`Not reported` = 未知，不当 false |
@@ -441,7 +444,7 @@ python -m tools.ops.normalize_snapshot -o raw/cheaperinference-normalized.json
 >
 > | 工具 | 干什么 | 产出 |
 > |:---|:---|:---|
-> | `tools/ops/clean_snapshot.py` | **只动有问题的值 + 合并四个重复字段**：删 `context-*` 冗余 token、删被两个字段同时否定的 token、`contextLength`/`maxOutputTokens` 空则从 `detail_*` 回填，然后把 `detail_ContextWindow`/`detail_MaximumOutput`/`detail_Type`/`detail_Reasoning`（与对应字段完全重复）整键删除。其余键名与顺序逐条不变（27 → 23 键）。遗留矛盾（`maxOutputTokens > contextLength`、`kind/group` 与 `type` 不同等）只在 `--report` 里统计 | `raw/cheaperinference-clean.json` |
+> | `tools/ops/clean_snapshot.py` | **只动有问题的值 + 合并重复字段**：删 `context-*` 冗余 token、删被两个字段同时否定的 token、`contextLength`/`maxOutputTokens` 空则从 `detail_*` 回填，然后把 6 个与对应字段重复的 `detail_*` 和与 `id` 完全相同的 `label` 整键删除。其余键名与顺序逐条不变（27 → 20 键）。遗留矛盾（`maxOutputTokens > contextLength`、`kind/group` 与 `type` 不同等）只在 `--report` 里统计 | `raw/cheaperinference-clean.json` |
 > | `tools/ops/normalize_snapshot.py` | **仅为与我们目录比对**做的适配：把站点值映射到本仓库词表、补计费维度、标 `*_source`（会改结构） | `raw/cheaperinference-normalized.json` |
 >
 > 只想拿到「干净的原始数据」→ 用前者；要和 `api/newapi/models.json` 对账 → 用后者（`compare_snapshot` 会自动调它）。

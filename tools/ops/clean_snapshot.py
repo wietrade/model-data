@@ -9,8 +9,8 @@
 3. `contextLength` / `maxOutputTokens` 为空时，从对应的 `detail_*` 文本回填。
 
 **合并重复字段**：`detail_ContextWindow` / `detail_MaximumOutput` / `detail_Type` /
-`detail_Reasoning` 只是对应字段的原文写法（实测「两边都有」0 处不一致），回填完成后整键删除，
-同一事实只留 `contextLength` / `maxOutputTokens` / `type` / `reasoning` 一个字段。
+`detail_Reasoning` / `detail_VisionInput` / `detail_ImageEditing` 只是对应字段的原文写法，
+`label` 只是 `id` 的副本（实测两套写法 0 处不一致），回填完成后整键删除。
 
 其他值一律原样保留：`detail_Input` 漏写某个模态、`maxOutputTokens > contextLength`
 这类「有争议但不该擅自改」的情况，只在 `--report` 里统计，不写进文件。
@@ -40,6 +40,9 @@ MERGED_DUPLICATES = (
     ("detail_MaximumOutput", "maxOutputTokens"),
     ("detail_Type", "type"),
     ("detail_Reasoning", "reasoning"),
+    ("detail_VisionInput", "vision"),
+    ("detail_ImageEditing", "imageEdit"),
+    ("label", "id"),
 )
 # 原文里表示「没报」的占位值：删掉不丢信息
 PLACEHOLDERS = {None, "", "Not reported"}
@@ -149,7 +152,7 @@ def main(argv=None) -> int:
         by_reason = Counter(c["reason"] for c in all_changes)
         before = len(payload["models"][0])
         after = len(cleaned[0])
-        print("# 清洗统计（每条键数 %d -> %d，仅少 %d 个已合并的 detail_*）" % (before, after, before - after))
+        print("# 清洗统计（每条键数 %d -> %d，少掉 %d 个已合并的重复字段）" % (before, after, before - after))
         print(f"- 记录数：{len(cleaned)}")
         for reason, count in by_reason.most_common():
             print(f"- {reason}：{count} 处")
@@ -164,8 +167,9 @@ def main(argv=None) -> int:
         summary = (
             "2026-10-26 清洗：去 context-* 冗余 token、删自相矛盾 token、"
             "contextLength/maxOutputTokens 空则从 detail_* 回填；"
-            "detail_ContextWindow/detail_MaximumOutput/detail_Type/detail_Reasoning 与对应字段重复，"
-            "已合并删除，同一事实只留 contextLength/maxOutputTokens/type/reasoning 一个字段。"
+            "detail_ContextWindow/detail_MaximumOutput/detail_Type/detail_Reasoning/"
+            "detail_VisionInput/detail_ImageEditing 与对应字段重复（label 与 id 完全相同），"
+            "已合并删除，同一事实只保留一个字段。"
         )
         new_payload["note"] = (note + " " + summary).strip() if note else summary
         out = Path(args.out)
