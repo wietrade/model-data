@@ -11,7 +11,7 @@
     python tools/ops/mark_legacy.py                # 最新一期快照
     python tools/ops/mark_legacy.py --date 20261026
 
-输出：corrections/<date>/legacy.json（派生，可随时重跑）
+输出：source-data/corrections/<date>/legacy.json（派生，可随时重跑）
 """
 
 import argparse
@@ -21,11 +21,11 @@ from collections import Counter
 from pathlib import Path
 
 RAW = Path("source-data")
-ROOT = Path("corrections")
+ROOT = Path("source-data/corrections")
 
 
 def resolve_date(day=None):
-    """不指定就用 corrections/ 下最新的日期目录。"""
+    """不指定就用 source-data/corrections/ 下最新的日期目录。"""
     if day:
         return day.replace("-", "")
     found = sorted(
@@ -33,7 +33,7 @@ def resolve_date(day=None):
         if p.is_dir() and re.fullmatch(r"\d{8}", p.name)
     ) if ROOT.exists() else []
     if not found:
-        raise SystemExit("corrections/ 下没有 YYYYMMDD 目录，请用 --date 指定")
+        raise SystemExit("source-data/corrections/ 下没有 YYYYMMDD 目录，请用 --date 指定")
     return found[-1]
 
 # (正则, 被谁取代, 原因)
@@ -103,7 +103,7 @@ EXCEPTIONS = {"qwen3-coder-next"}
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--date", help="快照日期 YYYYMMDD，默认取 corrections/ 下最新一期")
+    ap.add_argument("--date", help="快照日期 YYYYMMDD，默认取 source-data/corrections/ 下最新一期")
     args = ap.parse_args()
 
     day = resolve_date(args.date)

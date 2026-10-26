@@ -8,8 +8,8 @@
 
 分档（按优先级从高到低判定，命中即止）：
 
-  done      已经有官方核实条目（corrections/）
-  legacy    老代模型，不再投入核实成本（corrections/<date>/legacy.json）
+  done      已经有官方核实条目（source-data/corrections/）
+  legacy    老代模型，不再投入核实成本（source-data/corrections/<date>/legacy.json）
   main      主流厂商 ⇒ **无论缺不缺数据，都必须核**
   ignore    非主流厂商 且 缺关键数值 ⇒ 直接忽略
   review    非主流但数值齐全 / 主流以外的小众值缺失 ⇒ 有空再看
@@ -28,7 +28,7 @@
 
 目录约定（按快照隔离，一次快照一套）：
     source-data/cheaperinference-<date>.json
-    corrections/<date>/{corrections,legacy,routing}.json
+    source-data/corrections/<date>/{corrections,legacy,routing}.json
 """
 
 from __future__ import annotations
@@ -41,10 +41,10 @@ from datetime import date
 from pathlib import Path
 
 RAW = Path("source-data")
-CORRECTIONS_ROOT = Path("corrections")
+CORRECTIONS_ROOT = Path("source-data/corrections")
 
 def resolve_date(day: str | None = None) -> str:
-    """不指定就用 corrections/ 下最新的日期目录。"""
+    """不指定就用 source-data/corrections/ 下最新的日期目录。"""
     if day:
         return day.replace("-", "")
     found = sorted(
@@ -52,7 +52,7 @@ def resolve_date(day: str | None = None) -> str:
         if p.is_dir() and re.fullmatch(r"\d{8}", p.name)
     ) if CORRECTIONS_ROOT.exists() else []
     if not found:
-        raise SystemExit("corrections/ 下没有 YYYYMMDD 目录，请用 --date 指定")
+        raise SystemExit("source-data/corrections/ 下没有 YYYYMMDD 目录，请用 --date 指定")
     return found[-1]
 
 
@@ -225,7 +225,7 @@ def summarize(plan: dict) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--date", help="快照日期 YYYYMMDD，默认取 corrections/ 下最新一期")
+    ap.add_argument("--date", help="快照日期 YYYYMMDD，默认取 source-data/corrections/ 下最新一期")
     ap.add_argument("-o", "--out", type=Path, help="落盘路径（派生物，一般不用存）")
     ap.add_argument("--list", choices=TIER_ORDER, help="列出某一档的模型")
     args = ap.parse_args()

@@ -158,7 +158,7 @@ python -m tools.ops.harvest_official --fetch --apply
 | 站点能力/端点会随时间拨动 | 同一站点相隔 20 分钟两次抓取有 9 处不同（`capabilities` 6、`detail_Endpoints` 3）——它们按近期真实流量计算。跨快照比对时这两项差异不算错误 |
 
 > 「模型规格」与「站点实际服务」不是同一个数，口径定义与 `servedAs` / `retiredAt` 的写法见
-> [`../corrections/README.md`](../corrections/README.md)。
+> [`../source-data/corrections/README.md`](../source-data/corrections/README.md)。
 
 ## 四、一次典型的更新流程
 

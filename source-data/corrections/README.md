@@ -4,7 +4,7 @@
 
 ## 目录约定：按快照隔离
 
-一次抓取一套，放在 `corrections/<YYYYMMDD>/` 下；`README.md`（本文件）是跨快照的口径，不随日期变：
+一次抓取一套，放在 `source-data/corrections/<YYYYMMDD>/` 下；`README.md`（本文件）是跨快照的口径，不随日期变：
 
 ```
 corrections/
@@ -22,7 +22,7 @@ corrections/
 python -m tools.ops.classify_scope -o /tmp/scope.json
 ```
 
-三个工具都支持 `--date`，不传则自动取 `corrections/` 下最新一期：
+三个工具都支持 `--date`，不传则自动取 `source-data/corrections/` 下最新一期：
 
 ```bash
 python -m tools.ops.apply_corrections --date 20261026
@@ -42,7 +42,7 @@ python tools/ops/mark_legacy.py       --date 20261026
 
 ```
 L1  source-data/cheaperinference-<date>.json            站点原话，一字不改
-L2  corrections/<date>/corrections.json         官方核实值 + 出处
+L2  source-data/corrections/<date>/corrections.json         官方核实值 + 出处
 L3  source-data/cheaperinference-<date>.verified.json   L1 + L2，给下游用
 ```
 
@@ -128,7 +128,7 @@ L2 是**唯一**允许写入「外部知识」的地方，并且每条都必须�
 
 ## 不核实清单（legacy-20261026.json）
 
-`corrections/20261026/legacy.json` 标记**不再花核实成本**的模型：**快照里仍然保留、字段保留站点原值**，
+`source-data/corrections/20261026/legacy.json` 标记**不再花核实成本**的模型：**快照里仍然保留、字段保留站点原值**，
 只是不进 `corrections.json`、不派人去查官方文档。
 
 判定只用两条可复核规则（同家族已有更新代且站点在卖 / 官方已下线），每条都写 `superseded_by`：
@@ -155,7 +155,7 @@ L2 是**唯一**允许写入「外部知识」的地方，并且每条都必须�
 | `gemma-3-27b-it` | 40,000 | 131,072（Google 模型卡） | 某部署截断到 40,000 |
 | `claude-haiku-5.5` | 100,000 | 1,000,000 | 1,000,000（站点少打一个 0） |
 
-「站点实际服务」不写进主字段，另存 `corrections/<date>/routing.json`，应用后成为 L3 的
+「站点实际服务」不写进主字段，另存 `source-data/corrections/<date>/routing.json`，应用后成为 L3 的
 `servedAs` / `retiredAt` 两个附加键：
 
 ```bash
@@ -200,10 +200,10 @@ python -m tools.ops.apply_corrections --date 20261026
 # 等价于
 python -m tools.ops.apply_corrections \
     --snapshot source-data/cheaperinference-20261026.json \
-    --corrections corrections/20261026/corrections.json \
-    --routing corrections/20261026/routing.json \
+    --corrections source-data/corrections/20261026/corrections.json \
+    --routing source-data/corrections/20261026/routing.json \
     --out source-data/cheaperinference-20261026.verified.json \
-    --changelog corrections/20261026/changelog.csv
+    --changelog source-data/corrections/20261026/changelog.csv
 
 # 先看会改哪些、还剩多少矛盾，不落盘
 python -m tools.ops.apply_corrections --date 20261026 --dry-run

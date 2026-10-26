@@ -4,7 +4,7 @@
 三层结构::
 
     L1  source-data/cheaperinference-<date>.json         站点原话，一字不改
-    L2  corrections/<date>/corrections.json  官方核实值 + source_url
+    L2  source-data/corrections/<date>/corrections.json  官方核实值 + source_url
     L3  source-data/cheaperinference-<date>.verified.json L1 + L2，供下游消费
 
 硬性规则（脚本会强制检查，不是文档里的约定）：
@@ -19,7 +19,7 @@
     python -m tools.ops.apply_corrections --date 20261026
     python -m tools.ops.apply_corrections \\
         --snapshot source-data/cheaperinference-20261026.json \\
-        --corrections corrections/20261026/corrections.json \\
+        --corrections source-data/corrections/20261026/corrections.json \\
         --out source-data/cheaperinference-20261026.verified.json \\
         --changelog .tmp/changelog-20261026.csv
     python -m tools.ops.apply_corrections --snapshot ... --corrections ... --dry-run
@@ -232,7 +232,7 @@ def main(argv=None) -> int:
 
     if args.date:
         day = args.date.replace("-", "")
-        root = Path("corrections") / day
+        root = Path("source-data/corrections") / day
         routing = root / "routing.json"
         args.snapshot = args.snapshot or str(Path("source-data") / ("cheaperinference-%s.json" % day))
         args.corrections = args.corrections or str(root / "corrections.json")

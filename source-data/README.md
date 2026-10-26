@@ -1,43 +1,56 @@
-# source-data/ —— 参考数据的来源（第三方抓取的原始快照）
+# source-data/ —— 参考数据的来源（原始材料 + 核实台账）
 
-这个目录**只放"别人写的原话"**，不放我们加工过的数据。
-用途是留证：以后要证明"某天某站点确实写了 32,768"，靠的就是这里的文件。
+数据从哪来、以及我们拿官方文档核对过什么，都在这个目录。
+**最终发布物不在这里**（在 `api/`），我们自己的价也不在这里（在 `reference-data/`、私有目录）。
 
-## 这里为什么只有两个文件
+## 三层，谁都不覆盖谁
 
-| 文件 | 是什么 | 谁生成 |
-|:---|:---|:---|
-| `cheaperinference-YYYYMMDD.json` | **L1 原始快照**：站点逐字渲染的内容，`detail_*` 一字不改 | `python -m tools.ops.fetch_site` |
-| `cheaperinference-YYYYMMDD.verified.json` | **L3 成品**：L1 叠加 `corrections/<YYYYMMDD>/` 里带官方出处的修正 | `python -m tools.ops.apply_corrections` |
+| 层 | 文件 | 是什么 | 谁生成 |
+|:---|:---|:---|:---|
+| **L1** | `cheaperinference-YYYYMMDD.json` | 站点逐字渲染的内容，`detail_*` 一字不改 | `tools/ops/fetch_site.py` |
+| **L2** | `corrections/YYYYMMDD/corrections.json` | 官方核实值 + `source_url` + 原文引用 | **人工维护**（核实一次写一条） |
+| **L3** | `cheaperinference-YYYYMMDD.verified.json` | L1 叠加 L2 的结果 | `tools/ops/apply_corrections.py` |
 
-`official-metadata-YYYYMMDD.json` 是另一条线：逐模型抓厂商官方页的元数据核对快照，
-由 `python -m tools.ops.harvest_official --fetch` 生成，**默认不进 git**（可复现，需要留档时 `git add -f`）。
+```
+source-data/
+├── cheaperinference-<date>.json            L1 站点原话
+├── cheaperinference-<date>.verified.json   L3 成品
+├── official-metadata-<date>.json           厂商官方页抓取（默认 gitignore）
+└── corrections/
+    ├── README.md                          口径：怎么核、什么不能做、验收清单
+    └── <date>/
+        ├── corrections.json               L2 核实值（不可再生）
+        ├── routing.json                   上游路由（servedAs / retiredAt）
+        ├── legacy.json                    老代不核实清单（派生）
+        └── changelog.csv                  变更表（派生）
+```
+
+`legacy.json` 和 `changelog.csv` 是派生物，随时能重跑；
+`corrections.json` 和 `routing.json` 是**人工查证的唯一记录，删了就没了**。
+
+改数据前先读 `corrections/README.md`——里面写着什么能改、什么绝对不能改。
 
 ## 约定
 
-- **每期只保留最新的一份。** 换新快照时直接删掉上一期，历史在 `git log` 里，不需要堆在目录里。
-- **中间产物不进这个目录。** 清洗/归一化的结果写到 `/tmp` 或加进 `.gitignore`，不要放在 `source-data/` 下让人误以为是原始数据。
-- **不要手改 L1。** 要修正数据就写进 `corrections/`，让 `detail_*` 保持可验证。原因见 `corrections/README.md`。
-- **不要合并 L1 和 L3。** 两者共存才有意义：L3 能算出来，才证明修正规则是对的。
+- **每期只留最新一份。** 换新快照时删掉上一期，历史在 `git log` 里，不堆在目录里。
+- **不手改 L1。** 要修正就写进 `corrections/<date>/`，让 `detail_*` 保持可验证。
+- **L2 与 L3 不合并。** 两者共存才有意义：L3 能由 L1+L2 算出来，才证明修正规则是对的。
+- **中间产物不进这里。** 归一化结果写 `/tmp`，不要落到 `source-data/` 让人误以为是原始数据。
 
 ## 数据怎么流出去
 
 ```
-source-data/…json (L1) ──apply_corrections──▶ source-data/….verified.json (L3)
-                                               │
-corrections/<date>/*.json (L2, 官方出处) ──────┘
-                                               │
-                                    人工比对 ──▶ reference-data/metadata/overrides.json ──▶ api/newapi/models.json
+source-data/…json (L1)  ──apply_corrections──▶  source-data/….verified.json (L3)
+                                │
+source-data/corrections/<date>/ (L2) ───────────┘
+                                │
+                    人工比对 ──▶ reference-data/metadata/overrides.json ──▶ api/newapi/models.json
 ```
 
-`source-data/` 里的东西是**旁证，不是来源**。第三方聚合站的口径与厂商不同（它记的是对外零售价，
-`vision` 只表示能否喂图），不能直接并进模型目录。比对用：
-
-```bash
-python -m tools.ops.compare_snapshot source-data/cheaperinference-20261026.json
-```
+注意最后一步：**L3 不是发布物**。真正喂给 `api/newapi/models.json` 的是
+`reference-data/metadata/overrides.json`——那是我们自己的目录口径，与第三方站点的长尾型号无关。
 
 ## 价格不在这里
 
 快照抓取时**已剔除全部价格字段**。价格只走 `reference-data/price/pricing.official.json`（厂商官方价），
-结算成本私有不入库。所以在这个目录里找不到任何价格，是设计如此，不是漏抓。
+结算成本在私有目录。所以在这个目录里找不到任何价格，是设计如此，不是漏抓。

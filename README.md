@@ -25,7 +25,13 @@
 | ③ 最终数据 | `api/` | 生成好的发布物，new-api 直接拉取 | 只读，不手改 |
 
 ```
-source-data/                          【① 来源】第三方快照 + 官方页抓取（只读）
+source-data/                          【① 来源】只读留证
+├── cheaperinference-<date>.json           L1 站点原话，一字不改
+├── cheaperinference-<date>.verified.json  L3 L1 + 官方核实值
+├── official-metadata-<date>.json          厂商官方页抓取（默认 gitignore）
+└── corrections/                           L2 官方核实台账（只含元数据）
+    ├── README.md                            口径：怎么核、什么不能做
+    └── <date>/{corrections,routing,legacy}.json + changelog.csv
 reference-data/
 ├── metadata/                         【② 参考】模型"是什么"
 │   ├── overrides.json                    人工核对后钉住的权威值
@@ -35,10 +41,9 @@ reference-data/
     └── fx.json                           汇率（数据行只存原币）
 api/newapi/                           【③ 最终】models.json / vendors.json / pricing.json
 api/i18n/{zh,en}/                     【③ 最终】语言包（模型与供应商描述）
-corrections/                          修正台账：把①的值修正成②的依据（只含元数据）
 docs/                                 official-sources.md（官方数据源与优先级速查）
 tools/model_sync/                     多源合并、表达式生成、校验（纯 Python，无三方依赖）
-tools/ops/                            官方页抓取核对、快照比对、价格转正
+tools/ops/                            官方页抓取核对、快照比对、定价页核对
 .github/workflows/                    手动触发的同步流程
 ```
 
@@ -46,9 +51,11 @@ tools/ops/                            官方页抓取核对、快照比对、价
 > ③层对应 `models.json` 与 `pricing.json` 两个文件。`pricing.json` 里出现 `billing_expr`、
 > `billing_mode`、`*_cny` 会被 `validate` 直接报错。
 
-> 为什么①和②必须分开：快照的价值在于**忠实**——它记录站点当时逐字写了什么。
-> 一旦把我们的判断写回快照，就既无法证明站点说过什么，也无法验证我们查过什么。
-> 所以修正在 `corrections/`，钉值在 `reference-data/`，快照保持原样。
+> **①里面的三层也是分开的**：L1 快照的价值在于**忠实**——它记录站点当时逐字写了什么。
+> 我们的判断永远写在旁边的 `source-data/corrections/`（L2），由工具生成一份新的 L3，**绝不回写 L1**；
+> 一旦被覆盖，就既无法证明站点说过什么，也无法验证我们查过什么。
+> 而真正喂给发布物的是 `reference-data/metadata/overrides.json` —— 那是**我们的目录**的口径，
+> 与第三方快照无关。
 
 > **`api/` 的边界**：只放**厂商公开数据** + new-api 落库必需的展示字段。
 > 属于我们平台的一律不进：结算价、成本、采购渠道名、聚合站报价、我们算出来的倍率与计费表达式。
@@ -312,7 +319,7 @@ overrides.json  >  官方逐模型页 / 官方 API（official:*，需官方内�
 
 ## 消费方契约
 
-> **外部平台只需要这一节列出的文件。** 仓库里其他目录（`reference-data/` `source-data/` `corrections/` `tools/` `docs/`）
+> **外部平台只需要这一节列出的文件。** 仓库里其他目录（`reference-data/` `source-data/` `source-data/corrections/` `tools/` `docs/`）
 > 都是我们维护这套数据的**过程记录**，不是对外接口，随时可能重构。
 
 ### 要拉什么
@@ -354,7 +361,7 @@ overrides.json  >  官方逐模型页 / 官方 API（official:*，需官方内�
 | `reference-data/metadata/overrides.json` | 人工钉值 + 取舍理由 | 结果已烘焙进 `models.json`；单独读会误判（它只记「钉住了什么」，不含多源上下文） |
 | `reference-data/price/pricing.official.json` | 官方定价页抄录（原文 + `source_url` + `quote`） | 同上，结果已落进 `pricing.json` |
 | `reference-data/metadata/sync.config.json` | 我们的多源合并配置 | 实现细节 |
-| `corrections/`、`source-data/` | 快照原件与逐字段改动台账 | 审计用，给人看；`changelog.csv` 是派生品 |
+| `source-data/corrections/`、`source-data/` | 快照原件与逐字段改动台账 | 审计用，给人看；`changelog.csv` 是派生品 |
 | `tools/` | 生成上述文件的脚本 | 想自己重算再去 fork |
 
 ### new-api 的两个同步按钮，分别读什么
@@ -608,18 +615,18 @@ python -m tools.model_sync.validate \
 | 文件 | 来源 | 内容 |
 |:---|:---|:---|
 | `cheaperinference-20261026.json` | 同一个站点，**527 条**，由 `tools/ops/fetch_site.py` 直接抓取（市场页 + 每个模型详情页） | 汇总字段 + 13 个 `detail_*`（多了 `detail_Provider` = **卖方/上游**，不是模型厂商）；价格字段已剔除；`fetch` 块记录抓取耗时与失败页 |
-| `cheaperinference-20261026.verified.json` | 上一条 + `corrections/20261026/corrections.json` | 应用了有官方出处的修正（157 处字段 + 11 处路由，上下文/最大输出/能力标签/厂商）；`detail_*` 与 L1 逐字节相同，`max>context` 已归零 |
+| `cheaperinference-20261026.verified.json` | 上一条 + `source-data/corrections/20261026/corrections.json` | 应用了有官方出处的修正（157 处字段 + 11 处路由，上下文/最大输出/能力标签/厂商）；`detail_*` 与 L1 逐字节相同，`max>context` 已归零 |
 | `official-metadata-<YYYYMMDD>.json` | `tools/ops/harvest_official.py --fetch`（**默认 gitignore**） | 官方逐模型页的核对快照，每跑一次覆盖一次；需要留档时 `git add -f` |
 
 ### 快照分三层，不要合并
 
 ```
 L1  source-data/cheaperinference-<date>.json            站点原话，一字不改
-L2  corrections/<date>/corrections.json         官方核实值 + source_url + quote
+L2  source-data/corrections/<date>/corrections.json         官方核实值 + source_url + quote
 L3  source-data/cheaperinference-<date>.verified.json   L1 + L2，给下游用
 ```
 
-> 一次快照一套，放在 `corrections/<YYYYMMDD>/`；口径文档固定在 `corrections/README.md`。
+> 一次快照一套，放在 `source-data/corrections/<YYYYMMDD>/`；口径文档固定在 `source-data/corrections/README.md`。
 > 三个工具都支持 `--date`（不传取最新一期），路径自动推导：
 > `python -m tools.ops.apply_corrections --date 20261026`
 
@@ -630,7 +637,7 @@ L3  source-data/cheaperinference-<date>.verified.json   L1 + L2，给下游用
 
 为什么不让「修数据」直接改快照：`detail_*` 是站点逐字渲染的原文，是这份数据里唯一不可再生的部分。
 一旦被我们的推断覆盖，就既无法证明站点当时写了什么，也无法验证解析是否还正确（原文串与数值字段的一致性是抓取自检的基准）。
-详见 `corrections/README.md`。
+详见 `source-data/corrections/README.md`。
 
 快照只作**旁证**：第三方聚合站的口径与厂商官方不同（例如它记的是对外零售价、`vision` 只表示能否喂图），
 不能直接并入目录。用下面的脚本生成差异清单，再对照官方文档决定改哪边：
