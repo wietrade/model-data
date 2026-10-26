@@ -12,6 +12,9 @@
 `detail_Reasoning` / `detail_VisionInput` / `detail_ImageEditing` 只是对应字段的原文写法，
 `label` 只是 `id` 的副本（实测两套写法 0 处不一致），回填完成后整键删除。
 
+**值类型归一**：`detail_VideoInput` / `detail_Streaming` 是布尔语义，原文的
+`Supported` / `Not supported` 换成 `true` / `false`；`null`（原文没报）保持 `null`，不当作 false。
+
 其他值一律原样保留：`detail_Input` 漏写某个模态、`maxOutputTokens > contextLength`
 这类「有争议但不该擅自改」的情况，只在 `--report` 里统计，不写进文件。
 
@@ -46,6 +49,9 @@ MERGED_DUPLICATES = (
 )
 # 原文里表示「没报」的占位值：删掉不丢信息
 PLACEHOLDERS = {None, "", "Not reported"}
+# 这三个字段本身就是布尔语义，把原文的字符串换成 JSON 原生 bool
+BOOL_DETAILS = ("detail_VideoInput", "detail_Streaming")
+BOOL_VALUES = {"Supported": True, "Not supported": False}
 _SCALE = {"k": 1_000, "m": 1_000_000, "b": 1_000_000_000}
 
 
@@ -114,6 +120,21 @@ def clean_item(item):
     return out, changes
 
 
+def clean_bool_details(item, changes):
+    """把 ``Supported`` / ``Not supported`` 换成 ``true`` / ``false``（原地修改）。
+
+    只对布尔语义字段做：同一字段里不能既有 ``false`` 又有 ``"Supported"``。
+    ``null``（原文没报）保持原样，不当作 false。
+    """
+    for key in BOOL_DETAILS:
+        value = item.get(key)
+        if value in BOOL_VALUES:
+            item[key] = BOOL_VALUES[value]
+            lowered = str(BOOL_VALUES[value]).lower()
+            changes.append({"field": key, "value": BOOL_VALUES[value], "reason": "%s -> %s" % (value, lowered)})
+    return item
+
+
 def audit(items):
     """只统计、不落盘：值之间的遗留矛盾。"""
     stats = Counter()
@@ -145,6 +166,7 @@ def main(argv=None) -> int:
     cleaned, all_changes = [], []
     for item in payload["models"]:
         record, changes = clean_item(item)
+        clean_bool_details(record, changes)
         cleaned.append(record)
         all_changes.extend(changes)
 
@@ -169,7 +191,8 @@ def main(argv=None) -> int:
             "contextLength/maxOutputTokens 空则从 detail_* 回填；"
             "detail_ContextWindow/detail_MaximumOutput/detail_Type/detail_Reasoning/"
             "detail_VisionInput/detail_ImageEditing 与对应字段重复（label 与 id 完全相同），"
-            "已合并删除，同一事实只保留一个字段。"
+            "已合并删除；detail_VideoInput/detail_Streaming 的 Supported/Not supported "
+            "已转成 true/false（null 保留为未知）。"
         )
         new_payload["note"] = (note + " " + summary).strip() if note else summary
         out = Path(args.out)

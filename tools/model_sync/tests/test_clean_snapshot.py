@@ -171,5 +171,26 @@ class ValueCleaningTest(unittest.TestCase):
         self.assertIn("merged_into_maxOutputTokens", reasons)
 
 
+class BoolValueTest(unittest.TestCase):
+    def test_supported_becomes_true_and_not_supported_false(self):
+        record, changes = cs.clean_item(item())
+        cs.clean_bool_details(record, changes)
+        self.assertIs(record["detail_Streaming"], True)
+        self.assertIs(record["detail_VideoInput"], False)
+        self.assertIn("Not supported -> false", [c["reason"] for c in changes])
+
+    def test_null_is_kept_as_unknown(self):
+        record, changes = cs.clean_item(item(detail_VideoInput=None, detail_Streaming=None))
+        cs.clean_bool_details(record, changes)
+        self.assertIsNone(record["detail_VideoInput"])
+        self.assertIsNone(record["detail_Streaming"])
+
+    def test_modality_lists_are_left_alone(self):
+        record, changes = cs.clean_item(item(detail_Input="image, pdf, text", detail_Output="Not reported"))
+        cs.clean_bool_details(record, changes)
+        self.assertEqual(record["detail_Input"], "image, pdf, text")
+        self.assertEqual(record["detail_Output"], "Not reported")
+
+
 if __name__ == "__main__":
     unittest.main()
