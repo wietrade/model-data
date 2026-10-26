@@ -135,7 +135,38 @@ def apply(snapshot, corrections, min_confidence="high"):
                 changelog.append([entry["id"], "capabilities", json.dumps(old, ensure_ascii=False),
                                   json.dumps(new, ensure_ascii=False),
                                   entry["confidence"], entry["source_url"], entry.get("reason", "")])
+
+    touched = {row[0] for row in changelog if row[1] == "contextLength"}
+    changelog.extend(sync_context_tags(snapshot, touched))
     return changelog, skipped, warnings
+
+
+def sync_context_tags(snapshot, model_ids):
+    """contextLength 被改后，同步 capabilities 里的 context-128k / context-1m 标签。
+
+    站点是按自家声称的上下文打标签的（grok-4 站点写 2M → 带 context-1m），
+    我们改成官方规格 256K 后，标签会变成“说 1M 实际 256K”的自相矛盾。
+    只动被修正过的行，站点原生标签不碰。
+    """
+    by_id = {m["id"]: m for m in snapshot["models"]}
+    rows = []
+    for model_id in sorted(model_ids):
+        record = by_id.get(model_id)
+        ctx = record.get("contextLength") if record else None
+        if not isinstance(ctx, int):
+            continue
+        old = list(record.get("capabilities") or [])
+        new = {c for c in old if not c.startswith("context-")}
+        for tag, threshold in (("context-128k", 128000), ("context-1m", 1000000)):
+            if ctx >= threshold:
+                new.add(tag)
+        new = sort_caps(new)
+        if new != old:
+            record["capabilities"] = new
+            rows.append([model_id, "capabilities (context 标签)", json.dumps(old, ensure_ascii=False),
+                         json.dumps(new, ensure_ascii=False), "high", "",
+                         "随同行 contextLength 修正同步"])
+    return rows
 
 
 def apply_routing(snapshot, routing):

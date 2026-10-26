@@ -2,6 +2,8 @@
 
 **日期**：2026-10-26　**快照**：`raw/cheaperinference-20261026.json`　**站点**：`platform.cheaperinference.com`
 
+**成品数据**：`raw/cheaperinference-20261026.verified.json`（618 KB，527 条 × 29–31 键）
+
 ---
 
 ## 0. 一句话结论
@@ -57,13 +59,18 @@ L3  raw/cheaperinference-20261026.verified.json   L1 + L2，供下游消费
 
 ```
 162 条核实条目
- ├─ 151 条已应用到 L3（confidence = high）
+ ├─ 151 条直接改写字段
+ ├─   6 条派生：contextLength 改动后同步 context-128k / context-1m 标签
+ │      claude-haiku-5.5、minimax-m3、nemotron-3.5-super-vl、gemini-3-flash（补上 context-1m）
+ │      grok-4（去掉 context-1m）、gemma-3-27b-it（补上 context-128k）
  ├─   8 条核对后确认站点原值已正确，无需改动
  │      gpt-oss-20b/120b、glm-4.7、kimi-k3、nemotron-nano-9b-v2 的 maxOutput
  │      gemini-omni-flash-preview、minimax-m3、nano-banana-2 的能力标签已在
  └─   3 条 medium 暂不落盘（待人工过目）
         flux-kontext-max / flux-kontext-pro 上下文 512
         nemotron-3.5-super-vl 最大输出 16,384
+
+共写入 L3：157 行字段变更 + 9 行路由标注
 ```
 
 **硬性检查全部通过**：
@@ -73,8 +80,9 @@ L3  raw/cheaperinference-20261026.verified.json   L1 + L2，供下游消费
 | `detail_*` 是否被改动 | 0 处 |
 | 修正是否都有 `source_url` | 162/162 |
 | 是否引入新的 `maxOutputTokens > contextLength` | 0 条 |
+| `context-*` 标签与 `contextLength` 是否一致 | 0 处不一致 |
 | 数据里是否存在自相矛盾的 token 数值 | 0 条 |
-| 单元测试 | 141 个全过 |
+| 单元测试 | 144 个全过 |
 
 ### 2.2 按字段统计
 

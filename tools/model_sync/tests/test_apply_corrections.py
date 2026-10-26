@@ -73,7 +73,8 @@ class ApplyTest(unittest.TestCase):
         data = snapshot(record())
         changes, skipped, _ = ac.apply(data, [correction()])
         self.assertEqual(data["models"][0]["contextLength"], 1000000)
-        self.assertEqual(len(changes), 1)
+        # 改大上下文会顺带补 context-128k / context-1m 标签（派生行）
+        self.assertEqual([row[1] for row in changes], ["contextLength", "capabilities (context 标签)"])
         self.assertEqual(skipped, [])
 
     def test_medium_skipped_by_default(self):
@@ -104,6 +105,28 @@ class ApplyTest(unittest.TestCase):
         ac.apply(data, [correction()])
         after = {k: v for k, v in data["models"][0].items() if k.startswith("detail_")}
         self.assertEqual(before, after)
+
+
+class ContextTagTest(unittest.TestCase):
+    def test_tag_added_when_context_crosses_1m(self):
+        data = snapshot(record(contextLength=128000, capabilities=["context-128k", "tool-use"]))
+        ac.apply(data, [correction(value=2000000)])
+        self.assertEqual(
+            data["models"][0]["capabilities"],
+            ["tool-use", "context-128k", "context-1m"],
+        )
+
+    def test_tag_removed_when_context_shrinks_below_1m(self):
+        data = snapshot(record(contextLength=2000000, capabilities=["context-128k", "context-1m"]))
+        ac.apply(data, [correction(value=256000)])
+        self.assertEqual(data["models"][0]["capabilities"], ["context-128k"])
+
+    def test_untouched_model_keeps_site_tags(self):
+        # 没被修正过的行不重算标签，避免擅自改动站点原生数据
+        other = record(id="m-2", contextLength=256000, capabilities=["context-128k", "context-1m"])
+        data = snapshot(record(), other)
+        ac.apply(data, [correction()])
+        self.assertIn("context-1m", data["models"][1]["capabilities"])
 
 
 class InvariantTest(unittest.TestCase):
