@@ -433,6 +433,15 @@ python -m tools.ops.normalize_snapshot --report                              # �
 python -m tools.ops.normalize_snapshot -o raw/cheaperinference-normalized.json
 ```
 
+> 两个工具分工（别混用）：
+>
+> | 工具 | 干什么 | 产出 |
+> |:---|:---|:---|
+> | `tools/ops/clean_snapshot.py` | **只清洗站点自己的数据**：去 `context-*` 冗余、删自相矛盾的 token、标缺失/冲突；**保留站点词表**（`tool-use` 不改成 `tools`，`pdf` 不改成 `file`） | `raw/cheaperinference-clean.json` |
+> | `tools/ops/normalize_snapshot.py` | **仅为与我们目录比对**做的适配：把站点值映射到本仓库词表、补计费维度、标 `*_source` | `raw/cheaperinference-normalized.json` |
+>
+> 只要原始数据时用前者；要和 `api/newapi/models.json` 对账时用后者（`compare_snapshot` 会自动调它）。
+
 产物每条只留一组事实：`id / provider / type / context_length / max_output_tokens /
 input_modalities / output_modalities / capabilities / image_edit / endpoints`，另外两个溯源字段：
 
