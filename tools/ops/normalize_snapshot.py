@@ -96,21 +96,24 @@ def normalize_item(item) -> dict:
     unknown = []
     kind = (item.get("type") or "text").strip()
 
-    # 输入模态：detail_Input 优先；没报时用 type + vision 补，并标来源
+    # 输入模态：detail_Input 打底，**vision 任一来源说 Supported 就补 image**
+    # （实测 13 条 detail_Input 只写 text、但 detail_VisionInput=Supported——
+    #  即「既能输文本也能输截图」，不能判成 text-only）
     inputs = [INPUT_MAP[v] for v in _split(item.get("detail_Input")) if v in INPUT_MAP]
-    modalities_source = "detail"
+    input_source = "detail" if inputs else "type"
     if not inputs:
-        modalities_source = "type"
         inputs = {"embedding": ["text"], "transcription": ["audio"], "realtime": ["audio", "text"]}.get(
             kind, ["text"]
         )
-        if item.get("vision") and "image" not in inputs:
-            inputs = ["image"] + inputs
         unknown.append("input_modalities")
+    vision = bool(item.get("vision")) or item.get("detail_VisionInput") == "Supported"
+    if vision and "image" not in inputs:
+        inputs.append("image")
+        input_source += "+vision"
 
     outputs = [OUTPUT_MAP[v] for v in _split(item.get("detail_Output")) if v in OUTPUT_MAP]
+    output_source = "detail" if outputs else "type"
     if not outputs:
-        modalities_source = "type"
         outputs = {
             "image": ["image"],
             "video": ["video"],
@@ -156,7 +159,8 @@ def normalize_item(item) -> dict:
         "capabilities": sorted(caps),
         "image_edit": bool(item.get("imageEdit")),
         "endpoints": _split(item.get("detail_Endpoints")),
-        "modalities_source": modalities_source,
+        "input_source": input_source,
+        "output_source": output_source,
         "capabilities_source": capabilities_source,
         "unknown": unknown,
     }

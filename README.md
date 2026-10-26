@@ -414,6 +414,7 @@ python -m tools.ops.compare_snapshot raw/cheaperinference-20261023-full.json
 | `capabilities` 里的 `context-128k` / `context-1m` | 126 条**同时带两个**（是「≥阈值」累积标签），201 条一个都没带 | 与 `contextLength` 重复，丢弃 |
 | `detail_ContextWindow` / `detail_MaximumOutput` | 与数值字段 2 处 / 0 处不一致 | 只用于校验与回填缺失值 |
 | `vision` vs `image-input` token vs `detail_VisionInput` | token 过度声明 21 条（bool 与原文都说没有） | 以 bool + 原文为准，token 降为旁证 |
+| `detail_Input` 只写 `text`，但 `detail_VisionInput = Supported` | 13 条（多模态模型，**文本和截图都能输**） | 补上 `image`，来源记 `detail+vision` |
 | `reasoning` 同理 | token 过度声明 27 条 | 同上 |
 | `detail_Input` vs 输入 token | 65 处矛盾 | 以 `detail_Input` 为准；`Not reported` = 未知，不当 false |
 | `free` 字段 | 505 条里只有 1 条为 true | 不采信（`:free` 是聚合源命名约定） |
@@ -429,7 +430,8 @@ input_modalities / output_modalities / capabilities / image_edit / endpoints`，
 
 | 字段 | 含义 |
 |:---|:---|
-| `modalities_source` | `detail`（原文给的）/ `type`（原文没报，按 `type` 推的） |
+| `input_source` | `detail` / `detail+vision`（原文只写 text，但视觉支持，补了 image）/ `type` / `type+vision` |
+| `output_source` | `detail`（原文给的）/ `type`（原文没报，按 `type` 推的） |
 | `capabilities_source` | `params`（据 `detail_SupportedParameters`）/ `tokens`（参数表没公布时的弱证据） |
 | `unknown[]` | 该站没报、也没有可靠推导依据的维度 |
 

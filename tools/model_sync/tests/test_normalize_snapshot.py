@@ -49,6 +49,22 @@ class NormalizeTest(unittest.TestCase):
         record = ns.normalize_item(item(capabilities=["image-input"], detail_Input="text"))
         self.assertEqual(record["input_modalities"], ["text"])
 
+    def test_vision_supported_adds_image_even_when_detail_lists_text(self):
+        """能输文本的模型也常能输截图：detail_Input 只写 text，但 vision 说是 -> 两者都要。"""
+        record = ns.normalize_item(item(detail_Input="text", vision=True, detail_VisionInput="Supported"))
+        self.assertEqual(record["input_modalities"], ["image", "text"])
+        self.assertEqual(record["input_source"], "detail+vision")
+
+    def test_vision_flag_alone_is_enough(self):
+        record = ns.normalize_item(item(detail_Input="text", vision=True, detail_VisionInput="Not supported"))
+        self.assertEqual(record["input_modalities"], ["image", "text"])
+
+    def test_text_to_image_model_keeps_text_only_input(self):
+        """文生图：输入就是 text，不能因为 type=image 就给它加 image 输入。"""
+        record = ns.normalize_item(item(type="image", detail_Input="text", detail_Output="image"))
+        self.assertEqual(record["input_modalities"], ["text"])
+        self.assertEqual(record["output_modalities"], ["image"])
+
     def test_detail_input_wins_and_pdf_maps_to_file(self):
         record = ns.normalize_item(item(detail_Input="image, pdf, text", vision=True))
         self.assertEqual(record["input_modalities"], ["file", "image", "text"])
@@ -58,7 +74,7 @@ class NormalizeTest(unittest.TestCase):
             item(type="image", detail_Input="Not reported", detail_Output="Not reported", capabilities=["image-input"])
         )
         self.assertEqual(record["output_modalities"], ["image"])
-        self.assertEqual(record["modalities_source"], "type")
+        self.assertEqual(record["output_source"], "type")
         self.assertIn("output_modalities", record["unknown"])
 
     def test_capabilities_from_params_preferred(self):
