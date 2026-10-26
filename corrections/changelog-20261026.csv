@@ -1,0 +1,167 @@
+model_id,field,old,new,confidence,source_url,reason
+all-minilm-l12-v2,contextLength,null,128,high,https://huggingface.co/sentence-transformers/all-MiniLM-L12-v2/raw/main/sentence_bert_config.json,读官方配置文件核对
+all-minilm-l12-v2,maxOutputTokens,512,null,high,https://www.sbert.net/examples/sentence_transformer/applications/computing-embeddings/README.html,向量模型没有输出 token 概念
+all-minilm-l6-v2,contextLength,null,256,high,https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/raw/main/sentence_bert_config.json,读官方配置文件核对
+all-minilm-l6-v2,maxOutputTokens,512,null,high,https://www.sbert.net/docs/pretrained_models.html,向量模型没有输出 token 概念
+all-mpnet-base-v2,contextLength,null,384,high,https://huggingface.co/sentence-transformers/all-mpnet-base-v2/raw/main/sentence_bert_config.json,读官方配置文件核对
+all-mpnet-base-v2,maxOutputTokens,512,null,high,https://www.sbert.net/docs/pretrained_models.html,向量模型没有输出 token 概念
+bge-base-en-v1.5,contextLength,null,512,high,https://docs.api.nvidia.com/nim/reference/baai-bge-m3-invoke,站点把最大输入长度写进了 Maximum output，迁到上下文；注意 max_position_embeddings 可能大于框架默认截断值
+bge-base-en-v1.5,maxOutputTokens,512,null,high,https://docs.api.nvidia.com/nim/reference/baai-bge-m3-invoke,向量模型没有输出 token 概念
+bge-en-icl,contextLength,null,8192,high,https://deepinfra.com/BAAI/bge-en-icl,站点把最大输入长度写进了 Maximum output，迁到上下文；注意 max_position_embeddings 可能大于框架默认截断值
+bge-en-icl,maxOutputTokens,8192,null,high,https://deepinfra.com/BAAI/bge-en-icl,向量模型没有输出 token 概念
+bge-large-en-v1.5,contextLength,null,512,high,https://docs.api.nvidia.com/nim/reference/baai-bge-m3-invoke,站点把最大输入长度写进了 Maximum output，迁到上下文；注意 max_position_embeddings 可能大于框架默认截断值
+bge-large-en-v1.5,maxOutputTokens,512,null,high,https://docs.api.nvidia.com/nim/reference/baai-bge-m3-invoke,向量模型没有输出 token 概念
+bge-m3-multi,maxOutputTokens,512,null,high,https://bge-model.com/bge/bge_m3.html,向量模型没有输出 token 概念
+bge-m3-multi-8k,contextLength,null,8192,high,https://docs.api.nvidia.com/nim/reference/baai-bge-m3-invoke,站点把最大输入长度写进了 Maximum output，迁到上下文；注意 max_position_embeddings 可能大于框架默认截断值
+bge-m3-multi-8k,maxOutputTokens,8192,null,high,https://docs.api.nvidia.com/nim/reference/baai-bge-m3-invoke,向量模型没有输出 token 概念
+claude-haiku-5.5,contextLength,100000,1000000,high,https://platform.claude.com/docs/en/build-with-claude/context-windows,"站点把计费档位阈值 100,000 当成了上下文窗口"
+claude-opus-4.5,contextLength,198000,200000,high,https://platform.claude.com/docs/en/models/opus-4-5/overview,Claude 核实（official）
+claude-sonnet-4.5,contextLength,198000,200000,high,https://platform.claude.com/docs/en/models/sonnet-4-5/overview,Claude 核实（official）
+clip-vit-b-32,contextLength,null,77,high,https://huggingface.co/openai/clip-vit-base-patch32/raw/main/config.json,读官方配置文件核对
+clip-vit-b-32-multilingual-v1,contextLength,null,128,high,https://huggingface.co/sentence-transformers/clip-ViT-B-32-multilingual-v1/raw/main/sentence_bert_config.json,读官方配置文件核对
+clip-vit-b-32-multilingual-v1,maxOutputTokens,512,null,high,https://huggingface.co/sentence-transformers/clip-ViT-B-32-multilingual-v1,向量模型没有输出 token 概念
+deepseek-v4-flash-vision-exp,maxOutputTokens,1048576,393216,high,https://api-docs.deepseek.com/zh-cn/quick_start/pricing,站点把上下文值复制进了 max output
+e5-base-v2,contextLength,null,512,high,https://www.modelscope.cn/models/intfloat/e5-base-v2,站点把最大输入长度写进了 Maximum output，迁到上下文；注意 max_position_embeddings 可能大于框架默认截断值
+e5-base-v2,maxOutputTokens,512,null,high,https://www.modelscope.cn/models/intfloat/e5-base-v2,向量模型没有输出 token 概念
+e5-large-v2,contextLength,null,512,high,https://www.modelscope.cn/models/intfloat/e5-base-v2,站点把最大输入长度写进了 Maximum output，迁到上下文；注意 max_position_embeddings 可能大于框架默认截断值
+e5-large-v2,maxOutputTokens,512,null,high,https://www.modelscope.cn/models/intfloat/e5-base-v2,向量模型没有输出 token 概念
+embeddinggemma-2,contextLength,null,8192,high,https://ai.google.dev/gemini-api/docs/embeddings,站点把最大输入长度写进了 Maximum output，迁到上下文；注意 max_position_embeddings 可能大于框架默认截断值
+embeddinggemma-2,maxOutputTokens,8192,null,high,https://ai.google.dev/gemini-api/docs/embeddings,向量模型没有输出 token 概念
+embeddinggemma-300m,contextLength,null,2048,high,https://www.kaggle.com/models/google/embeddinggemma,站点把最大输入长度写进了 Maximum output，迁到上下文；注意 max_position_embeddings 可能大于框架默认截断值
+embeddinggemma-300m,maxOutputTokens,2048,null,high,https://www.kaggle.com/models/google/embeddinggemma,向量模型没有输出 token 概念
+flux-2-max,providerLabel,"""Venice AI""","""Black Forest Labs""",high,https://en.wikipedia.org/wiki/Flux_(text-to-image_model),Claude 核实（third-party）
+flux-2-pro,providerLabel,"""Venice AI""","""Black Forest Labs""",high,https://en.wikipedia.org/wiki/Flux_(text-to-image_model),Claude 核实（third-party）
+flux-pro-1.1,providerLabel,"""Venice AI""","""Black Forest Labs""",high,https://en.wikipedia.org/wiki/Flux_(text-to-image_model),Claude 核实（third-party）
+gemini-2.5-flash,maxOutputTokens,65535,65536,high,https://pi.dev/models/google/gemini-2-5-flash,Claude 核实（third-party）
+gemini-2.5-flash-lite,maxOutputTokens,65535,65536,high,https://discuss.ai.google.dev/t/incorrect-gemini-2-5-pro-input-token-limit-response/108390,Claude 核实（third-party）
+gemini-2.5-pro,maxOutputTokens,65535,65536,high,https://discuss.ai.google.dev/t/incorrect-gemini-2-5-pro-input-token-limit-response/108390,Claude 核实（third-party）
+gemini-3-flash,contextLength,256000,1048576,high,https://openrouter.ai/models/google/gemini-3-flash-preview,Claude 核实（third-party）
+gemini-embedding-001,contextLength,null,2048,high,https://developers.googleblog.com/gemini-embedding-available-gemini-api/,Claude 核实（official）
+gemini-omni-flash-preview,reasoning,false,true,high,https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/gemini/omni-flash-preview,站点 Reasoning 列系统性写错
+glm-4.7,contextLength,128000,200000,high,https://docs.bigmodel.cn/cn/guide/start/latest-glm-4.7,
+gpt-4.1,capabilities,"[""image-input"", ""file-input"", ""reasoning"", ""tool-use"", ""structured-output"", ""web-search"", ""implicit-caching"", ""context-128k"", ""context-1m""]","[""image-input"", ""file-input"", ""tool-use"", ""structured-output"", ""web-search"", ""implicit-caching"", ""context-128k"", ""context-1m""]",high,https://developers.openai.com/api/docs/models/gpt-4.1,Claude 核实（official）
+gpt-4.1,reasoning,true,false,high,https://developers.openai.com/api/docs/models/gpt-4.1,Claude 核实（official）
+gpt-4.1-mini,capabilities,"[""image-input"", ""file-input"", ""reasoning"", ""tool-use"", ""structured-output"", ""web-search"", ""implicit-caching"", ""context-128k"", ""context-1m""]","[""image-input"", ""file-input"", ""tool-use"", ""structured-output"", ""web-search"", ""implicit-caching"", ""context-128k"", ""context-1m""]",high,https://developers.openai.com/api/docs/models/gpt-4.1-mini,Claude 核实（official）
+gpt-4.1-mini,reasoning,true,false,high,https://developers.openai.com/api/docs/models/gpt-4.1-mini,Claude 核实（official）
+gpt-5.2,contextLength,256000,400000,high,https://developers.openai.com/api/docs/models/gpt-5.2,Claude 核实（official）
+gpt-image-2,capabilities,"[""image-input"", ""audio-input"", ""video-input"", ""structured-output"", ""implicit-caching"", ""image-edit"", ""context-128k""]","[""image-input"", ""audio-input"", ""structured-output"", ""implicit-caching"", ""image-edit"", ""context-128k""]",high,https://help.openai.com/en/articles/8400551-chatgpt-image-inputs-faq,
+gpt-oss-120b,capabilities,"[""image-input"", ""reasoning"", ""tool-use"", ""structured-output"", ""implicit-caching"", ""context-128k""]","[""reasoning"", ""tool-use"", ""structured-output"", ""implicit-caching"", ""context-128k""]",high,https://developers.openai.com/api/docs/models/gpt-oss-120b,Claude 核实（official）
+gpt-oss-120b,contextLength,128000,131072,high,https://platform.openai.com/docs/models/gpt-oss,
+gpt-oss-120b,reasoning,false,true,high,https://developers.openai.com/api/docs/models/gpt-oss-120b,Claude 核实（official）
+gpt-oss-20b,contextLength,128000,131072,high,https://openai.com/index/introducing-gpt-oss/,
+gpt-oss-20b,reasoning,false,true,high,https://developers.openai.com/api/docs/models/gpt-oss-20b,Claude 核实（official）
+grok-4,contextLength,2000000,256000,high,https://openrouter.ai/models/x-ai/grok-4,Claude 核实（third-party）
+grok-build-0.1,reasoning,false,true,high,https://vercel.com/ai-gateway/models/grok-build-0.1/about,Claude 核实（third-party）
+gte-base,contextLength,null,512,high,https://deepinfra.com/thenlper/gte-base,站点把最大输入长度写进了 Maximum output，迁到上下文；注意 max_position_embeddings 可能大于框架默认截断值
+gte-base,maxOutputTokens,512,null,high,https://deepinfra.com/thenlper/gte-base,向量模型没有输出 token 概念
+gte-large,contextLength,null,512,high,https://deepinfra.com/thenlper/gte-base,站点把最大输入长度写进了 Maximum output，迁到上下文；注意 max_position_embeddings 可能大于框架默认截断值
+gte-large,maxOutputTokens,512,null,high,https://deepinfra.com/thenlper/gte-base,向量模型没有输出 token 概念
+hunyuan-image-v3,providerLabel,"""Venice AI""","""Tencent""",high,https://comfyui-wiki.com/en/news/2025-09-27-tencent-open-source-hunyuan-image-3-0,Claude 核实（third-party）
+inkling,reasoning,false,true,high,https://together.ai/blog/together-ai-brings-thinking-machines-labs-new-model-inkling-on-day-0,Claude 核实（third-party）
+kimi-k2.5,contextLength,256000,262144,high,https://www.kimi.ai/help/kimi-api/api-troubleshooting,256K 的二进制值，站点写了十进制 256000
+kimi-k2.6,contextLength,256000,262144,high,https://platform.kimi.ai/docs/api/models-overview,
+kimi-k3,contextLength,1000000,1048576,high,https://platform.kimi.com/docs/guide/kimi-k3-quickstart,
+l3-8b-stheno-v3.2,maxOutputTokens,32000,null,high,https://huggingface.co/Sao10K/L3-8B-Stheno-v3.2/raw/main/config.json,官方无值 → 置空，不用部署参数冒充模型规格
+llama-nemotron-embed-vl-1b-v2,contextLength,null,10240,high,https://build.nvidia.com/nvidia/llama-nemotron-embed-vl-1b-v2/modelcard,站点把最大输入长度写进了 Maximum output，迁到上下文；注意 max_position_embeddings 可能大于框架默认截断值
+llama-nemotron-embed-vl-1b-v2,maxOutputTokens,10240,null,high,https://build.nvidia.com/nvidia/llama-nemotron-embed-vl-1b-v2/modelcard,向量模型没有输出 token 概念
+minimax-m3,contextLength,200000,1000000,high,https://platform.minimax.io/docs/guides/text-generation,
+minimax-m3,maxOutputTokens,512000,524288,high,https://platform.minimax.io/docs/guides/text-generation,
+minimax-m3,reasoning,false,true,high,https://platform.minimax.io/docs/api-reference/text-chat-openai.md,
+minimax-m3.1-flash,maxOutputTokens,1048576,524288,high,https://platform.minimax.io/docs/guides/text-generation,
+ministral-14b,contextLength,128000,262144,high,https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512,站点抄了 AWS Bedrock 的部署缩减值
+mistral-embed,contextLength,null,8192,high,https://www.getmaxim.ai/bifrost/llm-cost-calculator/provider/mistral/model/mistral-embed.md,Claude 核实（third-party）
+multi-qa-mpnet-base-dot-v1,contextLength,null,512,high,https://huggingface.co/sentence-transformers/multi-qa-mpnet-base-dot-v1/raw/main/sentence_bert_config.json,读官方配置文件核对
+multi-qa-mpnet-base-dot-v1,maxOutputTokens,512,null,high,https://www.sbert.net/docs/pretrained_models.html,向量模型没有输出 token 概念
+multilingual-e5-large,contextLength,null,512,high,https://openrouter.ai/intfloat/multilingual-e5-large,站点把最大输入长度写进了 Maximum output，迁到上下文；注意 max_position_embeddings 可能大于框架默认截断值
+multilingual-e5-large,maxOutputTokens,512,null,high,https://openrouter.ai/intfloat/multilingual-e5-large,向量模型没有输出 token 概念
+multilingual-e5-large-instruct,contextLength,null,512,high,https://registry.ollama.com/jeffh/intfloat-multilingual-e5-large-instruct:f32/blobs/136c89cb1c6e,站点把最大输入长度写进了 Maximum output，迁到上下文；注意 max_position_embeddings 可能大于框架默认截断值
+multilingual-e5-large-instruct,maxOutputTokens,512,null,high,https://registry.ollama.com/jeffh/intfloat-multilingual-e5-large-instruct:f32/blobs/136c89cb1c6e,向量模型没有输出 token 概念
+nano-banana,capabilities,"[""image-input"", ""audio-input"", ""video-input"", ""structured-output"", ""web-search""]","[""image-input"", ""audio-input"", ""structured-output"", ""web-search""]",high,https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash-image,
+nano-banana,contextLength,32768,65536,high,https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash-image,站点把两列对调了
+nano-banana,maxOutputTokens,65536,32768,high,https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash-image,
+nano-banana-pro,capabilities,"[""image-input"", ""audio-input"", ""video-input"", ""structured-output"", ""web-search"", ""implicit-caching"", ""image-edit""]","[""image-input"", ""audio-input"", ""structured-output"", ""web-search"", ""implicit-caching"", ""image-edit""]",high,https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash-image,
+nemotron-3-embed-8b,contextLength,null,32768,high,https://build.nvidia.com/nvidia/nemotron-3-embed-1b/modelcard,站点把最大输入长度写进了 Maximum output，迁到上下文；注意 max_position_embeddings 可能大于框架默认截断值
+nemotron-3-embed-8b,maxOutputTokens,32768,null,high,https://build.nvidia.com/nvidia/nemotron-3-embed-1b/modelcard,向量模型没有输出 token 概念
+nemotron-3-nano-30b-a3b,contextLength,128000,131072,high,https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3-nano-30b-a3b,
+nemotron-3-nano-30b-a3b,maxOutputTokens,262144,131072,high,https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3-nano-30b-a3b,
+nemotron-3.5-super-vl,contextLength,262144,1048576,high,https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-BF16,
+nemotron-nano-9b-v2,contextLength,128000,131072,high,https://docs.api.nvidia.com/nim/reference/nvidia-nvidia-nemotron-nano-9b-v2,
+o3-mini,capabilities,"[""image-input"", ""reasoning"", ""tool-use"", ""structured-output"", ""implicit-caching"", ""context-128k""]","[""reasoning"", ""tool-use"", ""structured-output"", ""implicit-caching"", ""context-128k""]",high,https://openai.com/index/openai-o3-mini/,官方明确不支持视觉
+o3-mini,vision,true,false,high,https://openai.com/index/openai-o3-mini/,
+parakeet-asr,providerLabel,"""Venice AI""","""NVIDIA""",high,https://build.nvidia.com/nvidia/parakeet-tdt-0_6b-v2/modelcard,Claude 核实（official）
+paraphrase-minilm-l6-v2,contextLength,null,128,high,https://huggingface.co/sentence-transformers/paraphrase-MiniLM-L6-v2/raw/main/sentence_bert_config.json,读官方配置文件核对
+paraphrase-minilm-l6-v2,maxOutputTokens,512,null,high,https://www.sbert.net/examples/sentence_transformer/applications/computing-embeddings/README.html,向量模型没有输出 token 概念
+qwen3-next-80b-a3b-instruct,contextLength,256000,131072,high,https://help.aliyun.com/zh/model-studio/qwen3-next-80b-a3b-instruct,
+qwen3-next-80b-a3b-instruct,maxOutputTokens,262114,32768,high,https://help.aliyun.com/zh/model-studio/qwen3-next-80b-a3b-instruct,"站点 262,114 是 262,144 的录入错"
+qwen3-vl-235b-a22b-instruct,contextLength,256000,131072,high,https://help.aliyun.com/zh/model-studio/qwen3-vl-235b-a22b-instruct,
+qwen3-vl-235b-a22b-instruct,maxOutputTokens,262144,32768,high,https://help.aliyun.com/zh/model-studio/qwen3-vl-235b-a22b-instruct,
+recraft-v4,providerLabel,"""Venice AI""","""Recraft""",high,https://www.recraft.ai/docs/api-reference/models/recraft-v4,Claude 核实（official）
+recraft-v4-pro,providerLabel,"""Venice AI""","""Recraft""",high,https://www.recraft.ai/docs/api-reference/models/recraft-v4,Claude 核实（official）
+seed-2.1-turbo,contextLength,256000,262144,high,https://www.volcengine.com/docs/82379/1799865,
+seedance-1.5-pro,capabilities,"[""image-input"", ""video-input""]","[""image-input""]",high,https://www.volcengine.com/docs/82379/1330310,
+seedance-2.0-fast,providerLabel,"""Venice AI""","""ByteDance""",high,https://openrouter.ai/bytedance/seedance-2.0-fast,Claude 核实（third-party）
+seedream-4.0,providerLabel,"""Venice AI""","""ByteDance""",high,https://the-decoder.com/bytedance-unveils-faster-seedream-4-0-for-image-generation-and-editing/,Claude 核实（third-party）
+text-embedding-3-large,maxOutputTokens,8191,null,high,https://zilliz.com/ai-models/text-embedding-3-large,Claude 核实（third-party）
+text-embedding-3-small,contextLength,null,8191,high,https://zilliz.com/ai-models/text-embedding-3-large,Claude 核实（third-party）
+text-embedding-ada-002,contextLength,null,8191,high,https://zilliz.com/ai-models/text-embedding-3-large,Claude 核实（third-party）
+text2vec-base-chinese,contextLength,null,512,high,https://www.sbert.net/docs/pretrained_models.html,站点把最大输入长度写进了 Maximum output，迁到上下文；注意 max_position_embeddings 可能大于框架默认截断值
+text2vec-base-chinese,maxOutputTokens,512,null,high,https://www.sbert.net/docs/pretrained_models.html,向量模型没有输出 token 概念
+titan-embed-text-v2,contextLength,null,8192,high,https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html,Claude 核实（official）
+tts-1,providerLabel,"""Venice AI""","""OpenAI""",high,https://developers.openai.com/api/docs/models/tts-1,Claude 核实（official）
+voyage-3-large,contextLength,null,32000,high,https://docs.voyageai.com/embeddings/,Claude 核实（official）
+voyage-3.5,contextLength,null,32000,high,https://docs.voyageai.com/embeddings/,Claude 核实（official）
+voyage-3.5-lite,contextLength,null,32000,high,https://docs.voyageai.com/embeddings/,Claude 核实（official）
+voyage-code-3,contextLength,null,32000,high,https://docs.voyageai.com/embeddings/,Claude 核实（official）
+voyage-finance-2,contextLength,null,32000,high,https://docs.voyageai.com/embeddings/,Claude 核实（official）
+voyage-law-2,contextLength,null,16000,high,https://docs.voyageai.com/embeddings/,Claude 核实（official）
+wan-2.6,capabilities,"[""image-input"", ""audio-input"", ""video-input""]","[""image-input"", ""audio-input""]",high,https://help.aliyun.com/zh/model-studio/use-video-generation/,
+wan-2.6-i2v-flash,capabilities,"[""image-input"", ""video-input""]","[""image-input""]",high,https://help.aliyun.com/zh/model-studio/use-video-generation/,
+wan-2.7,capabilities,"[""image-input"", ""audio-input"", ""video-input""]","[""image-input"", ""audio-input""]",high,https://help.aliyun.com/zh/model-studio/use-video-generation/,
+whisper-1,providerLabel,"""Venice AI""","""OpenAI""",high,https://developers.openai.com/api/docs/models/whisper-1,Claude 核实（official）
+whisper-large-v3,providerLabel,"""Venice AI""","""OpenAI""",high,https://huggingface.co/openai/Whisper-Large-V3,Claude 核实（official）
+deepseek-v3.1,reasoning,false,true,high,https://api-docs.deepseek.com/guides/thinking_mode/,站点 Reasoning 列系统性写成 Not supported，官方文档明确支持
+gemma-4-26b-a4b-it,reasoning,false,true,high,https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/maas/capabilities/thinking,站点 Reasoning 列系统性写成 Not supported，官方文档明确支持
+glm-4.7-flash,reasoning,false,true,high,https://docs.bigmodel.cn/cn/guide/models/free/glm-4.7-flash,站点 Reasoning 列系统性写成 Not supported，官方文档明确支持
+gpt-oss-safeguard-120b,reasoning,false,true,high,https://openai.com/index/introducing-gpt-oss-safeguard/,站点 Reasoning 列系统性写成 Not supported，官方文档明确支持
+gpt-oss-safeguard-20b,reasoning,false,true,high,https://friendli.ai/models/openai/gpt-oss-safeguard-20b,站点 Reasoning 列系统性写成 Not supported，官方文档明确支持
+minimax-m2,reasoning,false,true,high,https://platform.minimaxi.com/docs/api-reference/text-openai-api,站点 Reasoning 列系统性写成 Not supported，官方文档明确支持
+minimax-m2.7-highspeed,reasoning,false,true,high,https://platform.minimaxi.com/docs/api-reference/text-openai-api,站点 Reasoning 列系统性写成 Not supported，官方文档明确支持
+nemotron-3-nano-30b-a3b,reasoning,false,true,high,https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3-nano-30b-a3b,站点 Reasoning 列系统性写成 Not supported，官方文档明确支持
+nemotron-3-super-120b-a12b,reasoning,false,true,high,https://docs.nvidia.com/nim/large-language-models/2.0.4/turbo/get-started-nemotron-3-super-120b-a12b.html,站点 Reasoning 列系统性写成 Not supported，官方文档明确支持
+nemotron-nano-9b-v2,reasoning,false,true,high,https://docs.api.nvidia.com/nim/reference/nvidia-nvidia-nemotron-nano-9b-v2,站点 Reasoning 列系统性写成 Not supported，官方文档明确支持
+qwen3-30b-a3b,reasoning,false,true,high,https://qwenlm.github.io/blog/qwen3/,站点 Reasoning 列系统性写成 Not supported，官方文档明确支持
+qwen3-32b,reasoning,false,true,high,https://qwenlm.github.io/blog/qwen3/,站点 Reasoning 列系统性写成 Not supported，官方文档明确支持
+qwen3-vl-235b-a22b-thinking,reasoning,false,true,high,https://help.aliyun.com/zh/model-studio/qwen3-vl-235b-a22b-thinking,站点 Reasoning 列系统性写成 Not supported，官方文档明确支持
+qwen3-vl-30b-a3b-thinking,reasoning,false,true,high,https://qwen.ai/blog?id=qwen3-vl,站点 Reasoning 列系统性写成 Not supported，官方文档明确支持
+qwen3.5-flash,reasoning,false,true,high,https://docs.qwencloud.com/developer-guides/text-generation/thinking,站点 Reasoning 列系统性写成 Not supported，官方文档明确支持
+qwen3.5-plus,reasoning,false,true,high,https://docs.qwencloud.com/developer-guides/text-generation/thinking,站点 Reasoning 列系统性写成 Not supported，官方文档明确支持
+qwen3.7-plus,reasoning,false,true,high,https://docs.qwencloud.com/developer-guides/text-generation/thinking,站点 Reasoning 列系统性写成 Not supported，官方文档明确支持
+claude-opus-4.8-fast,reasoning,false,true,high,https://platform.claude.com/docs/en/build-with-claude/thinking,站点 Reasoning 列系统性写成 Not supported，官方文档明确支持
+nano-banana-2,reasoning,false,true,high,https://ai.google.dev/gemini-api/docs/image-generation,站点 Reasoning 列系统性写成 Not supported，官方文档明确支持
+gemini-2.5-flash,reasoning,false,true,high,https://ai.google.dev/gemini-api/docs/thinking-mode,站点 Reasoning 列系统性写成 Not supported，官方文档明确支持
+gemini-3.1-flash-lite,reasoning,false,true,high,https://ai.google.dev/gemini-api/docs/thinking-mode,站点 Reasoning 列系统性写成 Not supported，官方文档明确支持
+bge-m3,maxOutputTokens,8192,null,high,https://huggingface.co/BAAI/bge-m3,向量模型没有输出 token 概念
+qwen3-embedding-0.6b,maxOutputTokens,32768,null,high,https://huggingface.co/Qwen/Qwen3-Embedding-0.6B,向量模型没有输出 token 概念
+qwen3-embedding-4b,maxOutputTokens,32768,null,high,https://huggingface.co/Qwen/Qwen3-Embedding-4B,向量模型没有输出 token 概念
+qwen3-embedding-8b,maxOutputTokens,32768,null,high,https://huggingface.co/Qwen/Qwen3-Embedding-8B,向量模型没有输出 token 概念
+glm-5,maxOutputTokens,131100,131072,high,https://docs.z.ai/api-reference/llm/chat-completion,Claude 核实（official）；L1 原值 131100
+gemini-3.8-flash,maxOutputTokens,65535,65536,high,https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash,Claude 核实（official）；L1 原值 65535
+gemini-3.7-flash,maxOutputTokens,65535,65536,high,https://ai.google.dev/gemini-api/docs/models/gemini-3.7-flash,Claude 核实（official）；L1 原值 65535
+glm-5.3,maxOutputTokens,1000000,131072,high,https://docs.z.ai/api-reference/llm/chat-completion,Claude 核实（official）；L1 原值 1000000
+glm-5.3-flash,maxOutputTokens,1048576,131072,high,https://docs.z.ai/api-reference/llm/chat-completion,Claude 核实（official）；L1 原值 1048576
+gemma-3-27b-it,contextLength,40000,131072,high,https://ai.google.dev/gemma/docs/core/model_card_3,"站点 40,000 是某个部署的截断值，非模型规格；按 contextLength=模型自身规格 口径改为 128K"
+claude-haiku-5.5,capabilities (context 标签),"[""image-input"", ""file-input"", ""reasoning"", ""tool-use"", ""structured-output"", ""web-search"", ""explicit-caching""]","[""image-input"", ""file-input"", ""reasoning"", ""tool-use"", ""structured-output"", ""web-search"", ""explicit-caching"", ""context-128k"", ""context-1m""]",high,,随同行 contextLength 修正同步
+gemini-3-flash,capabilities (context 标签),"[""image-input"", ""file-input"", ""audio-input"", ""video-input"", ""reasoning"", ""tool-use"", ""structured-output"", ""web-search"", ""implicit-caching"", ""context-128k""]","[""image-input"", ""file-input"", ""audio-input"", ""video-input"", ""reasoning"", ""tool-use"", ""structured-output"", ""web-search"", ""implicit-caching"", ""context-128k"", ""context-1m""]",high,,随同行 contextLength 修正同步
+gemma-3-27b-it,capabilities (context 标签),"[""image-input"", ""structured-output""]","[""image-input"", ""structured-output"", ""context-128k""]",high,,随同行 contextLength 修正同步
+grok-4,capabilities (context 标签),"[""image-input"", ""reasoning"", ""tool-use"", ""structured-output"", ""context-128k"", ""context-1m""]","[""image-input"", ""reasoning"", ""tool-use"", ""structured-output"", ""context-128k""]",high,,随同行 contextLength 修正同步
+minimax-m3,capabilities (context 标签),"[""image-input"", ""file-input"", ""video-input"", ""reasoning"", ""tool-use"", ""structured-output"", ""web-search"", ""implicit-caching"", ""context-128k""]","[""image-input"", ""file-input"", ""video-input"", ""reasoning"", ""tool-use"", ""structured-output"", ""web-search"", ""implicit-caching"", ""context-128k"", ""context-1m""]",high,,随同行 contextLength 修正同步
+nemotron-3.5-super-vl,capabilities (context 标签),"[""image-input"", ""video-input"", ""reasoning"", ""tool-use"", ""structured-output"", ""implicit-caching"", ""context-128k""]","[""image-input"", ""video-input"", ""reasoning"", ""tool-use"", ""structured-output"", ""implicit-caching"", ""context-128k"", ""context-1m""]",high,,随同行 contextLength 修正同步
+grok-4,servedAs,null,"""grok-4.3""",high,https://docs.x.ai/developers/migration/may-15-retirement,上游路由：grok-4-0709 于 2026-05-15 退役，请求转发到 grok-4.3
+grok-4,retiredAt,null,"""2026-05-15""",high,https://docs.x.ai/developers/migration/may-15-retirement,上游路由：grok-4-0709 于 2026-05-15 退役，请求转发到 grok-4.3
+grok-4.1-fast-reasoning,servedAs,null,"""grok-4.3""",high,https://docs.x.ai/developers/migration/may-15-retirement,上游路由：grok-4-1-fast-* 于 2026-05-15 退役，请求转发到 grok-4.3
+grok-4.1-fast-reasoning,retiredAt,null,"""2026-05-15""",high,https://docs.x.ai/developers/migration/may-15-retirement,上游路由：grok-4-1-fast-* 于 2026-05-15 退役，请求转发到 grok-4.3
+grok-4.1-fast-non-reasoning,servedAs,null,"""grok-4.3""",high,https://docs.x.ai/developers/migration/may-15-retirement,上游路由：grok-4-1-fast-* 于 2026-05-15 退役，请求转发到 grok-4.3
+grok-4.1-fast-non-reasoning,retiredAt,null,"""2026-05-15""",high,https://docs.x.ai/developers/migration/may-15-retirement,上游路由：grok-4-1-fast-* 于 2026-05-15 退役，请求转发到 grok-4.3
+grok-code-fast-1,servedAs,null,"""grok-build-0.1""",high,https://docs.x.ai/developers/migration/may-15-retirement,上游路由：grok-code-fast-1 于 2026-05-15 退役，请求转发到 grok-build-0.1
+grok-code-fast-1,retiredAt,null,"""2026-05-15""",high,https://docs.x.ai/developers/migration/may-15-retirement,上游路由：grok-code-fast-1 于 2026-05-15 退役，请求转发到 grok-build-0.1
+mimo-v2.5,retiredAt,null,"""2026-10-21""",high,https://mimo.mi.com/docs/en-US/updates/model,上游路由：mimo-v2.5 已于 2026-10-21 下线，ID 不再可用（站点 servedAt 仍为 2026-10-20）
