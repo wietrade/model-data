@@ -30,8 +30,8 @@
       "is_free": false,
       "endpoints": null,
       "lifecycle": "legacy",
-      "release_date": "2026-06-07",
-      "knowledge_cutoff": ""
+      "release_date": "2026-06-09",
+      "knowledge_cutoff": "2026-01"
     },
     {
       "model_name": "claude-fable-5-1",
@@ -188,7 +188,7 @@
       "endpoints": null,
       "lifecycle": "legacy",
       "release_date": "2026-05-28",
-      "knowledge_cutoff": ""
+      "knowledge_cutoff": "2026-01"
     },
     {
       "model_name": "claude-opus-4.5",
@@ -219,7 +219,7 @@
       "endpoints": null,
       "lifecycle": "legacy",
       "release_date": "2025-11-24",
-      "knowledge_cutoff": ""
+      "knowledge_cutoff": "2025-05"
     },
     {
       "model_name": "claude-opus-4.6",
@@ -249,8 +249,8 @@
       "is_free": false,
       "endpoints": null,
       "lifecycle": "legacy",
-      "release_date": "2026-02-04",
-      "knowledge_cutoff": ""
+      "release_date": "2026-02-05",
+      "knowledge_cutoff": "2025-05"
     },
     {
       "model_name": "claude-opus-4.7",
@@ -280,8 +280,8 @@
       "is_free": false,
       "endpoints": null,
       "lifecycle": "legacy",
-      "release_date": "2026-04-14",
-      "knowledge_cutoff": ""
+      "release_date": "2026-04-16",
+      "knowledge_cutoff": "2026-01"
     },
     {
       "model_name": "claude-opus-5",
@@ -313,7 +313,7 @@
       "endpoints": null,
       "lifecycle": "legacy",
       "release_date": "2026-07-24",
-      "knowledge_cutoff": ""
+      "knowledge_cutoff": "2026-05"
     },
     {
       "model_name": "claude-opus-5-5",
@@ -377,7 +377,7 @@
       "endpoints": null,
       "lifecycle": "legacy",
       "release_date": "2026-06-30",
-      "knowledge_cutoff": ""
+      "knowledge_cutoff": "2026-01"
     },
     {
       "model_name": "claude-sonnet-5-5",
@@ -984,7 +984,7 @@
         "text"
       ],
       "context_length": 1048576,
-      "max_output_tokens": 943718,
+      "max_output_tokens": 1048576,
       "is_free": false,
       "endpoints": null,
       "lifecycle": "ga",
@@ -1038,7 +1038,7 @@
         "text"
       ],
       "context_length": 262144,
-      "max_output_tokens": 235929,
+      "max_output_tokens": 0,
       "is_free": true,
       "endpoints": null,
       "lifecycle": "",
@@ -1068,7 +1068,7 @@
         "text"
       ],
       "context_length": 1048576,
-      "max_output_tokens": 235929,
+      "max_output_tokens": 0,
       "is_free": true,
       "endpoints": null,
       "lifecycle": "",
@@ -1162,7 +1162,7 @@
       "is_free": false,
       "endpoints": null,
       "lifecycle": "ga",
-      "release_date": "2026-04-23",
+      "release_date": "2026-04-24",
       "knowledge_cutoff": "2025-12"
     },
     {
@@ -1290,7 +1290,7 @@
       "is_free": false,
       "endpoints": null,
       "lifecycle": "ga",
-      "release_date": "2026-09-04",
+      "release_date": "2026-09-03",
       "knowledge_cutoff": "2026-04"
     },
     {
@@ -1605,7 +1605,7 @@
         "text"
       ],
       "context_length": 262144,
-      "max_output_tokens": 235929,
+      "max_output_tokens": 0,
       "is_free": true,
       "endpoints": null,
       "lifecycle": "",
@@ -1842,7 +1842,7 @@
       "is_free": false,
       "endpoints": null,
       "lifecycle": "ga",
-      "release_date": "",
+      "release_date": "2026-09-08",
       "knowledge_cutoff": ""
     },
     {

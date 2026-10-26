@@ -28,9 +28,11 @@
     },
     {
       "model_name": "claude-fable-5",
-      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。 2026-10-26 核对 release_date=2026-06-09：出处 https://platform.claude.com/docs/en/models/fable-5/overview.md（Legacy. Released June 9, 2026.）；原值 2026-06-07 有误。 2026-10-26 核对 knowledge_cutoff=2026-01：出处 https://platform.claude.com/docs/en/models/fable-5/overview.md（Knowledge cutoff 列：Jan 2026（本模型行））；原先留空。",
       "fields": {
-        "lifecycle": "legacy"
+        "lifecycle": "legacy",
+        "release_date": "2026-06-09",
+        "knowledge_cutoff": "2026-01"
       }
     },
     {
@@ -69,37 +71,44 @@
     },
     {
       "model_name": "claude-opus-4-8",
-      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。 2026-10-26 核对 knowledge_cutoff=2026-01：出处 https://platform.claude.com/docs/en/models/opus-4-8/overview.md（Knowledge cutoff 列：Jan 2026）；原先留空。",
       "fields": {
-        "lifecycle": "legacy"
+        "lifecycle": "legacy",
+        "knowledge_cutoff": "2026-01"
       }
     },
     {
       "model_name": "claude-opus-4.5",
-      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。 2026-10-26 核对 knowledge_cutoff=2025-05：出处 https://platform.claude.com/docs/en/models/opus-4-5/overview.md（Knowledge cutoff 列：May 2025）；原先留空。",
       "fields": {
-        "lifecycle": "legacy"
+        "lifecycle": "legacy",
+        "knowledge_cutoff": "2025-05"
       }
     },
     {
       "model_name": "claude-opus-4.6",
-      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。 2026-10-26 核对 release_date=2026-02-05：出处 https://platform.claude.com/docs/en/models/opus-4-6/overview.md（Legacy. Released February 5, 2026.）；原值 2026-02-04 有误。 2026-10-26 核对 knowledge_cutoff=2025-05：出处 https://platform.claude.com/docs/en/models/opus-4-6/overview.md（Knowledge cutoff 列：May 2025）；原先留空。",
       "fields": {
-        "lifecycle": "legacy"
+        "lifecycle": "legacy",
+        "release_date": "2026-02-05",
+        "knowledge_cutoff": "2025-05"
       }
     },
     {
       "model_name": "claude-opus-4.7",
-      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。 2026-10-26 核对 release_date=2026-04-16：出处 https://platform.claude.com/docs/en/models/opus-4-7/overview.md（Legacy. Released April 16, 2026.）；原值 2026-04-14 有误。 2026-10-26 核对 knowledge_cutoff=2026-01：出处 https://platform.claude.com/docs/en/models/opus-4-7/overview.md（Knowledge cutoff 列：Jan 2026）；原先留空。",
       "fields": {
-        "lifecycle": "legacy"
+        "lifecycle": "legacy",
+        "release_date": "2026-04-16",
+        "knowledge_cutoff": "2026-01"
       }
     },
     {
       "model_name": "claude-opus-5",
-      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。 2026-10-26 核对 knowledge_cutoff=2026-05：出处 https://platform.claude.com/docs/en/models/opus-5/overview.md（Knowledge cutoff 列：May 2026）；原先留空。",
       "fields": {
-        "lifecycle": "legacy"
+        "lifecycle": "legacy",
+        "knowledge_cutoff": "2026-05"
       }
     },
     {
@@ -112,9 +121,10 @@
     },
     {
       "model_name": "claude-sonnet-5",
-      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。",
+      "note": "Anthropic Models overview（2026-10-25 复核）：标注为 legacy（仍可调用）或当前阵容；知识截止 Jun 2026 / Feb 2025（Haiku 4.5）。 2026-10-26 核对 knowledge_cutoff=2026-01：出处 https://platform.claude.com/docs/en/models/sonnet-5/overview.md（Knowledge cutoff 列：Jan 2026）；原先留空。",
       "fields": {
-        "lifecycle": "legacy"
+        "lifecycle": "legacy",
+        "knowledge_cutoff": "2026-01"
       }
     },
     {
@@ -277,10 +287,10 @@
     },
     {
       "model_name": "gpt-5.5",
-      "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-5.5.md，2026-10-25 复核）。",
+      "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-5.5.md，2026-10-25 复核）。 2026-10-26 核对 release_date=2026-04-24：出处 https://developers.openai.com/api/docs/changelog（Apr 24 — Released GPT-5.5, a new frontier model for complex professional work）；原值 2026-04-23 是快照日 gpt-5.5-2026-04-23，不是发布日。",
       "fields": {
         "lifecycle": "ga",
-        "release_date": "2026-04-23",
+        "release_date": "2026-04-24",
         "knowledge_cutoff": "2025-12",
         "context_length": 1050000,
         "max_output_tokens": 128000
@@ -318,12 +328,13 @@
     },
     {
       "model_name": "gpt-6-astra",
-      "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-6-astra.md，2026-10-25 复核）。",
+      "note": "第二轮官方核实（https://developers.openai.com/api/docs/models/gpt-6-astra.md，2026-10-25 复核）。 2026-10-26 核对 release_date=2026-09-03：出处 https://developers.openai.com/api/docs/changelog（Sep 3 — Released GPT-6 Astra, our most capable model）；原值 2026-09-04 有误。",
       "fields": {
         "lifecycle": "ga",
         "knowledge_cutoff": "2026-04",
         "context_length": 1050000,
-        "max_output_tokens": 128000
+        "max_output_tokens": 128000,
+        "release_date": "2026-09-03"
       }
     },
     {
@@ -354,6 +365,13 @@
         "knowledge_cutoff": "2026-04",
         "context_length": 1050000,
         "max_output_tokens": 128000
+      }
+    },
+    {
+      "model_name": "gpt-image-2.5-flare",
+      "note": "2026-10-26 核对 release_date=2026-09-08：出处 https://developers.openai.com/api/docs/changelog（Sep 8 — Released GPT Image 2.5 Sunburst and GPT Image 2.5 Flare）；原先留空。",
+      "fields": {
+        "release_date": "2026-09-08"
       }
     },
     {
@@ -398,6 +416,13 @@
       }
     },
     {
+      "model_name": "kimi-k3.1-pro",
+      "note": "2026-10-26 核对 max_output_tokens=1048576：出处 https://platform.kimi.com/docs/guide/kimi-k3-quickstart（max_completion_tokens 默认 131072，最大可设置为 1048576）；聚合源给的 943,718 是思考预算，不是输出上限。",
+      "fields": {
+        "max_output_tokens": 1048576
+      }
+    },
+    {
       "model_name": "lfm-2.5-2.6b:free",
       "note": "第三轮核实：docs.liquid.ai 规格 131K 上下文；发布日期 2026-08-04。",
       "fields": {
@@ -421,6 +446,20 @@
       }
     },
     {
+      "model_name": "nemotron-3.5-lightning:free",
+      "note": "2026-10-26 核对 max_output_tokens=0：依据：235,929 = 0.9×262,144，属聚合源伪值；官方未写输出上限 → 置 0 表示未知。",
+      "fields": {
+        "max_output_tokens": 0
+      }
+    },
+    {
+      "model_name": "nemotron-3.5-super-vl:free",
+      "note": "2026-10-26 核对 max_output_tokens=0：依据：235,929 = 0.9×262,144，属聚合源伪值；官方未写输出上限 → 置 0 表示未知。",
+      "fields": {
+        "max_output_tokens": 0
+      }
+    },
+    {
       "model_name": "qwen3.8-flash",
       "note": "第二轮官方核实（https://help.aliyun.com/zh/model-studio/newly-released-models，2026-10-25 复核）。",
       "fields": {
@@ -430,9 +469,10 @@
     },
     {
       "model_name": "xing4.0-29b-a4b:free",
-      "note": "第三轮核实：中国电信星辰发布日。",
+      "note": "第三轮核实：中国电信星辰发布日。 2026-10-26 核对 max_output_tokens=0：依据：235,929 = 0.9×262,144，属聚合源伪值；官方未写输出上限 → 置 0 表示未知。",
       "fields": {
-        "release_date": "2026-09-17"
+        "release_date": "2026-09-17",
+        "max_output_tokens": 0
       }
     }
   ],
