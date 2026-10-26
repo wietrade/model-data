@@ -5,6 +5,7 @@
   1. 元数据本身（模型清单 / 枚举 / 字段合法性 / 免费标记 / 阶梯阈值）
   2. 价格快照（覆盖完整性 / 表达式可由价格字段复现 / 与官方抄录一致）
   3. 线上漂移（给出 --live 时，对比 new-api options 里实际生效的 billing_expr）
+  4. 运维脚本权限（crontab 直接执行的 .sh 必须有可执行位）
 
 用法：
     python -m tools.model_sync.validate
@@ -18,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -325,6 +327,38 @@ def check_live(pricing, live, report: Report, basis=None):
         report.warn(f"线上存在 catalog 未登记的价格: {sorted(unknown)[:6]}")
 
 
+def check_cron_scripts(report: Report) -> None:
+    """crontab 直接执行路径的脚本，git 里必须是 100755。
+
+    教训：`cron-promote-upcoming.sh` 曾以 100644 提交，Windows 上看是 -rwxr-xr-x
+    （MSYS 不读该位），Linux checkout 后是 -rw-r--r--，cron 调用直接
+    `Permission denied`，而它负责 12/01 的涨价提升——静默失败不会有人发现。
+    所以查 git index 的 mode（跨平台有效），而不是 os.access（Windows 恒为 True）。
+    """
+    scripts = sorted((ROOT / "tools" / "ops").glob("*.sh"))
+    if not scripts:
+        return
+    try:
+        out = subprocess.run(
+            ["git", "ls-files", "-s", *[str(p.relative_to(ROOT)) for p in scripts]],
+            cwd=ROOT, capture_output=True, text=True, timeout=20,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return  # 不是 git 环境或没装 git，跳过
+    if out.returncode != 0 or not out.stdout.strip():
+        return
+    for line in out.stdout.splitlines():
+        parts = line.split()
+        if len(parts) < 4:
+            continue
+        mode, path = parts[0], parts[3]
+        if path.endswith(".sh") and mode != "100755":
+            report.error(
+                f"{path}: git 模式是 {mode}，crontab 直接执行会 Permission denied"
+                f"（修：git update-index --chmod=+x {path}）"
+            )
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="校验 metadata 与价格快照")
     parser.add_argument("--live", help="线上 billing_expr JSON（{model: expr}），用于检测漂移")
@@ -342,6 +376,7 @@ def main(argv=None) -> int:
     check_overrides(models, report)
     check_lifecycle_coverage(models, report)
     check_i18n(models, report)
+    check_cron_scripts(report)
 
     context = {m["model_name"]: m.get("context_length") or 0 for m in models}
     check_pricing(models, pricing, official, context, report)
