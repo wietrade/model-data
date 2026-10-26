@@ -272,17 +272,16 @@ overrides.json  >  官方逐模型页 / 官方 API（official:*，需官方内�
 
 「同步价格」只认上面 **10 个字段**，**不读我们的 `pricing.json`**（格式不通）。
 
-实测（2026-10-26）：我们 20 个渠道全部指向 `https://znbcode.com`，而该域名
-`/api/pricing`、`/api/ratio_config` 都是 **404**（只开放 `/v1/models`，需 API key），
-所以「同步价格」对这些渠道**拉不到任何数据**。
-
-— 这就是为什么「我们的价格」必须自己维护，且单独放一个文件：
+上游渠道不归我们管，它有没有公开的价格接口与我们无关——**我们的价格自己维护**，
+所以它必须是一个独立文件，不与官方价混在一起：
 
 ```
 私有  /opt/model-data-private/billing_basis.json   我们拿到的价（人民币 + 汇率），唯一真源
 私有  /opt/model-data-private/billing.json         export 产物（billing_mode + billing_expr），apply 用
 公开  api/newapi/pricing.json                      只放厂商官方价，仅作参考与计算输入
 ```
+
+三条铁律：官方价只做参考与计算输入；我们的价格只在私有文件里；两者永远不写进同一个文件。
 
 ### 原则：判断发生在构建期，不发生在读取期
 
