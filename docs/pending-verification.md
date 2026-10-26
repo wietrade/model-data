@@ -95,3 +95,26 @@ expr = f"len <= {thresholds[index]} ? {leaves[index]} : {expr}"
 | `gemma-4-*:free` 的价格行 | 没有 `quote` | `ai.google.dev` 定价页的 Gemma 4 段 |
 | `inkling:free` / `nemotron-3.5-content-safety:free` / `xing4.0-29b-a4b:free` 的 `release_date` | 引用只写「发布日」，没有 URL | 各厂商发布公告 |
 | DeepSeek 峰谷计费 | 表达式只按星期判断，**未排除中国法定节假日**（官方：节假日全天按空闲价） | 需要节假日表 + 表达式支持日期集合 |
+
+---
+
+## 5. 同步资料时**先取消勾选**的项（会把未核实的值覆盖到线上）
+
+2026-10-26 预览待同步 37 个模型，其中下面这些**仓库侧的值没有官方依据**
+（`overrides.json` 里没有钉住），点了就会把线上现值覆盖掉。核完再勾。
+
+| 模型 | 字段 | 线上现值 | 仓库值 | 状态 |
+|:---|:---|:---|:---|:---|
+| `gemini-3.8-flash` | `release_date` | `2026-10-13` | `2026-09-02` | 两边都无法留证，**先别覆盖** |
+| `glm-5.3` | `context_length` | `1000000` | `1048576` | 官方页未核 |
+| `glm-5.3` | `release_date` | `2026-09-23` | `2026-08-18` | 同上 |
+| `glm-5.3-flash` | `context_length` / `release_date` | `1000000` / `2026-09-23` | `1048576` / `2026-08-26` | 同上 |
+| `glm-5.3-flash` | `input_modalities` | `text` | `text,image,video` | 同上 |
+| `kimi-k3.1-pro` | `release_date` | `2026-07-16` | `2026-10-23` | 同上 |
+| `gemma-4-26b-a4b-it:free` / `gemma-4-31b-it:free` | `input_modalities` | `text,image` | `text,image,video` | 同上 |
+
+**要查什么**：z.ai（GLM-5.3 系列的上下文与发布日）、Moonshot changelog（kimi-k3.1-pro）、
+Google（Gemma 4 是否支持 video 输入）、Google（Gemini 3.8 Flash 发布日）。
+查到的写进 overrides 的 `note` 再同步。
+
+> 其余 27 项都有 `override` 或官方原文支撑（本轮 15 条 + 之前修的描述/能力/上下文），可以直接勾选。
