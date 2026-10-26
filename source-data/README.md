@@ -30,6 +30,33 @@ source-data/
 
 改数据前先读 `corrections/README.md`——里面写着什么能改、什么绝对不能改。
 
+## 另外两条线，别和上面混
+
+这个目录里其实有**三条互不相干**的核对线，各自的核对对象不同：
+
+| 文件 | 核对的是谁 | 长什么样 | 会不会重生成 |
+|:---|:---|:---|:---|
+| `corrections/<date>/corrections.json` | **第三方站点的数据**（527 个模型里的 116 个） | 一条一个字段：`id` / `field` / `value` / `source_url` / `quote` | **不会**，人工核实一次写一条 |
+| `cheaperinference-<date>.verified.json` | 上一条的产物 | 整份快照 | 会，`apply_corrections` 随时重算 |
+| `official-metadata-<date>.json` | **我们自己的目录**（67 个模型） | 一个模型一条，带 `catalog_*` 用于对比 | 会，`harvest_official --fetch` 每次覆盖 |
+
+所以 `corrections.json` 和 `official-metadata-*.json` **不是同一种东西**，不能合并：
+
+- 覆盖面几乎不重叠（116 个站点模型 vs 40 个目录模型，交集只有 4 个）；
+- 修正方向相反——前者是「站点错了、官方是对的」，后者是「我们的目录 vs 官方页」的差异报告；
+- 生命周期相反——前者删了就没了，后者随时能重抓，所以默认不进 git。
+
+`official-metadata-*.json` 里 `basis` 的含义：
+
+| `basis` | 含义 | 能不能用来改数据 |
+|:---|:---|:---|
+| `page` | 逐模型官方页解析成功 | 能，`--apply` 会写进 `reference-data/metadata/overrides.json` |
+| `api_only` | 只有 `models.list` 有值，官方页 404 | 不能，只作提示 |
+| `none` | 页面 404 或表格解析失败 | 不能，`context_length` 为 `null` 表示**没取到**，不是「官方说是 0」 |
+
+> 看这个文件里的「差异」时先看 `basis`：`basis: none` 那几条的 `null` 只是没数据，
+> 不是发现我们目录错了（当前 12 条差异里有 11 条属于这种）。
+
 ## 约定
 
 - **每期只留最新一份。** 换新快照时删掉上一期，历史在 `git log` 里，不堆在目录里。
