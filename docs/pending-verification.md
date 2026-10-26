@@ -108,7 +108,7 @@ expr = f"len <= {thresholds[index]} ? {leaves[index]} : {expr}"
 |:---|:---|:---|:---|
 | `gemini-3.8-flash` | `release_date` | `2026-10-13` | `2026-09-02` |
 | ~~`glm-5.3`~~ | ~~context_length~~ | — | 已核：官方 "1M-token context window" → 1,048,576 ✅ |
-| ~~`glm-5.3-flash`~~ | ~~context_length~~ | — | 已核：官方称 "Native Multimodal Model"，上下文 1M → 1,048,576 ✅（video 仍无原文） |
+| ~~`glm-5.3-flash`~~ | ~~context_length / input_modalities~~ | — | 已核：上下文 1M → 1,048,576；输入模态 **视频/图像/文本/文件** ✅ |
 | `kimi-k3.1-pro` | `release_date` | `2026-07-16` | `2026-10-23` |
 | `gemma-4-26b-a4b-it:free` / `gemma-4-31b-it:free` | `input_modalities` | `text,image` | `text,image,video` |
 
@@ -121,5 +121,6 @@ expr = f"len <= {thresholds[index]} ? {leaves[index]} : {expr}"
 
 - 上下文 1M 按本仓口径取 **1,048,576**（与 128K=131,072 同口径；聚合源的 1,000,000 是十进制读法）
 - `glm-5.3` 官方明确 **text-only** → `input_modalities` 只记 `text`
-- `glm-5.3-flash` 总览页称 **"Native Multimodal Model"**，但没有逐模态清单，`video` 仍无原文支撑
-  → 只钉上下文，`input_modalities` 不钉
+- `glm-5.3-flash` 已找到逐模态清单（`docs.bigmodel.cn/cn/guide/models/vlm/glm-5.3-flash`）：
+  **"视觉理解：原生多模态输入，支持图片，视频，文件"**、**"输入模态 视频、图像、文本、文件"**
+  → `input_modalities` = `text,image,video,file`（原先漏了 `file`），已钉住

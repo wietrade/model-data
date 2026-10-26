@@ -273,10 +273,16 @@
     },
     {
       "model_name": "glm-5.3-flash",
-      "note": "2026-10-26 官方核实钉住 max_output_tokens：z.ai API 参考写 \"GLM-5.3 series / GLM-5.3-Flash series supports a maximum output length of 128K；schema range 1–131072\"。聚合源给的 943,718 / 943,717 是思考预算，不是输出上限。 2026-10-26 官方核实：总览页（https://docs.z.ai/guides/overview/overview）称 GLM-5.3-Flash 为 \"Native Multimodal Model\"，上下文 1M → 取 1,048,576。官方没有逐模态清单，故 input_modalities 不钉（当前为 text,image,video，video 尚无原文支撑）。",
+      "note": "2026-10-26 官方核实钉住 max_output_tokens：z.ai API 参考写 \"GLM-5.3 series / GLM-5.3-Flash series supports a maximum output length of 128K；schema range 1–131072\"。聚合源给的 943,718 / 943,717 是思考预算，不是输出上限。 2026-10-26 官方核实：总览页（https://docs.z.ai/guides/overview/overview）称 GLM-5.3-Flash 为 \"Native Multimodal Model\"，上下文 1M → 取 1,048,576。官方没有逐模态清单，故 input_modalities 不钉（当前为 text,image,video，video 尚无原文支撑）。 2026-10-26 官方核实模态：中文文档 \"视觉理解：原生多模态输入，支持图片，视频，文件\"、\"输入模态 视频、图像、文本、文件；输出模态 文本；上下文窗口 1M；最大输出 128K\"（https://docs.bigmodel.cn/cn/guide/models/vlm/glm-5.3-flash）；英文版 Input Modality Video / Image / Text / File（https://docs.z.ai/guides/vlm/glm-5.3-flash）。原先漏了 file。",
       "fields": {
         "max_output_tokens": 131072,
-        "context_length": 1048576
+        "context_length": 1048576,
+        "input_modalities": [
+          "text",
+          "image",
+          "video",
+          "file"
+        ]
       }
     },
     {
