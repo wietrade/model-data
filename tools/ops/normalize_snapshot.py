@@ -1,0 +1,292 @@
+#!/usr/bin/env python3
+"""把第三方快照（cheaperinference）洗成一套无冗余、无自相矛盾的事实记录。
+
+原文件里同一件事有三套字段，且会打架，实测（505 条）：
+
+============  ======================================  ======================
+冗余/冲突        现象                                    本脚本的处理
+============  ======================================  ======================
+`context-128k` 126 条同时带 `context-128k` + `context-1m`  只保留 `contextLength` 数字；
+/ `context-1m` （是「≥阈值」的累积标签）                    标签丢弃
+`detail_ContextWindow` / `detail_MaximumOutput`  与数值字段 0 不一致      只用来校验 / 回填缺失
+`vision` / `image-input` / `detail_VisionInput`  21 条 token 说有图、bool             以 `detail_*` 为准，
+                                               和原文都说没有                 token 降级为旁证
+`reasoning` / token / `detail_Reasoning`         27 条同样过度声明           同上
+`detail_Input` / input token                    65 条矛盾（含 5 个 `Not reported`）  以 `detail_Input` 为准；
+                                                                         `Not reported` = 未知，不当 false
+`free` 字段                                     505 条里只有 1 条为 true   不采用（`:free` 是聚合源命名）
+`type` / `kind` / `group`                       三套分类，只有 87 条一致     只保留 `type`，用它算用途
+============  ======================================  ======================
+
+用法::
+
+    python -m tools.ops.normalize_snapshot --report          # 只看冗余/冲突统计
+    python -m tools.ops.normalize_snapshot -o raw/ci-normalized.json
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import sys
+from collections import Counter
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_IN = ROOT / "raw" / "cheaperinference-20261023-full.json"
+
+INPUT_MAP = {"text": "text", "image": "image", "pdf": "file", "file": "file", "audio": "audio", "video": "video"}
+OUTPUT_MAP = {"text": "text", "image": "image", "audio": "audio", "video": "video"}
+# 只有 detail_* 里没有对应证据的能力才从 token 取
+TOKEN_ONLY_CAPS = {
+    "web-search": "web_search",
+    "implicit-caching": "cache_implicit",
+    "explicit-caching": "cache_explicit",
+}
+PARAM_CAPS = {
+    "tools": "tools",
+    "tool_choice": "tools",
+    "structured_outputs": "structured_output",
+    "response_format": "structured_output",
+}
+_UNKNOWN = {"", "not reported", "n/a"}
+
+
+def _split(value):
+    text = (value or "").strip()
+    if text.lower() in _UNKNOWN:
+        return []
+    return [part.strip() for part in text.split(",") if part.strip()]
+
+
+def _number(value):
+    match = re.search(r"([0-9][0-9,]*)", str(value or ""))
+    return int(match.group(1).replace(",", "")) if match else None
+
+
+def model_type(record) -> str:
+    """用途分类（与快照的 type 同口径），只从模态 + 能力推导。
+
+    ``decision`` / ``realtime`` 推不出来（前者文本进文本出、后者音文本双向），
+    需要外部标记；本函数对这两种只在明显线索下才返回。
+    """
+    ins = set(record.get("input_modalities") or [])
+    outs = set(record.get("output_modalities") or [])
+    caps = set(record.get("capabilities") or [])
+    if "embedding" in caps or "rerank" in caps:
+        return "embedding"
+    if "audio" in outs and ins >= {"audio"} and "text" in outs:
+        return "realtime"
+    if outs == {"audio"} and ins == {"text"}:
+        return "speech"
+    if outs and "audio" not in outs and ins == {"audio"}:
+        return "transcription"
+    if "video" in outs:
+        return "video"
+    if "image" in outs:
+        return "image"
+    return "text"
+
+
+def normalize_item(item) -> dict:
+    """一条原始记录 -> 无冗余的事实记录。缺失的维度记进 ``unknown``。"""
+    tokens = set(item.get("capabilities") or [])
+    params = set(_split(item.get("detail_SupportedParameters")))
+    unknown = []
+    kind = (item.get("type") or "text").strip()
+
+    # 输入模态：detail_Input 优先；没报时用 type + vision 补，并标来源
+    inputs = [INPUT_MAP[v] for v in _split(item.get("detail_Input")) if v in INPUT_MAP]
+    modalities_source = "detail"
+    if not inputs:
+        modalities_source = "type"
+        inputs = {"embedding": ["text"], "transcription": ["audio"], "realtime": ["audio", "text"]}.get(
+            kind, ["text"]
+        )
+        if item.get("vision") and "image" not in inputs:
+            inputs = ["image"] + inputs
+        unknown.append("input_modalities")
+
+    outputs = [OUTPUT_MAP[v] for v in _split(item.get("detail_Output")) if v in OUTPUT_MAP]
+    if not outputs:
+        modalities_source = "type"
+        outputs = {
+            "image": ["image"],
+            "video": ["video"],
+            "speech": ["audio"],
+            "realtime": ["audio", "text"],
+            "embedding": ["text"],
+        }.get(kind, ["text"])
+        unknown.append("output_modalities")
+
+    caps = set()
+    if item.get("reasoning") or item.get("detail_Reasoning") == "Supported":
+        caps.add("reasoning")
+    if params:
+        caps |= {cap for key, cap in PARAM_CAPS.items() if key in params}
+        capabilities_source = "params"
+    else:
+        # 参数表没公布时 token 只作弱证据（实测会过度声明，见文件头）
+        if "tool-use" in tokens:
+            caps.add("tools")
+        if "structured-output" in tokens:
+            caps.add("structured_output")
+        capabilities_source = "tokens"
+        unknown.append("supported_parameters")
+    caps |= {cap for key, cap in TOKEN_ONLY_CAPS.items() if key in tokens}
+    if kind == "embedding" or any(token.startswith("embedding") for token in tokens):
+        caps.add("embedding")
+
+    context_length = item.get("contextLength")
+    if not context_length:
+        context_length = _number(item.get("detail_ContextWindow"))
+    max_output = item.get("maxOutputTokens")
+    if not max_output:
+        max_output = _number(item.get("detail_MaximumOutput"))
+
+    record = {
+        "id": item.get("id"),
+        "provider": item.get("providerLabel"),
+        "type": kind,
+        "context_length": context_length or None,
+        "max_output_tokens": max_output or None,
+        "input_modalities": sorted(set(inputs)),
+        "output_modalities": sorted(set(outputs)),
+        "capabilities": sorted(caps),
+        "image_edit": bool(item.get("imageEdit")),
+        "endpoints": _split(item.get("detail_Endpoints")),
+        "modalities_source": modalities_source,
+        "capabilities_source": capabilities_source,
+        "unknown": unknown,
+    }
+    if context_length is None:
+        record["unknown"].append("context_length")
+    if max_output is None:
+        record["unknown"].append("max_output_tokens")
+    return record
+
+
+# ------------------------------------------------------------------ 冗余审计
+
+
+def audit(items):
+    """返回「同一事实几套字段」的一致/矛盾统计，供 --report 打印。"""
+    stats = {}
+    both_tokens = sum(1 for it in items if {"context-128k", "context-1m"} <= set(it.get("capabilities") or []))
+    no_token = sum(
+        1 for it in items if not ({"context-128k", "context-1m"} & set(it.get("capabilities") or []))
+    )
+    stats["context_token"] = {"both_128k_and_1m": both_tokens, "no_token": no_token, "total": len(items)}
+
+    def compare(field, num_field):
+        bad = [
+            (it.get("id"), _number(it.get(field)), it.get(num_field))
+            for it in items
+            if _number(it.get(field)) is not None and _number(it.get(field)) != it.get(num_field)
+        ]
+        return {"mismatch": len(bad), "samples": bad[:3]}
+
+    stats["detail_vs_number"] = {
+        "context_window": compare("detail_ContextWindow", "contextLength"),
+        "max_output": compare("detail_MaximumOutput", "maxOutputTokens"),
+    }
+
+    def tri(bool_field, token, detail, truth):
+        agree_true = sum(
+            1
+            for it in items
+            if bool(it.get(bool_field)) and token in (it.get("capabilities") or []) and it.get(detail) == truth
+        )
+        overclaim = sum(
+            1
+            for it in items
+            if not it.get(bool_field) and token in (it.get("capabilities") or []) and it.get(detail) == "Not supported"
+        )
+        return {"agree_true": agree_true, "token_overclaims": overclaim}
+
+    stats["three_sources"] = {
+        "vision": tri("vision", "image-input", "detail_VisionInput", "Supported"),
+        "reasoning": tri("reasoning", "reasoning", "detail_Reasoning", "Supported"),
+        "image_edit": tri("imageEdit", "image-edit", "detail_ImageEditing", "Supported"),
+    }
+
+    overclaim = 0
+    for it in items:
+        tokens = set(it.get("capabilities") or [])
+        src = (it.get("detail_Input") or "").strip().lower()
+        if "image-input" in tokens and "image" not in src:
+            overclaim += 1
+        if "image-input" not in tokens and "image" in src:
+            overclaim += 1
+    stats["input_token_vs_detail"] = {"mismatch": overclaim}
+    stats["free_field_true"] = sum(1 for it in items if it.get("free"))
+    return stats
+
+
+def render(stats):
+    lines = ["# 快照冗余审计", ""]
+    c = stats["context_token"]
+    lines.append(
+        f"- `context-128k` / `context-1m`：{c['both_128k_and_1m']}/{c['total']} 条**同时带两个**"
+        f"（是「≥阈值」累积标签），{c['no_token']} 条一个都没带 → 与 `contextLength` 重复，丢弃"
+    )
+    d = stats["detail_vs_number"]
+    lines.append(f"- `detail_ContextWindow` vs `contextLength`：{d['context_window']['mismatch']} 处不一致")
+    lines.append(f"- `detail_MaximumOutput` vs `maxOutputTokens`：{d['max_output']['mismatch']} 处不一致（纯冗余）")
+    t = stats["three_sources"]
+    lines.append(
+        f"- `vision`：三源一致 {t['vision']['agree_true']} 条，**token 过度声明 {t['vision']['token_overclaims']} 条**"
+    )
+    lines.append(
+        f"- `reasoning`：三源一致 {t['reasoning']['agree_true']} 条，**token 过度声明 {t['reasoning']['token_overclaims']} 条**"
+    )
+    lines.append(f"- `imageEdit`：三源一致 {t['image_edit']['agree_true']} 条，过度声明 {t['image_edit']['token_overclaims']} 条")
+    lines.append(f"- `detail_Input` vs 输入 token：{stats['input_token_vs_detail']['mismatch']} 处矛盾")
+    lines.append(f"- `free` 字段为 true 的条目：{stats['free_field_true']} 个（`:free` 是聚合源命名，不采信）")
+    return "\n".join(lines)
+
+
+def main(argv=None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("-i", "--input", default=str(DEFAULT_IN))
+    parser.add_argument("-o", "--out", help="输出规范化 JSON")
+    parser.add_argument("--report", action="store_true", help="打印冗余/冲突统计")
+    parser.add_argument("--limit", type=int, help="只处理前 N 条（调试用）")
+    args = parser.parse_args(argv)
+
+    payload = json.loads(Path(args.input).read_text(encoding="utf-8"))
+    items = payload["models"]
+    if args.limit:
+        items = items[: args.limit]
+
+    if args.report:
+        print(render(audit(items)))
+    if args.out:
+        normalized = [normalize_item(it) for it in items]
+        out = Path(args.out)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(
+            json.dumps(
+                {
+                    "source": payload.get("source"),
+                    "fetched_at": payload.get("fetched_at"),
+                    "note": "由 tools/ops/normalize_snapshot.py 归一化：去 context-* 标签、token 降级为旁证、detail_* 为准",
+                    "count": len(normalized),
+                    "models": normalized,
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+        print("wrote %s（%d 条）" % (out, len(normalized)))
+    if not args.out and not args.report:
+        parser.error("要么 --report，要么 -o")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
