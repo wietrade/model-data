@@ -226,7 +226,7 @@ overrides.json  >  官方逐模型页 / 官方 API（official:*，需官方内�
 | `api/newapi/models.json` | ✅ | 模型元数据（字段见上方「模型字段」） |
 | `api/newapi/vendors.json` | ✅ | 供应商字典。`models.json` 里只有 `vendor_name` 字符串，**图标 / 描述 / 展示开关只在这里**，两者必须成对拉 |
 | `api/i18n/{zh,en}/newapi/{models,vendors}.json` | 可选 | 翻译版描述，结构同上 |
-| `api/newapi/pricing.json` | 可选 | **官方价** + 出处。无官方价的模型只有 `{"price_kind": "unpriced"}` 一行（无数字）；文件里不含结算价、不含计费表达式 |
+| `api/newapi/pricing.json` | 可选 | **官方价** + 出处 + new-api 倍率字段（`model_ratio` 等，可直接被「同步价格」导入）。无官方价的模型只有 `{"price_kind": "unpriced"}` 一行；不含结算价、不含计费表达式 |
 
 四类文件都是 `{"success": true, "message": "ok", "data": [...]}` 信封，与 `basellm/llm-metadata` 一致
 （因此 new-api 只需把 `SYNC_UPSTREAM_BASE` 指过来，无需改代码）。
@@ -270,18 +270,27 @@ overrides.json  >  官方逐模型页 / 官方 API（official:*，需官方内�
 | 同步资料 | `controller/model_sync.go` | `{SYNC_UPSTREAM_BASE}/api/newapi/{models,vendors}.json`（+ i18n 变体） | `models` / `vendors` 表 |
 | 同步价格 | `controller/ratio_sync.go`（UpstreamRatioSync） | **上游渠道**的 `{base}/api/pricing`、`/api/ratio_config`、`/v1/models`；以及两个内置预设 `basellm.github.io/llm-metadata/.../ratio_config-v1-base.json`、`models.dev/api.json` | options 里的 `model_ratio` / `completion_ratio` / `cache_ratio` / `create_cache_ratio` / `image_ratio` / `audio_ratio` / `audio_completion_ratio` / `model_price` / `billing_mode` / `billing_expr` |
 
-「同步价格」只认上面 **10 个字段**，**不读我们的 `pricing.json`**（格式不通）。
+「同步价格」只认上面 **10 个字段**。我们的 `pricing.json` 里已经带了其中的倍率字段
+（`model_ratio` / `completion_ratio` / `cache_ratio` / `create_cache_ratio` / `quota_type` / `model_price`），
+所以在对话框里选 **custom** 指向它，就能把官方价导进来；不含 `billing_expr`（表达式不属于价格表）。
 
-上游渠道不归我们管，它有没有公开的价格接口与我们无关——**我们的价格自己维护**，
-所以它必须是一个独立文件，不与官方价混在一起：
+标准操作是**两趟**：
 
 ```
-私有  /opt/model-data-private/billing_basis.json   我们拿到的价（人民币 + 汇率），唯一真源
-私有  /opt/model-data-private/billing.json         export 产物（billing_mode + billing_expr），apply 用
-公开  api/newapi/pricing.json                      只放厂商官方价，仅作参考与计算输入
+第一趟  官方价   →  api/newapi/pricing.json（custom URL）
+第二趟  自己的价 →  pricing.own.json（私有，只写差异字段，覆盖上一趟）
 ```
 
-三条铁律：官方价只做参考与计算输入；我们的价格只在私有文件里；两者永远不写进同一个文件。
+上游渠道不归我们管，它有没有公开的价格接口与我们无关——**我们的价格自己维护**：
+
+```
+公有  api/newapi/pricing.json                      官方价（含 new-api 倍率字段）
+私有  billing_basis.json                           自己的价，只写与官方不同的字段
+私有  pricing.own.json                             由上面合成，供第二趟同步
+私有  billing.json                                 计费表达式产物（export_billing --basis）
+```
+
+三条铁律：官方价与自己的价永远是两个文件；自己的价只写差异；表达式单独生成、最后写。
 
 ### 原则：判断发生在构建期，不发生在读取期
 
@@ -310,22 +319,48 @@ overrides.json  >  官方逐模型页 / 官方 API（official:*，需官方内�
   本地私有目录 `model-data-private/.env.local`，**绝不写进本仓库文件**。
 
 
-## 价格文件
+## 价格文件（两个文件，两趟同步）
 
-| 文件 | 内容 | 维护方式 |
+价格分**两条记录**维护，后台「同步价格」也是**两趟**：先官方价，再自己的价覆盖。
+
+| 文件 | 位置 | 内容 |
 |:---|:---|:---|
-| `sources/pricing.official.json` | 厂商官方定价页抄录，`price_kind: vendor_official`，逐条带 `source_url` 与 `quote` | 人工（官方页核对后导入） |
-| `api/newapi/pricing.json` | 每个已发布模型的**官方价** + 出处；无官方价的模型只留一行壳（`price_kind: unpriced`，不带任何数字） | `tools/model_sync` 生成 |
+| `sources/pricing.official.json` | 公开 | 厂商官方定价页抄录，逐条带 `source_url` 与 `quote`（人工维护的输入） |
+| `api/newapi/pricing.json` | 公开 | 官方价 + new-api 倍率字段；无官方价的模型只留 `{"price_kind": "unpriced"}` 空壳 |
+| `billing_basis.json` | **私有** | 自己的价，**只写与官方不同的字段**（`input` / `output` / `cache_read` / `per_image` …） |
+| `pricing.own.json` | **私有** | `billing_basis` 合成出来的 new-api 倍率行，供第二趟同步 |
+
+合并规则是**字段级覆盖**：自己的价写了哪个字段就覆盖哪个，没写的继承官方。两个例外
+（否则价格会算飞，已在单元测试里锁住）：
+
+- 自己的价改成按张（`per_image` / `meters`）→ 官方的 token 价与档位整套不适用；
+- 只改基础价、没给自己的档位 → 不继承官方 `tiers`（官方档位按官方基础价算，混用会在
+  上下文档按官方原价收）。
+
+### 「同步价格」能直接吃的字段
+
+`pricing.json` 与 `pricing.own.json` 都带这些字段（`controller/ratio_sync.go` 的 type2 格式）：
+
+| 字段 | 由官方价算出 |
+|:---|:---|
+| `model_ratio` | 官方输入价($/1M) ÷ 2（`QuotaPerUnit=500000`，即 ratio 1 = $2/1M） |
+| `completion_ratio` | 官方输出价 ÷ 官方输入价 |
+| `cache_ratio` | 官方缓存读 ÷ 官方输入价 |
+| `create_cache_ratio` | 官方缓存写 ÷ 官方输入价 |
+| `quota_type` / `model_price` | 按张模型：`quota_type=1`，`model_price` = 每张单价 |
+
+这些值是纯算术派生物，`validate` 会校验它们与价格字段一致。
+
+### 三条边界
 
 > **`api/newapi/` 只放厂商公开数据。** 属于我们平台的一律不进这个目录：
-> 结算价（成本）、聚合站报价、渠道名、我们算出来的倍率与计费表达式。
+> 结算价（成本）、聚合站报价、渠道名、计费表达式。
 >
-> 三条约束：
-> 1. `pricing.json` 里**没有** `billing_expr` / `billing_mode` —— 表达式是我们算的派生物，
->    由部署机 `export_billing` 在导出时从价格字段重算（再叠私有结算价）。`validate` 会报错拦住它们。
-> 2. 线上生效的 `billing_setting.billing_expr` 是**用结算价重算** 的结果，只存在于部署机，不进仓库。
-> 3. 所以 new-api **不需要也不应该**拉 `pricing.json`——它只拉 `models.json` + `vendors.json`。
->    价格走「官方价 → `export_billing --basis` → `apply_billing.py`」这条链，结 算价全程不出私域。
+> 1. `pricing.json` 里**没有** `billing_expr` / `billing_mode` —— 表达式不属于价格表，
+>    它由部署机 `export_billing --basis` 现算后写进 options。`validate` 会报错拦住它们。
+> 2. 自己的价只在私有 `billing_basis.json` / `pricing.own.json` 里，不进仓库。
+> 3. 计费表达式与倍率是 options 里**平级**的 map，谁最后写谁生效 —— 所以顺序必须是
+>    「官方价 → 自己的价 → 表达式」，且表达式最后写。
 
 ### 官方价的机器核对
 
