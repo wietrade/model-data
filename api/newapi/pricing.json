@@ -474,17 +474,29 @@
     {
       "model_name": "deepseek-v4.1-flash",
       "vendor_name": "DeepSeek",
-      "price_kind": "aggregator_reference",
-      "source_kind": "aggregator",
-      "source": "openrouter",
-      "source_model_id": "deepseek/deepseek-v4.1-flash",
+      "price_kind": "vendor_official",
+      "source_kind": "official_doc",
+      "source": "vendor_official",
+      "source_model_id": "deepseek-v4.1-flash",
       "currency": "USD",
       "unit": "per_1m_tokens",
-      "input": 0.02,
-      "output": 1.0,
-      "cache_read": 0.015,
+      "source_url": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
+      "retrieved_at": "2026-10-26T17:10:00+08:00",
+      "confidence": "high",
+      "input": 0.3,
+      "output": 1.2,
+      "cache_read": 0.006,
+      "time_tiers": {
+        "rule": "deepseek_peak",
+        "peak": {
+          "input": 0.3,
+          "output": 1.2,
+          "cache_read": 0.006
+        },
+        "off_peak_multiplier": 0.5
+      },
       "billing_mode": "tiered_expr",
-      "billing_expr": "tier(\"standard\", p * 0.02 + c * 1 + cr * 0.015)"
+      "billing_expr": "weekday(\"Asia/Shanghai\") >= 1 && weekday(\"Asia/Shanghai\") <= 5 && ((hour(\"Asia/Shanghai\") >= 9 && hour(\"Asia/Shanghai\") < 12) || (hour(\"Asia/Shanghai\") >= 14 && hour(\"Asia/Shanghai\") < 18)) ? tier(\"peak\", p * 0.3 + c * 1.2 + cr * 0.006) : tier(\"off_peak\", p * 0.15 + c * 0.6 + cr * 0.003)"
     },
     {
       "model_name": "deepseek-v4.1-flash-1017",

@@ -591,6 +591,40 @@
       "notes": "国内站 CNY 高峰价：输入未命中¥9.0 / 输出¥27.0 / 缓存命中¥0.30；空闲半价。按 6.6743 折算 USD（$1.32/$3.96/$0.044）。无视觉。\n2026-10-25 复核官方页：高峰时段仍为北京时间周一至周五（不含法定节假日）9:00-12:00、14:00-18:00，其余时段半价；缓存命中价与当前折算一致。"
     },
     {
+      "model_name": "deepseek-v4.1-flash",
+      "vendor_name": "DeepSeek",
+      "price_kind": "vendor_official",
+      "source_kind": "official_doc",
+      "source_url": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
+      "retrieved_at": "2026-10-26T17:10:00+08:00",
+      "currency": "USD",
+      "unit": "per_1m_tokens",
+      "input": 0.3,
+      "output": 1.2,
+      "output_text": null,
+      "output_image": null,
+      "cache_read": 0.006,
+      "cache_write": null,
+      "cache_write_1h": null,
+      "per_image": null,
+      "tiers": null,
+      "time_tiers": {
+        "rule": "deepseek_peak",
+        "peak": {
+          "input": 0.3,
+          "output": 1.2,
+          "cache_read": 0.006
+        },
+        "off_peak_multiplier": 0.5
+      },
+      "effective_from": null,
+      "effective_to": null,
+      "upcoming": null,
+      "confidence": "high",
+      "quote": "旧模型名 deepseek-v4-flash、deepseek-v4-flash-vision-exp 仍可调用，但对应模型已下线，请求将由 DeepSeek-V4.1-Flash-1017 模型提供服务，并按 Flash 价格计费。",
+      "notes": "官方页面上没有这个 ID：它是 DeepSeek-V4.1-Flash-1017 的版本名写法（页面左侧「模型」列即 deepseek-flash，模型版本 DeepSeek-V4.1-Flash-1017）。官方明确「按 Flash 价格计费」，故与 deepseek-flash 同价：高峰 输入未命中 ¥2 / 输出 ¥8 / 缓存命中 ¥0.04，空闲半价；按 6.6743 折算 USD（$0.3/$1.2/$0.006）。\n原聚合源记的 0.02/1.0 是把 ¥0.02（空闲时段缓存命中）当美元抄入，已废弃。"
+    },
+    {
       "model_name": "deepseek-v4.1-flash-1017",
       "vendor_name": "DeepSeek",
       "price_kind": "vendor_official",
