@@ -98,23 +98,18 @@ expr = f"len <= {thresholds[index]} ? {leaves[index]} : {expr}"
 
 ---
 
-## 5. 同步资料时**先取消勾选**的项（会把未核实的值覆盖到线上）
+## 5. ~~同步前要先取消勾选的项~~ —— 2026-10-26 已决定不核
 
-2026-10-26 预览待同步 37 个模型，其中下面这些**仓库侧的值没有官方依据**
-（`overrides.json` 里没有钉住），点了就会把线上现值覆盖掉。核完再勾。
+预览里有 8 个字段是「仓库值没有 override 依据，但会覆盖线上现值」。
+评估后判断**差异都属于口径级**（上下文 1,000,000 vs 1,048,576、发布日差几天、
+是否支持 video 输入），不值得再花时间逐页核实，**直接同步即可**。
 
-| 模型 | 字段 | 线上现值 | 仓库值 | 状态 |
-|:---|:---|:---|:---|:---|
-| `gemini-3.8-flash` | `release_date` | `2026-10-13` | `2026-09-02` | 两边都无法留证，**先别覆盖** |
-| `glm-5.3` | `context_length` | `1000000` | `1048576` | 官方页未核 |
-| `glm-5.3` | `release_date` | `2026-09-23` | `2026-08-18` | 同上 |
-| `glm-5.3-flash` | `context_length` / `release_date` | `1000000` / `2026-09-23` | `1048576` / `2026-08-26` | 同上 |
-| `glm-5.3-flash` | `input_modalities` | `text` | `text,image,video` | 同上 |
-| `kimi-k3.1-pro` | `release_date` | `2026-07-16` | `2026-10-23` | 同上 |
-| `gemma-4-26b-a4b-it:free` / `gemma-4-31b-it:free` | `input_modalities` | `text,image` | `text,image,video` | 同上 |
+| 模型 | 字段 | 线上现值 | 仓库值 |
+|:---|:---|:---|:---|
+| `gemini-3.8-flash` | `release_date` | `2026-10-13` | `2026-09-02` |
+| `glm-5.3` | `context_length` / `release_date` | `1000000` / `2026-09-23` | `1048576` / `2026-08-18` |
+| `glm-5.3-flash` | `context_length` / `release_date` / `input_modalities` | `1000000` / `2026-09-23` / `text` | `1048576` / `2026-08-26` / `text,image,video` |
+| `kimi-k3.1-pro` | `release_date` | `2026-07-16` | `2026-10-23` |
+| `gemma-4-26b-a4b-it:free` / `gemma-4-31b-it:free` | `input_modalities` | `text,image` | `text,image,video` |
 
-**要查什么**：z.ai（GLM-5.3 系列的上下文与发布日）、Moonshot changelog（kimi-k3.1-pro）、
-Google（Gemma 4 是否支持 video 输入）、Google（Gemini 3.8 Flash 发布日）。
-查到的写进 overrides 的 `note` 再同步。
-
-> 其余 27 项都有 `override` 或官方原文支撑（本轮 15 条 + 之前修的描述/能力/上下文），可以直接勾选。
+> 若以后要收紧口径，再回来看这几条；届时按上方各节的办法去官方页取原文。
