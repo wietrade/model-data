@@ -9,7 +9,8 @@
 |:---|:---|:---|:---|
 | OpenAI | `https://developers.openai.com/api/docs/pricing.md` | **Markdown 表**（可直接解析） | 短/长上下文档的 input / output / cached input / 30m 写入 / 12h 写入 |
 | Anthropic | `https://platform.claude.com/docs/en/about-claude/pricing.md` | **Markdown 表** | Base input / 5m 写入 / 1h 写入 / cache 命中 / output |
-| Google | `https://ai.google.dev/gemini-api/docs/pricing` | HTML（**无** `.md`，`llms.txt` 404） | 按模型分段的 `Input / Output / Context caching` 价，**人工抄录** |
+| Google | `https://cloud.google.com/gemini-enterprise-agent-platform/generative-ai/pricing` | HTML，**但表格结构规整可解析**（65 个 `<table>`，列固定为 `Model / Type / Region / Price`） | Standard 档每 1M token 的 input / text output / cached input，按 **Global / Non-global** 两个地区列 |
+| Google（开发端 API，旁证） | `https://ai.google.dev/gemini-api/docs/pricing` | HTML（`.md` 返回同一份 HTML，`llms.txt` 404） | 同上，仅 Global 一列；用于交叉核对 |
 
 自动核对（只出报告，不改数据）：
 
@@ -107,7 +108,9 @@ python -m tools.ops.harvest_official --fetch --apply
 | Google 的逐模型页与 `models.list` 会互相矛盾 | 例：`gemini-3-pro-image` 页写 65,536 / API 写 131,072；`gemini-3.1-flash-image` 页写 131,072 / API 写 65,536。按上表规则取**逐模型页** |
 | OpenAI 定价页有倍率段 | `Batch` / `Priority` / `Flex` 段是主表的倍率，不是牌价；`Grouped Pricing Table data` 里 `Modality` 列区分 Image / Text 两行 |
 | 长上下文档不是「另一个模型」 | OpenAI 的 `Short context` / `Long context` 是同一模型的两个价格档，落到 `tiers[]`（阈值取自 `(<272K context length)`） |
-| Gemini 没有机器可读定价 | `pricing.md` 返回 HTML、`llms.txt` 404；价格只能人工抄 |
+| Gemini 的价格页没有 `.md` | `ai.google.dev` 与 `cloud.google.com` 两个域名的 `.md` 都返回 200 但内容是 HTML（后缀被忽略），`llms.txt` 404。**但 `cloud.google.com` 那页的表格很规整**，标准库 `HTMLParser` 就能抽成行（需处理合并单元格：空单元格表示同上） |
+| Gemini 定价有三个我们**不建档**的维度 | ① 区域：`Non-global` 比 `Global` 贵 10%——我们只记 Global；② 服务档：`Priority` ≈1.8×、`Batch` = 0.5×——**请求级参数，不另建档位**（同 `service_tier` 的既有约定）；③ 非 token 计费：Grounding $14/1000 次、Computer Use 按 token |
+| Gemini 4 的超长请求计费规则（2026-11-13 起） | “completions 超过 32K token 时，即使请求最终因客户端/服务端超时失败，仍按 retrievable token usage 收费” |
 | 聚合站的 `max_output` 不可信 | 常见 0.9× 折算值（如 58,982）、思考预算（943,718）、`max_completion_tokens` 混入 |
 | 第三方站点的值可能是**部署限额**，不是型号规格 | `gpt-oss-20b` 在某站点写 32,768，OpenAI 官方是 131,072——32,768 是某个云部署的上限。**与官方差一个量级时，先怀疑是部署配置** |
 | 上游退役转发：id 还活着，背后已换了模型 | xAI `grok-4` 于 2026-05-15 退役，请求转发到 `grok-4.3`。数值仍按**原型号规格**记，另加 `servedAs` / `retiredAt` 标注，不要按新模型回填 |
